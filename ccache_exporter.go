@@ -1,11 +1,16 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+const (
+	DefaultListenAddr = ":9501"
 )
 
 var (
@@ -20,9 +25,13 @@ var (
 		},
 		[]string{"device"},
 	)
+	listenAddr string
 )
 
 func init() {
+	flag.StringVar(&listenAddr, "listenAddr", DefaultListenAddr, "Listen on this address")
+	flag.Parse()
+
 	// Metrics have to be registered to be exposed:
 	prometheus.MustRegister(cpuTemp)
 	prometheus.MustRegister(hdFailures)
@@ -32,8 +41,17 @@ func main() {
 	cpuTemp.Set(65.3)
 	hdFailures.With(prometheus.Labels{"device": "/dev/sda"}).Inc()
 
-	// The Handler function provides a default handler to expose metrics
-	// via an HTTP server. "/metrics" is the usual endpoint for that.
 	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(
+			`<html>
+             <head><title>ccache exporter</title></head>
+             <body>
+             <h1>ccache exporter</h1>
+             <p><a href='/metrics'>Metrics</a></p>
+             </body>
+             </html>`))
+	})
+	log.Println("Listening on", listenAddr)
+	log.Fatal(http.ListenAndServe(listenAddr, nil))
 }
