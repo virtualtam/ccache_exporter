@@ -1,3 +1,8 @@
+// Package ccache_exporter implements a Prometheus exporter for ccache metrics
+//
+// See:
+// - https://ccache.samba.org/
+// - https://prometheus.io/
 package ccache_exporter
 
 import (
