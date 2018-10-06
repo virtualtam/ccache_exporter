@@ -1,0 +1,8 @@
+.git/
+.gitignore
+
+ccache_exporter
+!cmd/*/
+
+.dockerignore
+Dockerfile
