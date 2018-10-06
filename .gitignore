@@ -2,3 +2,5 @@
 *.swp
 
 ccache_exporter
+
+!cmd/*

@@ -1,19 +1,15 @@
-package main
+package ccache_exporter
 
 import (
-	"flag"
 	"log"
-	"net/http"
 	"os/exec"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/virtualtam/ccacheparser"
 )
 
 const (
-	namespace         = "ccache"
-	DefaultListenAddr = ":9501"
+	namespace = "ccache"
 )
 
 type ccacheCollector struct {
@@ -31,7 +27,7 @@ type ccacheCollector struct {
 	maxCacheSizeBytes        *prometheus.Desc
 }
 
-func newCcacheCollector() *ccacheCollector {
+func NewCcacheCollector() *ccacheCollector {
 	return &ccacheCollector{
 		cacheHitDirect: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "cache_hit_direct"),
@@ -144,32 +140,4 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.filesInCache, prometheus.CounterValue, float64(stats.FilesInCache))
 	ch <- prometheus.MustNewConstMetric(c.cacheSizeBytes, prometheus.CounterValue, float64(stats.CacheSizeBytes))
 	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.CounterValue, float64(stats.MaxCacheSizeBytes))
-}
-
-var (
-	listenAddr string
-)
-
-func init() {
-	flag.StringVar(&listenAddr, "listenAddr", DefaultListenAddr, "Listen on this address")
-	flag.Parse()
-}
-
-func main() {
-	ccacheCollector := newCcacheCollector()
-	prometheus.MustRegister(ccacheCollector)
-
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(
-			`<html>
-             <head><title>ccache exporter</title></head>
-             <body>
-             <h1>ccache exporter</h1>
-             <p><a href='/metrics'>Metrics</a></p>
-             </body>
-             </html>`))
-	})
-	log.Println("Listening on", listenAddr)
-	log.Fatal(http.ListenAndServe(listenAddr, nil))
 }
