@@ -12,4 +12,4 @@ scrape_configs:
   - job_name: 'ccache'
     scrape_interval: 5s
     static_configs:
-      - targets: ['ccache-exporter:9501']
+      - targets: ['ccache-exporter:9508']

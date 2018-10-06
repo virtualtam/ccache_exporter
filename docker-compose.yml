@@ -15,7 +15,7 @@ services:
     networks:
       prometheus:
     ports:
-      - 19501:9501
+      - 19508:9508
     volumes:
       - ${HOME}/.ccache:/home/exporter/.ccache:ro
 
