@@ -18,8 +18,7 @@ const (
 )
 
 type ccacheCollector struct {
-	cacheHitDirect           *prometheus.Desc
-	cacheHitPreprocessed     *prometheus.Desc
+	cacheHit                 *prometheus.Desc
 	cacheMiss                *prometheus.Desc
 	cacheHitRatio            *prometheus.Desc
 	calledForLink            *prometheus.Desc
@@ -34,16 +33,10 @@ type ccacheCollector struct {
 
 func NewCcacheCollector() *ccacheCollector {
 	return &ccacheCollector{
-		cacheHitDirect: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cache_hit_direct"),
-			"Cache hit (direct)",
-			nil,
-			nil,
-		),
-		cacheHitPreprocessed: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cache_hit_preprocessed"),
-			"Cache hit (preprocessed)",
-			nil,
+		cacheHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "cache_hit_total"),
+			"Cache hit",
+			[]string{"mode"},
 			nil,
 		),
 		cacheMiss: prometheus.NewDesc(
@@ -110,8 +103,7 @@ func NewCcacheCollector() *ccacheCollector {
 }
 
 func (c *ccacheCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.cacheHitDirect
-	ch <- c.cacheHitPreprocessed
+	ch <- c.cacheHit
 	ch <- c.cacheMiss
 	ch <- c.cacheHitRatio
 	ch <- c.calledForLink
@@ -134,8 +126,8 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 	stats.Parse(string(out[:]))
 
 	// counters
-	ch <- prometheus.MustNewConstMetric(c.cacheHitDirect, prometheus.CounterValue, float64(stats.CacheHitDirect))
-	ch <- prometheus.MustNewConstMetric(c.cacheHitPreprocessed, prometheus.CounterValue, float64(stats.CacheHitPreprocessed))
+	ch <- prometheus.MustNewConstMetric(c.cacheHit, prometheus.CounterValue, float64(stats.CacheHitDirect), "direct")
+	ch <- prometheus.MustNewConstMetric(c.cacheHit, prometheus.CounterValue, float64(stats.CacheHitPreprocessed), "preprocessed")
 	ch <- prometheus.MustNewConstMetric(c.cacheMiss, prometheus.CounterValue, float64(stats.CacheMiss))
 	ch <- prometheus.MustNewConstMetric(c.calledForLink, prometheus.CounterValue, float64(stats.CalledForLink))
 	ch <- prometheus.MustNewConstMetric(c.calledForPreprocessing, prometheus.CounterValue, float64(stats.CalledForPreprocessing))
