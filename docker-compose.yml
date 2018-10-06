@@ -1,0 +1,44 @@
+---
+version: "3"
+
+networks:
+  prometheus:
+
+volumes:
+  grafana-data:
+  prometheus-data:
+
+services:
+  ccache-exporter:
+    image: virtualtam/ccache-exporter
+    build: .
+    networks:
+      prometheus:
+    ports:
+      - 19501:9501
+    volumes:
+      - ${HOME}/.ccache:/home/exporter/.ccache:ro
+
+  prometheus:
+    image: prom/prometheus
+    networks:
+      prometheus:
+    ports:
+      - 19090:9090
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:5.2.4
+    depends_on:
+      - prometheus
+    networks:
+      prometheus:
+    ports:
+      - 13000:3000
+    volumes:
+      - ./docker/grafana-datasources.yml:/etc/grafana/provisioning/datasources/all.yml
+      - ./docker/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/all.yml
+      - ./docker/ccache-dashboard.json:/opt/ccache-dashboard.json
+      - grafana-data:/var/lib/grafana

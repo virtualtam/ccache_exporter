@@ -23,6 +23,8 @@ COPY --from=builder /app/ccache_exporter /usr/local/bin
 
 USER exporter
 
+EXPOSE 9501
+
 VOLUME /home/exporter/.ccache
 
 CMD ["ccache_exporter"]
