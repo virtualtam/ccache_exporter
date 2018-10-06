@@ -40,7 +40,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "format": "percentunit",
+      "format": "percent",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -91,7 +91,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ccache_cache_hit_ratio",
+          "expr": "ccache_cache_hit_ratio * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -120,7 +120,7 @@
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "decimals": null,
+      "decimals": 2,
       "format": "bytes",
       "gauge": {
         "maxValue": 100,
@@ -201,7 +201,7 @@
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "format": "none",
+      "format": "short",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -447,7 +447,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 16,
   "style": "dark",
   "tags": [],
