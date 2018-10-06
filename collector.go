@@ -47,7 +47,7 @@ func NewCcacheCollector() *ccacheCollector {
 			nil,
 		),
 		cacheMiss: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cache_miss"),
+			prometheus.BuildFQName(namespace, "", "cache_miss_total"),
 			"Cache miss",
 			nil,
 			nil,
@@ -59,31 +59,31 @@ func NewCcacheCollector() *ccacheCollector {
 			nil,
 		),
 		calledForLink: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "called_for_link"),
+			prometheus.BuildFQName(namespace, "", "called_for_link_total"),
 			"Called for link",
 			nil,
 			nil,
 		),
 		calledForPreprocessing: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "called_for_preprocessing"),
+			prometheus.BuildFQName(namespace, "", "called_for_preprocessing_total"),
 			"Called for preprocessing",
 			nil,
 			nil,
 		),
 		unsupportedCodeDirective: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "unsupported_code_directive"),
+			prometheus.BuildFQName(namespace, "", "unsupported_code_directive_total"),
 			"Unsupported code directive",
 			nil,
 			nil,
 		),
 		noInputFile: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "no_input_file"),
+			prometheus.BuildFQName(namespace, "", "no_input_file_total"),
 			"No input file",
 			nil,
 			nil,
 		),
 		cleanupsPerformed: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cleanups_performed"),
+			prometheus.BuildFQName(namespace, "", "cleanups_performed_total"),
 			"Cleanups performed",
 			nil,
 			nil,
@@ -133,16 +133,19 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 	stats := ccacheparser.Statistics{}
 	stats.Parse(string(out[:]))
 
+	// counters
 	ch <- prometheus.MustNewConstMetric(c.cacheHitDirect, prometheus.CounterValue, float64(stats.CacheHitDirect))
 	ch <- prometheus.MustNewConstMetric(c.cacheHitPreprocessed, prometheus.CounterValue, float64(stats.CacheHitPreprocessed))
 	ch <- prometheus.MustNewConstMetric(c.cacheMiss, prometheus.CounterValue, float64(stats.CacheMiss))
-	ch <- prometheus.MustNewConstMetric(c.cacheHitRatio, prometheus.GaugeValue, float64(stats.CacheHitRatio))
 	ch <- prometheus.MustNewConstMetric(c.calledForLink, prometheus.CounterValue, float64(stats.CalledForLink))
 	ch <- prometheus.MustNewConstMetric(c.calledForPreprocessing, prometheus.CounterValue, float64(stats.CalledForPreprocessing))
 	ch <- prometheus.MustNewConstMetric(c.unsupportedCodeDirective, prometheus.CounterValue, float64(stats.UnsupportedCodeDirective))
 	ch <- prometheus.MustNewConstMetric(c.noInputFile, prometheus.CounterValue, float64(stats.NoInputFile))
 	ch <- prometheus.MustNewConstMetric(c.cleanupsPerformed, prometheus.CounterValue, float64(stats.CleanupsPerformed))
-	ch <- prometheus.MustNewConstMetric(c.filesInCache, prometheus.CounterValue, float64(stats.FilesInCache))
-	ch <- prometheus.MustNewConstMetric(c.cacheSizeBytes, prometheus.CounterValue, float64(stats.CacheSizeBytes))
-	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.CounterValue, float64(stats.MaxCacheSizeBytes))
+
+	// gauges
+	ch <- prometheus.MustNewConstMetric(c.cacheHitRatio, prometheus.GaugeValue, stats.CacheHitRatio)
+	ch <- prometheus.MustNewConstMetric(c.filesInCache, prometheus.GaugeValue, float64(stats.FilesInCache))
+	ch <- prometheus.MustNewConstMetric(c.cacheSizeBytes, prometheus.GaugeValue, float64(stats.CacheSizeBytes))
+	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.GaugeValue, float64(stats.MaxCacheSizeBytes))
 }
