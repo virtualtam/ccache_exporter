@@ -31,7 +31,7 @@ Running with Docker Compose
 The provided ``docker-compose.yml`` script defines the following monitoring
 stack:
 
-- ``ccache-exporter`` service bind-mounted on the user's (hint: that's you \o/)
+- ``ccache-exporter`` service bind-mounted on the user's (hint: that's you \\o/)
   ``$HOME`` directory;
 - ``prometheus`` database, preconfigured to scrap exported ``ccache`` metrics;
 - ``grafana`` dashboard, preconfigured to use ``prometheus`` as a data source
