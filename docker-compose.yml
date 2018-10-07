@@ -20,7 +20,7 @@ services:
       - ${HOME}/.ccache:/home/exporter/.ccache:ro
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.4.3
     networks:
       prometheus:
     ports:
