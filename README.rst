@@ -8,8 +8,8 @@ Metrics exposed
 
 Counters:
 
-- ``ccache_cache_hit_total``
-- ``ccache_cache_miss_total``
+- ``ccache_call_total``
+- ``ccache_call_hit_total``
 - ``ccache_called_for_link_total``
 - ``ccache_called_for_preprocessing_total``
 - ``ccache_unsupported_code_directive_total``
@@ -21,8 +21,8 @@ Gauges:
 
 - ``ccache_cache_hit_ratio``
 - ``ccache_cache_size_bytes``
-- ``ccache_max_cache_size_bytes``
-- ``ccache_files_in_cache``
+- ``ccache_cache_size_max_bytes``
+- ``ccache_cached_files``
 
 
 Running with Docker Compose

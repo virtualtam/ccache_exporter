@@ -18,8 +18,8 @@ const (
 )
 
 type ccacheCollector struct {
-	cacheHit                 *prometheus.Desc
-	cacheMiss                *prometheus.Desc
+	call                     *prometheus.Desc
+	callHit                  *prometheus.Desc
 	cacheHitRatio            *prometheus.Desc
 	calledForLink            *prometheus.Desc
 	calledForPreprocessing   *prometheus.Desc
@@ -33,16 +33,16 @@ type ccacheCollector struct {
 
 func NewCcacheCollector() *ccacheCollector {
 	return &ccacheCollector{
-		cacheHit: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cache_hit_total"),
-			"Cache hit",
-			[]string{"mode"},
+		call: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "call_total"),
+			"Cache calls (total)",
+			nil,
 			nil,
 		),
-		cacheMiss: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "cache_miss_total"),
-			"Cache miss",
-			nil,
+		callHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "call_hit_total"),
+			"Cache hits",
+			[]string{"mode"},
 			nil,
 		),
 		cacheHitRatio: prometheus.NewDesc(
@@ -82,8 +82,8 @@ func NewCcacheCollector() *ccacheCollector {
 			nil,
 		),
 		filesInCache: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "files_in_cache"),
-			"Files in cache",
+			prometheus.BuildFQName(namespace, "", "cached_files"),
+			"Cached files",
 			nil,
 			nil,
 		),
@@ -94,7 +94,7 @@ func NewCcacheCollector() *ccacheCollector {
 			nil,
 		),
 		maxCacheSizeBytes: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "max_cache_size_bytes"),
+			prometheus.BuildFQName(namespace, "", "cache_size_max_bytes"),
 			"Maximum cache size (bytes)",
 			nil,
 			nil,
@@ -103,8 +103,8 @@ func NewCcacheCollector() *ccacheCollector {
 }
 
 func (c *ccacheCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.cacheHit
-	ch <- c.cacheMiss
+	ch <- c.call
+	ch <- c.callHit
 	ch <- c.cacheHitRatio
 	ch <- c.calledForLink
 	ch <- c.calledForPreprocessing
@@ -126,9 +126,13 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 	stats.Parse(string(out[:]))
 
 	// counters
-	ch <- prometheus.MustNewConstMetric(c.cacheHit, prometheus.CounterValue, float64(stats.CacheHitDirect), "direct")
-	ch <- prometheus.MustNewConstMetric(c.cacheHit, prometheus.CounterValue, float64(stats.CacheHitPreprocessed), "preprocessed")
-	ch <- prometheus.MustNewConstMetric(c.cacheMiss, prometheus.CounterValue, float64(stats.CacheMiss))
+	ch <- prometheus.MustNewConstMetric(
+		c.call,
+		prometheus.CounterValue,
+		float64(stats.CacheHitDirect+stats.CacheHitPreprocessed+stats.CacheMiss),
+	)
+	ch <- prometheus.MustNewConstMetric(c.callHit, prometheus.CounterValue, float64(stats.CacheHitDirect), "direct")
+	ch <- prometheus.MustNewConstMetric(c.callHit, prometheus.CounterValue, float64(stats.CacheHitPreprocessed), "preprocessed")
 	ch <- prometheus.MustNewConstMetric(c.calledForLink, prometheus.CounterValue, float64(stats.CalledForLink))
 	ch <- prometheus.MustNewConstMetric(c.calledForPreprocessing, prometheus.CounterValue, float64(stats.CalledForPreprocessing))
 	ch <- prometheus.MustNewConstMetric(c.unsupportedCodeDirective, prometheus.CounterValue, float64(stats.UnsupportedCodeDirective))

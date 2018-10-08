@@ -252,7 +252,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(ccache_cache_hit_total)",
+          "expr": "sum(ccache_call_hit_total)",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -332,8 +332,9 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ccache_cache_miss_total",
+          "expr": "ccache_call_total\n- ignoring(mode) ccache_call_hit_total{mode=\"direct\"}\n- ignoring(mode) ccache_call_hit_total{mode=\"preprocessed\"}",
           "format": "time_series",
+          "hide": false,
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -392,15 +393,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "ccache_cache_hit_total",
+          "expr": "ccache_call_hit_total",
           "format": "time_series",
+          "hide": false,
           "intervalFactor": 1,
           "legendFormat": "Cache hit ({{mode}})",
           "refId": "A"
         },
         {
-          "expr": "ccache_cache_miss_total",
+          "expr": "ccache_call_total\n- ignoring(mode) ccache_call_hit_total{mode=\"direct\"}\n- ignoring(mode) ccache_call_hit_total{mode=\"preprocessed\"}",
           "format": "time_series",
+          "hide": false,
           "intervalFactor": 1,
           "legendFormat": "Cache miss",
           "refId": "B"
