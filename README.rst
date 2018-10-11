@@ -33,6 +33,7 @@ stack:
 
 - ``ccache-exporter`` service bind-mounted on the user's (hint: that's you \\o/)
   ``$HOME`` directory;
+- ``node-exporter`` service to gather system metrics;
 - ``prometheus`` database, preconfigured to scrap exported ``ccache`` metrics;
 - ``grafana`` dashboard, preconfigured to use ``prometheus`` as a data source
   and display ``ccache`` metrics in the corresponding dashboard.
@@ -46,11 +47,12 @@ To pull Docker images and start the services:
     $ docker-compose up -d
 
 
-Once the stack is up, the following ports will be exposed:
+Once the stack is up, the following services will be exposed:
 
-- ``19508``: ``ccache-exporter``
-- ``19090``: ``prometheus``
-- ``13000``: ``grafana``
+- http://localhost:19508: ``ccache-exporter``
+- http://localhost:19100: ``node-exporter``
+- http://localhost:19090: ``prometheus``
+- http://localhost:13000: ``grafana``
 
 
 Then, login to Grafana with the default credentials (``admin/admin``) and load

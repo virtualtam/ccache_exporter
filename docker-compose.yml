@@ -19,16 +19,6 @@ services:
     volumes:
       - ${HOME}/.ccache:/home/exporter/.ccache:ro
 
-  prometheus:
-    image: prom/prometheus:v2.4.3
-    networks:
-      prometheus:
-    ports:
-      - 19090:9090
-    volumes:
-      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-data:/prometheus
-
   grafana:
     image: grafana/grafana:5.2.4
     depends_on:
@@ -40,5 +30,31 @@ services:
     volumes:
       - ./docker/grafana-datasources.yml:/etc/grafana/provisioning/datasources/all.yml
       - ./docker/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/all.yml
-      - ./docker/ccache-dashboard.json:/opt/ccache-dashboard.json
+      - ./docker/dashboards:/opt/dashboards
       - grafana-data:/var/lib/grafana
+
+  node-exporter:
+    image: prom/node-exporter:v0.16.0
+    networks:
+      prometheus:
+    pid: 'host'
+    ports:
+      - 19100:9100
+    cap_add:
+      - SYS_TIME
+    volumes:
+      - "/proc:/host/proc:ro,rslave"
+      - "/sys:/host/sys:ro,rslave"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+
+  prometheus:
+    image: prom/prometheus:v2.4.3
+    networks:
+      prometheus:
+    ports:
+      - 19090:9090
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus

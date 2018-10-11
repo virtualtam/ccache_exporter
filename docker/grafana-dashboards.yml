@@ -9,4 +9,4 @@ providers:
     disableDeletion: false
     updateIntervalSeconds: 30
     options:
-      path: /opt
+      path: /opt/dashboards
