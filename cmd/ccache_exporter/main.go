@@ -15,16 +15,10 @@ const (
 	DefaultListenAddr = ":9508"
 )
 
-var (
-	listenAddr string
-)
-
-func init() {
-	flag.StringVar(&listenAddr, "listenAddr", DefaultListenAddr, "Listen on this address")
-	flag.Parse()
-}
-
 func main() {
+	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
+	flag.Parse()
+
 	ccacheCollector := ccache_exporter.NewCcacheCollector()
 	prometheus.MustRegister(ccacheCollector)
 
@@ -39,6 +33,6 @@ func main() {
              </body>
              </html>`))
 	})
-	log.Println("Listening on", listenAddr)
-	log.Fatal(http.ListenAndServe(listenAddr, nil))
+	log.Println("Listening on", *listenAddr)
+	log.Fatal(http.ListenAndServe(*listenAddr, nil))
 }
