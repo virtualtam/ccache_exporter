@@ -3,6 +3,7 @@ ccache exporter
 
 A `Prometheus`_ exporter that exposes `ccache`_ metrics.
 
+
 Metrics exposed
 ---------------
 
@@ -23,6 +24,20 @@ Gauges:
 - ``ccache_cache_size_bytes``
 - ``ccache_cache_size_max_bytes``
 - ``ccache_cached_files``
+
+Building
+--------
+
+::
+
+    # get the sources
+    $ git clone https://github.com/virtualtam/ccache_exporter.git
+
+    # go >= 1.11: enable module support
+    $ export GO111MODULE=on
+
+    # build ccache_exporter
+    $ make build
 
 
 Running with Docker Compose
