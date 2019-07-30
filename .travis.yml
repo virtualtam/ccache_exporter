@@ -1,0 +1,25 @@
+language: go
+sudo: false
+matrix:
+  include:
+    - go: 1.x
+
+before_install:
+  - go get github.com/mitchellh/gox
+
+install:
+  - # skip
+
+script:
+  - gox ./cmd/...
+
+deploy:
+  provider: releases
+  api_key:
+    secure: fixme
+  file_glob: true
+  file: ccache_exporter_*
+  skip_cleanup: true
+  on:
+    repo: glehmann/ccache_exporter
+    tags: true
