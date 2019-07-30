@@ -12,7 +12,7 @@ install:
 
 script:
   - go get ./cmd/...
-  - go get golang.org/x/sys/windows
+  - go get golang.org/x/sys/windows || true
   - gox ./cmd/...
 
 deploy:
