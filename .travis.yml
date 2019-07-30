@@ -7,9 +7,6 @@ matrix:
 before_install:
   - go get github.com/mitchellh/gox
 
-install:
-  - # skip
-
 script:
   - go get ./cmd/...
   - go get golang.org/x/sys/windows || true
