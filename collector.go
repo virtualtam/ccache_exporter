@@ -10,7 +10,8 @@ import (
 	"os/exec"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/virtualtam/ccacheparser"
+
+	"github.com/virtualtam/ccache_exporter/ccache"
 )
 
 const (
@@ -122,7 +123,7 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 		log.Fatal(err)
 	}
 
-	stats := ccacheparser.Statistics{}
+	stats := ccache.Statistics{}
 	stats.Parse(string(out[:]))
 
 	// counters

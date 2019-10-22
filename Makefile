@@ -1,6 +1,6 @@
 BUILD_DIR := build
 
-build: build-ccache_exporter
+build: build-ccache_exporter build-ccacheparser
 .PHONY: build
 
 build-%:
@@ -8,3 +8,6 @@ build-%:
 
 distclean:
 	rm -rf build
+
+test:
+	go test
