@@ -1,5 +1,5 @@
 # Step 1: build Go binaries
-FROM golang:1.11-alpine as builder
+FROM golang:1.13-alpine as builder
 
 ARG CGO_ENABLED=1
 
