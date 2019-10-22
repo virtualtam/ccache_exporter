@@ -13,6 +13,14 @@ import (
 
 const (
 	DefaultListenAddr = ":9508"
+
+	webroot = `<html>
+<head><title>ccache exporter</title></head>
+<body>
+<h1>ccache exporter</h1>
+<p><a href='/metrics'>Metrics</a></p>
+</body>
+</html>`
 )
 
 func main() {
@@ -24,14 +32,10 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(
-			`<html>
-             <head><title>ccache exporter</title></head>
-             <body>
-             <h1>ccache exporter</h1>
-             <p><a href='/metrics'>Metrics</a></p>
-             </body>
-             </html>`))
+		_, err := w.Write([]byte(webroot))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	})
 	log.Println("Listening on", *listenAddr)
 	log.Fatal(http.ListenAndServe(*listenAddr, nil))
