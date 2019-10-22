@@ -11,7 +11,7 @@ RUN apk add --update --no-cache \
 
 WORKDIR /app
 ADD . .
-RUN go build ./cmd/... 2>&1
+RUN go build ./cmd/ccache_exporter 2>&1
 
 # Step 2: build the actual image
 FROM alpine:3.8

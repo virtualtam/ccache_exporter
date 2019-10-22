@@ -4,6 +4,8 @@
 *.jpg
 *.rst
 
+build/
+
 ccache_exporter
 !cmd/*/
 
