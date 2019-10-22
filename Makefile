@@ -10,4 +10,7 @@ distclean:
 	rm -rf build
 
 test:
-	go test
+	go test ./...
+
+cover:
+	go test -cover ./...
