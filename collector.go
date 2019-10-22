@@ -3,7 +3,7 @@
 // See:
 // - https://ccache.samba.org/
 // - https://prometheus.io/
-package ccache_exporter
+package ccacheexporter
 
 import (
 	"log"

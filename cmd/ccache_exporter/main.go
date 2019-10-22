@@ -8,7 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/virtualtam/ccache_exporter"
+	ccacheexporter "github.com/virtualtam/ccache_exporter"
 )
 
 const (
@@ -19,7 +19,7 @@ func main() {
 	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
 	flag.Parse()
 
-	ccacheCollector := ccache_exporter.NewCcacheCollector()
+	ccacheCollector := ccacheexporter.NewCcacheCollector()
 	prometheus.MustRegister(ccacheCollector)
 
 	http.Handle("/metrics", promhttp.Handler())
