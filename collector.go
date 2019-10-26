@@ -1,17 +1,15 @@
-// Package ccache_exporter implements a Prometheus exporter for ccache metrics
+// Prometheus metrics collection.
 //
 // See:
 // - https://ccache.samba.org/
 // - https://prometheus.io/
-package ccacheexporter
+package ccache
 
 import (
 	"log"
 	"os/exec"
 
 	"github.com/prometheus/client_golang/prometheus"
-
-	"github.com/virtualtam/ccache_exporter/ccache"
 )
 
 const (
@@ -123,7 +121,7 @@ func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
 		log.Fatal(err)
 	}
 
-	stats := ccache.Statistics{}
+	stats := Statistics{}
 	stats.Parse(string(out[:]))
 
 	// counters

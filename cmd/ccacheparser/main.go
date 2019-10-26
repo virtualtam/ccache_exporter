@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/virtualtam/ccacheparser"
+	ccache "github.com/virtualtam/ccacheparser"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	for scanner.Scan() {
 		text += scanner.Text() + "\n"
 	}
-	stats := ccacheparser.Statistics{}
+	stats := ccache.Statistics{}
 	stats.Parse(text)
 	statsJson, _ := json.Marshal(stats)
 	fmt.Println(string(statsJson))
