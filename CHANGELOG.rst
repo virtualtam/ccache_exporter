@@ -9,8 +9,8 @@ The format is based on `Keep a Changelog`_ and this project adheres to
 .. _Keep A Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: https://semver.org/
 
-`v2.0.0 <https://github.com/virtualtam/ccache_exporter/releases/tag/v2.0.0>`_ - UNPUBLISHED
--------------------------------------------------------------------------------------------
+`v2.0.0 <https://github.com/virtualtam/ccache_exporter/releases/tag/v2.0.0>`_ - 2019-10-26
+------------------------------------------------------------------------------------------
 
 Major refactoring.
 
