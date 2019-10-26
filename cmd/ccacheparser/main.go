@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	ccache "github.com/virtualtam/ccacheparser"
@@ -32,6 +33,9 @@ func main() {
 	}
 	stats := ccache.Statistics{}
 	stats.Parse(text)
-	statsJson, _ := json.Marshal(stats)
-	fmt.Println(string(statsJson))
+	statsJSON, err := json.Marshal(stats)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(statsJSON))
 }
