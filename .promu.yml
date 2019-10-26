@@ -1,0 +1,38 @@
+---
+verbose: false
+
+repository:
+  path: github.com/virtualtam/ccache_exporter
+
+go:
+  # Whenever the Go version is updated here, .travis.yml should also be updated.
+  version: 1.13.0
+  cgo: false
+
+build:
+  prefix: .
+  binaries:
+    - name: ccache_exporter
+      path: ./cmd/ccache_exporter
+    - name: ccacheparser
+      path: ./cmd/ccacheparser
+  flags: -a -trimpath
+  ldflags: |
+    -s
+    -X {{repoPath}}/version.Version={{.Version}}
+    -X {{repoPath}}/version.Revision={{.Revision}}
+    -X {{repoPath}}/version.Branch={{.Branch}}
+    -X {{repoPath}}/version.BuildUser={{user}}@{{host}}
+    -X {{repoPath}}/version.BuildDate={{date "20060102-15:04:05"}}
+
+crossbuild:
+  platforms:
+    - darwin/amd64
+    - linux/amd64
+    - windows/amd64
+
+tarball:
+  prefix: .
+  files:
+    - LICENSE
+    - README.rst

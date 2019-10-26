@@ -4,10 +4,11 @@
 *.jpg
 *.rst
 
-build/
+.build/
+.tarballs/
 
 ccache_exporter
-!cmd/*/
+ccacheparser
 
 docker/
 .dockerignore

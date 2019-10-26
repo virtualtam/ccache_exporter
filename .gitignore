@@ -1,4 +1,11 @@
 *~
 *.swp
 
-build/
+
+# Promu builds
+.build/
+.tarballs/
+
+# Binaries
+ccache_exporter
+ccacheparser
