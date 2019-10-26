@@ -16,7 +16,7 @@ const (
 	namespace = "ccache"
 )
 
-type ccacheCollector struct {
+type collector struct {
 	call                     *prometheus.Desc
 	callHit                  *prometheus.Desc
 	cacheHitRatio            *prometheus.Desc
@@ -30,8 +30,8 @@ type ccacheCollector struct {
 	maxCacheSizeBytes        *prometheus.Desc
 }
 
-func NewCcacheCollector() *ccacheCollector {
-	return &ccacheCollector{
+func NewCollector() *collector {
+	return &collector{
 		call: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "call_total"),
 			"Cache calls (total)",
@@ -101,7 +101,7 @@ func NewCcacheCollector() *ccacheCollector {
 	}
 }
 
-func (c *ccacheCollector) Describe(ch chan<- *prometheus.Desc) {
+func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.call
 	ch <- c.callHit
 	ch <- c.cacheHitRatio
@@ -115,7 +115,7 @@ func (c *ccacheCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.maxCacheSizeBytes
 }
 
-func (c *ccacheCollector) Collect(ch chan<- prometheus.Metric) {
+func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	out, err := exec.Command("ccache", "-s").Output()
 	if err != nil {
 		log.Fatal(err)

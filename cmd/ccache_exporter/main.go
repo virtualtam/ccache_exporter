@@ -27,8 +27,8 @@ func main() {
 	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
 	flag.Parse()
 
-	ccacheCollector := ccache.NewCcacheCollector()
-	prometheus.MustRegister(ccacheCollector)
+	collector := ccache.NewCollector()
+	prometheus.MustRegister(collector)
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
