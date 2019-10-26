@@ -6,7 +6,6 @@ package ccache
 
 import (
 	"log"
-	"os/exec"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -16,6 +15,8 @@ const (
 )
 
 type collector struct {
+	wrapper Wrapper
+
 	call                     *prometheus.Desc
 	callHit                  *prometheus.Desc
 	cacheHitRatio            *prometheus.Desc
@@ -31,8 +32,9 @@ type collector struct {
 
 // NewCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func NewCollector() *collector {
+func NewCollector(w Wrapper) *collector {
 	return &collector{
+		wrapper: w,
 		call: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "call_total"),
 			"Cache calls (total)",
@@ -120,13 +122,13 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
-	out, err := exec.Command("ccache", "-s").Output()
+	out, err := c.wrapper.ShowStats()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	stats := Statistics{}
-	stats.Parse(string(out[:]))
+	stats.Parse(string(out))
 
 	// counters
 	ch <- prometheus.MustNewConstMetric(

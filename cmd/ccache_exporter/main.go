@@ -29,9 +29,15 @@ const (
 
 func main() {
 	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
+	ccacheBinaryPath := flag.String("ccacheBinaryPath", ccache.DefaultBinaryPath, "Path to the ccache binary")
 	flag.Parse()
 
-	collector := ccache.NewCollector()
+	wrapper, err := ccache.NewBinaryWrapper(*ccacheBinaryPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	collector := ccache.NewCollector(wrapper)
+
 	prometheus.MustRegister(collector)
 
 	http.Handle("/metrics", promhttp.Handler())
