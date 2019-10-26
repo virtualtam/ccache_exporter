@@ -14,7 +14,7 @@ ADD . .
 RUN go build ./cmd/ccache_exporter 2>&1
 
 # Step 2: build the actual image
-FROM alpine:3.8
+FROM alpine:3.10
 
 RUN apk add --update --no-cache ccache \
     && adduser -D exporter
