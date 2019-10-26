@@ -1,8 +1,7 @@
-// Prometheus metrics collection.
-//
-// See:
-// - https://ccache.samba.org/
-// - https://prometheus.io/
+// Copyright 2018 VirtualTam.
+// Use of this source code is governed by a MIT license
+// that can be found in the LICENSE file.
+
 package ccache
 
 import (
@@ -30,6 +29,8 @@ type collector struct {
 	maxCacheSizeBytes        *prometheus.Desc
 }
 
+// NewCollector initializes and returns a Prometheus collector for ccache
+// metrics.
 func NewCollector() *collector {
 	return &collector{
 		call: prometheus.NewDesc(
@@ -101,6 +102,8 @@ func NewCollector() *collector {
 	}
 }
 
+// Describe publishes the description of each ccache metric to a metrics
+// channel.
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.call
 	ch <- c.callHit
@@ -115,6 +118,7 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.maxCacheSizeBytes
 }
 
+// Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	out, err := exec.Command("ccache", "-s").Output()
 	if err != nil {
