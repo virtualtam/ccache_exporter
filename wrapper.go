@@ -34,7 +34,6 @@ func (w *BinaryWrapper) exec(option string, env []string) (string, error) {
 // ShowStats returns the result of ``ccache --show-stats''.
 func (w *BinaryWrapper) ShowStats(cacheDir string) (string, error) {
 
-	fmt.Printf("%s", cacheDir)
 	return w.exec("--show-stats", []string{"CCACHE_DIR="+cacheDir})
 }
 
