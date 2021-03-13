@@ -27,18 +27,34 @@ const (
 </html>`
 )
 
+type tCacheDirs []string
+
+func (i *tCacheDirs) String() string {
+    return "cacheDirs"
+}
+
+func (i *tCacheDirs) Set(value string) error {
+    *i = append(*i, value)
+    return nil
+}
+
+var cacheDirs tCacheDirs
+
 func main() {
 	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
 	ccacheBinaryPath := flag.String("ccacheBinaryPath", ccache.DefaultBinaryPath, "Path to the ccache binary")
+	flag.Var(&cacheDirs, "dirs", "CCache directories.")
 	flag.Parse()
 
+	
 	wrapper, err := ccache.NewBinaryWrapper(*ccacheBinaryPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	collector := ccache.NewCollector(wrapper)
+	collector := ccache.NewCollector(wrapper, cacheDirs)
 
-	prometheus.MustRegister(collector)
+	prometheus.MustRegister(collector)	
+
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

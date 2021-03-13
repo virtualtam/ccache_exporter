@@ -5,14 +5,13 @@
 package ccache
 
 import "os/exec"
-
 const (
 	DefaultBinaryPath = "/usr/bin/ccache"
 )
 
 // Wrapper exposes supported ccache commands.
 type Wrapper interface {
-	ShowStats() (string, error)
+	ShowStats(string) (string, error)
 	Version() (string, error)
 }
 
@@ -21,9 +20,10 @@ type BinaryWrapper struct {
 	path string
 }
 
-func (w *BinaryWrapper) exec(option string) (string, error) {
-	out, err := exec.Command(w.path, option).Output()
-
+func (w *BinaryWrapper) exec(option string, env []string) (string, error) {
+	cmd := exec.Command(w.path, option)
+	cmd.Env = env
+	out, err := cmd.Output()
 	if err != nil {
 		return "", err
 	}
@@ -32,13 +32,15 @@ func (w *BinaryWrapper) exec(option string) (string, error) {
 }
 
 // ShowStats returns the result of ``ccache --show-stats''.
-func (w *BinaryWrapper) ShowStats() (string, error) {
-	return w.exec("--show-stats")
+func (w *BinaryWrapper) ShowStats(cacheDir string) (string, error) {
+
+	fmt.Printf("%s", cacheDir)
+	return w.exec("--show-stats", []string{"CCACHE_DIR="+cacheDir})
 }
 
 // Version returns the result of ``ccache --version''.
 func (w *BinaryWrapper) Version() (string, error) {
-	return w.exec("--version")
+	return w.exec("--version",  []string{})
 }
 
 // NewBinaryWrapper ensures the ccache executable exists and can be invoked, and
