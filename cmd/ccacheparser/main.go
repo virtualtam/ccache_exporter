@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	ccache "github.com/virtualtam/ccacheparser"
+	ccache "github.com/virtualtam/ccache_exporter"
 )
 
 func main() {
