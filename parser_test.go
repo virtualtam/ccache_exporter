@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/units"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParse(t *testing.T) {
@@ -233,24 +232,66 @@ max cache size                       5.0 GB
 			s := Statistics{}
 			s.Parse(tt.input)
 
-			assert.Equal(t, tt.want.CacheDirectory, s.CacheDirectory)
-			assert.Equal(t, tt.want.PrimaryConfig, s.PrimaryConfig)
-			assert.Equal(t, tt.want.SecondaryConfigReadonly, s.SecondaryConfigReadonly)
-			assert.Equal(t, tt.want.CacheHitDirect, s.CacheHitDirect)
-			assert.Equal(t, tt.want.CacheHitPreprocessed, s.CacheHitPreprocessed)
-			assert.Equal(t, tt.want.CacheMiss, s.CacheMiss)
-			assert.Equal(t, tt.want.CacheHitRate, s.CacheHitRate)
-			assert.Equal(t, tt.want.CacheHitRatio, s.CacheHitRatio)
-			assert.Equal(t, tt.want.CalledForLink, s.CalledForLink)
-			assert.Equal(t, tt.want.CalledForPreprocessing, s.CalledForPreprocessing)
-			assert.Equal(t, tt.want.UnsupportedCodeDirective, s.UnsupportedCodeDirective)
-			assert.Equal(t, tt.want.NoInputFile, s.NoInputFile)
-			assert.Equal(t, tt.want.CleanupsPerformed, s.CleanupsPerformed)
-			assert.Equal(t, tt.want.FilesInCache, s.FilesInCache)
-			assert.Equal(t, tt.want.CacheSize, s.CacheSize)
-			assert.Equal(t, tt.want.CacheSizeBytes, s.CacheSizeBytes)
-			assert.Equal(t, tt.want.MaxCacheSize, s.MaxCacheSize)
-			assert.Equal(t, tt.want.MaxCacheSizeBytes, s.MaxCacheSizeBytes)
+			assertStatisticsEqual(t, tt.want, s)
 		})
+	}
+}
+
+func assertStatisticsEqual(t *testing.T, want Statistics, got Statistics) {
+	t.Helper()
+
+	if got.CacheDirectory != got.CacheDirectory {
+		t.Errorf("CacheDirectory: want  %q, got %q", want.CacheDirectory, got.CacheDirectory)
+	}
+	if got.PrimaryConfig != got.PrimaryConfig {
+		t.Errorf("PrimaryConfig: want %q, got %q", want.PrimaryConfig, got.PrimaryConfig)
+	}
+	if got.SecondaryConfigReadonly != got.SecondaryConfigReadonly {
+		t.Errorf("SecondaryConfigReadonly: want %q, got %q", want.SecondaryConfigReadonly, got.SecondaryConfigReadonly)
+	}
+	if got.CacheHitDirect != want.CacheHitDirect {
+		t.Errorf("CacheHitDirect: want %d, got %d", want.CacheHitDirect, got.CacheHitDirect)
+	}
+	if got.CacheHitPreprocessed != want.CacheHitPreprocessed {
+		t.Errorf("CacheHitPreprocessed: want %d, got %d", want.CacheHitPreprocessed, got.CacheHitPreprocessed)
+	}
+	if got.CacheMiss != want.CacheMiss {
+		t.Errorf("CacheMiss: want %d, got %d", want.CacheMiss, got.CacheMiss)
+	}
+	if got.CacheHitRate != want.CacheHitRate {
+		t.Errorf("CacheHitRate: want %f, got %f", want.CacheHitRate, got.CacheHitRate)
+	}
+	if got.CacheHitRatio != want.CacheHitRatio {
+		t.Errorf("CacheHitRatio: want %f, got %f", want.CacheHitRatio, got.CacheHitRatio)
+	}
+	if got.CalledForLink != want.CalledForLink {
+		t.Errorf("CalledForLink: want %d, got %d", want.CalledForLink, got.CalledForLink)
+	}
+	if got.CalledForPreprocessing != want.CalledForPreprocessing {
+		t.Errorf("CalledForPreprocessing: want %d, got %d", want.CalledForPreprocessing, got.CalledForPreprocessing)
+	}
+	if got.UnsupportedCodeDirective != want.UnsupportedCodeDirective {
+		t.Errorf("UnsupportedCodeDirective: want %d, got %d", want.UnsupportedCodeDirective, got.UnsupportedCodeDirective)
+	}
+	if got.NoInputFile != want.NoInputFile {
+		t.Errorf("NoInputFile: want %d, got %d", want.NoInputFile, got.NoInputFile)
+	}
+	if got.CleanupsPerformed != want.CleanupsPerformed {
+		t.Errorf("CleanupsPerformed: want %d, got %d", want.CleanupsPerformed, got.CleanupsPerformed)
+	}
+	if got.FilesInCache != want.FilesInCache {
+		t.Errorf("FilesInCache: want %d, got %d", want.FilesInCache, got.FilesInCache)
+	}
+	if got.CacheSize != want.CacheSize {
+		t.Errorf("CacheSize: want %q, got %q", want.CacheSize, got.CacheSize)
+	}
+	if got.CacheSizeBytes != want.CacheSizeBytes {
+		t.Errorf("CacheSizeBytes: want %d, got %d", want.CacheSizeBytes, got.CacheSizeBytes)
+	}
+	if got.MaxCacheSize != want.MaxCacheSize {
+		t.Errorf("MaxCacheSize: want %q, got %q", want.MaxCacheSize, got.MaxCacheSize)
+	}
+	if got.MaxCacheSizeBytes != want.MaxCacheSizeBytes {
+		t.Errorf("MaxCacheSizeBytes: want %d, got %d", want.MaxCacheSizeBytes, got.MaxCacheSizeBytes)
 	}
 }
