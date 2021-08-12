@@ -6,17 +6,19 @@ package main
 
 import (
 	"flag"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	ccache "github.com/virtualtam/ccache_exporter"
 )
 
 const (
-	DefaultListenAddr = ":9508"
+	DefaultListenAddr = "0.0.0.0:9508"
 
 	webroot = `<html>
 <head><title>ccache exporter</title></head>
@@ -32,21 +34,36 @@ func main() {
 	ccacheBinaryPath := flag.String("ccacheBinaryPath", ccache.DefaultBinaryPath, "Path to the ccache binary")
 	flag.Parse()
 
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+
 	wrapper, err := ccache.NewBinaryWrapper(*ccacheBinaryPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Failed to instantiate ccache wrapper")
 	}
 	collector := ccache.NewCollector(wrapper)
 
 	prometheus.MustRegister(collector)
 
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	router := http.NewServeMux()
+
+	router.Handle("/metrics", promhttp.Handler())
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte(webroot))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
-	log.Println("Listening on", *listenAddr)
-	log.Fatal(http.ListenAndServe(*listenAddr, nil))
+
+	server := &http.Server{
+		Addr:         *listenAddr,
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+	}
+
+	log.Info().Msgf("Listening to http://%s", *listenAddr)
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal().Err(err).Msg("ListenAndServe")
+	}
 }

@@ -11,9 +11,8 @@ require (
 	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910 // indirect
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e // indirect
 	github.com/prometheus/procfs v0.0.0-20180920065004-418d78d0b9a7 // indirect
+	github.com/rs/zerolog v1.23.0
 	github.com/stretchr/testify v1.2.2 // indirect
-	golang.org/x/net v0.0.0-20180926154720-4dfa2610cdf3 // indirect
-	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect
 )
 
 go 1.13
