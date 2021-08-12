@@ -225,6 +225,20 @@ max cache size                       5.0 GB
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 		},
+
+		// ccache cache size units
+		{
+			tname: "cache size in kB",
+			input: `cache size                          16.7 kB
+max cache size                      57.0 kB
+`,
+			want: Statistics{
+				CacheSize:         "16.7 kB",
+				CacheSizeBytes:    units.MetricBytes(16700),
+				MaxCacheSize:      "57.0 kB",
+				MaxCacheSizeBytes: units.MetricBytes(57000),
+			},
+		},
 	}
 
 	for _, tt := range cases {

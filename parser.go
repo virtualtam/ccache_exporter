@@ -115,12 +115,14 @@ func (s *Statistics) Parse(text string) {
 	matches = rules["cacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		s.CacheSize = matches[1]
-		s.CacheSizeBytes, _ = units.ParseMetricBytes(strings.Replace(s.CacheSize, " ", "", -1))
+		sanitizedCacheSize := strings.Replace(strings.ToUpper(s.CacheSize), " ", "", -1)
+		s.CacheSizeBytes, _ = units.ParseMetricBytes(sanitizedCacheSize)
 	}
 
 	matches = rules["maxCacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		s.MaxCacheSize = matches[1]
-		s.MaxCacheSizeBytes, _ = units.ParseMetricBytes(strings.Replace(s.MaxCacheSize, " ", "", -1))
+		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(s.MaxCacheSize), " ", "", -1)
+		s.MaxCacheSizeBytes, _ = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
 	}
 }
