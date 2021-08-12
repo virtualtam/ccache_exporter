@@ -9,9 +9,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/justinas/alice"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
 
 	ccache "github.com/virtualtam/ccache_exporter"
@@ -28,6 +30,16 @@ const (
 </body>
 </html>`
 )
+
+func accessLogger(r *http.Request, status, size int, dur time.Duration) {
+	hlog.FromRequest(r).Info().
+		Dur("duration_ms", dur).
+		Str("host", r.Host).
+		Str("path", r.URL.Path).
+		Int("size", size).
+		Int("status", status).
+		Msg("Request")
+}
 
 func main() {
 	listenAddr := flag.String("listenAddr", DefaultListenAddr, "Listen on this address")
@@ -55,9 +67,12 @@ func main() {
 		}
 	})
 
+	// Structured logging
+	chain := alice.New(hlog.NewHandler(log.Logger), hlog.AccessHandler(accessLogger))
+
 	server := &http.Server{
 		Addr:         *listenAddr,
-		Handler:      router,
+		Handler:      chain.Then(router),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 	}
