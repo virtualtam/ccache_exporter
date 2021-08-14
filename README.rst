@@ -6,8 +6,8 @@ A `ccache`_ parser and `Prometheus`_ exporter.
 ====== ======
 Branch Status
 ====== ======
-master .. image:: https://travis-ci.org/virtualtam/ccache_exporter.svg?branch=master
-          :target: https://travis-ci.org/virtualtam/ccache_exporter
+master .. image:: https://travis-ci.com/virtualtam/ccache_exporter.svg?branch=master
+          :target: https://travis-ci.com/virtualtam/ccache_exporter
           :alt: Travis build status
 ====== ======
 
