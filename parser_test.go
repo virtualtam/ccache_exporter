@@ -246,66 +246,58 @@ max cache size                      57.0 kB
 			s := Statistics{}
 			s.Parse(tt.input)
 
-			assertStatisticsEqual(t, tt.want, s)
+			assertStatisticsEqual(t, s, tt.want)
 		})
 	}
 }
 
-func assertStatisticsEqual(t *testing.T, want Statistics, got Statistics) {
+func assertStatisticsEqual(t *testing.T, got, want Statistics) {
 	t.Helper()
 
-	if got.CacheDirectory != got.CacheDirectory {
-		t.Errorf("CacheDirectory: want  %q, got %q", want.CacheDirectory, got.CacheDirectory)
+	assertStringFieldEquals(t, "CacheDirectory", got.CacheDirectory, want.CacheDirectory)
+	assertStringFieldEquals(t, "PrimaryConfig", got.PrimaryConfig, want.PrimaryConfig)
+	assertStringFieldEquals(t, "SecondaryConfigReadonly", got.SecondaryConfigReadonly, want.SecondaryConfigReadonly)
+	assertIntFieldEquals(t, "CacheHitDirect", got.CacheHitDirect, want.CacheHitDirect)
+	assertIntFieldEquals(t, "CacheHitPreprocessed", got.CacheHitPreprocessed, want.CacheHitPreprocessed)
+	assertIntFieldEquals(t, "CacheMiss", got.CacheMiss, want.CacheMiss)
+	assertFloatFieldEquals(t, "CacheHitRate", got.CacheHitRate, want.CacheHitRate)
+	assertFloatFieldEquals(t, "CacheHitRatio", got.CacheHitRatio, want.CacheHitRatio)
+	assertIntFieldEquals(t, "CalledForLink", got.CalledForLink, want.CalledForLink)
+	assertIntFieldEquals(t, "CalledForPreprocessing", got.CalledForPreprocessing, want.CalledForPreprocessing)
+	assertIntFieldEquals(t, "UnsupportedCodeDirective", got.UnsupportedCodeDirective, want.UnsupportedCodeDirective)
+	assertIntFieldEquals(t, "NoInputFile", got.NoInputFile, want.NoInputFile)
+	assertIntFieldEquals(t, "CleanupsPerformed", got.CleanupsPerformed, want.CleanupsPerformed)
+	assertIntFieldEquals(t, "FilesInCache", got.FilesInCache, want.FilesInCache)
+	assertStringFieldEquals(t, "CacheSize", got.CacheSize, want.CacheSize)
+	assertMetricByteFieldEquals(t, "CacheSizeBytes", got.CacheSizeBytes, want.CacheSizeBytes)
+	assertStringFieldEquals(t, "MaxCacheSize", got.MaxCacheSize, want.MaxCacheSize)
+	assertMetricByteFieldEquals(t, "MaxCacheSizeBytes", got.MaxCacheSizeBytes, want.MaxCacheSizeBytes)
+}
+
+func assertFloatFieldEquals(t *testing.T, fieldName string, got, want float64) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s: want %f, got %f", fieldName, want, got)
 	}
-	if got.PrimaryConfig != got.PrimaryConfig {
-		t.Errorf("PrimaryConfig: want %q, got %q", want.PrimaryConfig, got.PrimaryConfig)
+}
+
+func assertIntFieldEquals(t *testing.T, fieldName string, got, want int) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s: want %d, got %d", fieldName, want, got)
 	}
-	if got.SecondaryConfigReadonly != got.SecondaryConfigReadonly {
-		t.Errorf("SecondaryConfigReadonly: want %q, got %q", want.SecondaryConfigReadonly, got.SecondaryConfigReadonly)
+}
+
+func assertMetricByteFieldEquals(t *testing.T, fieldName string, got, want units.MetricBytes) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s: want %d, got %d", fieldName, want, got)
 	}
-	if got.CacheHitDirect != want.CacheHitDirect {
-		t.Errorf("CacheHitDirect: want %d, got %d", want.CacheHitDirect, got.CacheHitDirect)
-	}
-	if got.CacheHitPreprocessed != want.CacheHitPreprocessed {
-		t.Errorf("CacheHitPreprocessed: want %d, got %d", want.CacheHitPreprocessed, got.CacheHitPreprocessed)
-	}
-	if got.CacheMiss != want.CacheMiss {
-		t.Errorf("CacheMiss: want %d, got %d", want.CacheMiss, got.CacheMiss)
-	}
-	if got.CacheHitRate != want.CacheHitRate {
-		t.Errorf("CacheHitRate: want %f, got %f", want.CacheHitRate, got.CacheHitRate)
-	}
-	if got.CacheHitRatio != want.CacheHitRatio {
-		t.Errorf("CacheHitRatio: want %f, got %f", want.CacheHitRatio, got.CacheHitRatio)
-	}
-	if got.CalledForLink != want.CalledForLink {
-		t.Errorf("CalledForLink: want %d, got %d", want.CalledForLink, got.CalledForLink)
-	}
-	if got.CalledForPreprocessing != want.CalledForPreprocessing {
-		t.Errorf("CalledForPreprocessing: want %d, got %d", want.CalledForPreprocessing, got.CalledForPreprocessing)
-	}
-	if got.UnsupportedCodeDirective != want.UnsupportedCodeDirective {
-		t.Errorf("UnsupportedCodeDirective: want %d, got %d", want.UnsupportedCodeDirective, got.UnsupportedCodeDirective)
-	}
-	if got.NoInputFile != want.NoInputFile {
-		t.Errorf("NoInputFile: want %d, got %d", want.NoInputFile, got.NoInputFile)
-	}
-	if got.CleanupsPerformed != want.CleanupsPerformed {
-		t.Errorf("CleanupsPerformed: want %d, got %d", want.CleanupsPerformed, got.CleanupsPerformed)
-	}
-	if got.FilesInCache != want.FilesInCache {
-		t.Errorf("FilesInCache: want %d, got %d", want.FilesInCache, got.FilesInCache)
-	}
-	if got.CacheSize != want.CacheSize {
-		t.Errorf("CacheSize: want %q, got %q", want.CacheSize, got.CacheSize)
-	}
-	if got.CacheSizeBytes != want.CacheSizeBytes {
-		t.Errorf("CacheSizeBytes: want %d, got %d", want.CacheSizeBytes, got.CacheSizeBytes)
-	}
-	if got.MaxCacheSize != want.MaxCacheSize {
-		t.Errorf("MaxCacheSize: want %q, got %q", want.MaxCacheSize, got.MaxCacheSize)
-	}
-	if got.MaxCacheSizeBytes != want.MaxCacheSizeBytes {
-		t.Errorf("MaxCacheSizeBytes: want %d, got %d", want.MaxCacheSizeBytes, got.MaxCacheSizeBytes)
+}
+
+func assertStringFieldEquals(t *testing.T, fieldName, got, want string) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s: want %q, got %q", fieldName, want, got)
 	}
 }
