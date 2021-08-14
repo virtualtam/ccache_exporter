@@ -8,13 +8,18 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	ccache "github.com/virtualtam/ccache_exporter"
 )
 
 func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+
 	stat, err := os.Stdin.Stat()
 	if err != nil {
 		panic(err)
@@ -31,10 +36,16 @@ func main() {
 	for scanner.Scan() {
 		text += scanner.Text() + "\n"
 	}
-	stats := ccache.Parse(text)
+
+	stats, err := ccache.Parse(text)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Parse")
+	}
+
 	statsJSON, err := json.Marshal(stats)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Marshal")
 	}
+
 	fmt.Println(string(statsJSON))
 }

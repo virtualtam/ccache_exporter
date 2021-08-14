@@ -33,8 +33,9 @@ var rules = map[string]*regexp.Regexp{
 }
 
 // Parse reads ccache statistics as formatted by the `ccache -s` command.
-func Parse(text string) *Statistics {
+func Parse(text string) (*Statistics, error) {
 	stats := &Statistics{}
+	var err error
 
 	matches := rules["cacheDirectory"].FindStringSubmatch(text)
 	if len(matches) == 2 {
@@ -60,73 +61,112 @@ func Parse(text string) *Statistics {
 	matches = rules["statsZeroTime"].FindStringSubmatch(text)
 	if len(matches) == 3 {
 		statsZeroTime := rules["statsZeroTime"].FindStringSubmatch(text)[2]
-		stats.StatsZeroTime, _ = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, stats.StatsTime.Location())
+		stats.StatsZeroTime, err = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, stats.StatsTime.Location())
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cacheHitDirect"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CacheHitDirect, _ = strconv.Atoi(matches[1])
+		stats.CacheHitDirect, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cacheHitPreprocessed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CacheHitPreprocessed, _ = strconv.Atoi(matches[1])
+		stats.CacheHitPreprocessed, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cacheMiss"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CacheMiss, _ = strconv.Atoi(matches[1])
+		stats.CacheMiss, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cacheHitRate"].FindStringSubmatch(text)
 	if len(matches) == 3 {
-		stats.CacheHitRate, _ = strconv.ParseFloat(matches[1], 64)
+		stats.CacheHitRate, err = strconv.ParseFloat(matches[1], 64)
 		stats.CacheHitRatio = stats.CacheHitRate / 100
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["calledForLink"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CalledForLink, _ = strconv.Atoi(matches[1])
+		stats.CalledForLink, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["calledForPreprocessing"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CalledForPreprocessing, _ = strconv.Atoi(matches[1])
+		stats.CalledForPreprocessing, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["unsupportedCodeDirective"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.UnsupportedCodeDirective, _ = strconv.Atoi(matches[1])
+		stats.UnsupportedCodeDirective, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["noInputFile"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.NoInputFile, _ = strconv.Atoi(matches[1])
+		stats.NoInputFile, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cleanupsPerformed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CleanupsPerformed, _ = strconv.Atoi(matches[1])
+		stats.CleanupsPerformed, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["filesInCache"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.FilesInCache, _ = strconv.Atoi(matches[1])
+		stats.FilesInCache, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["cacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheSize = matches[1]
 		sanitizedCacheSize := strings.Replace(strings.ToUpper(stats.CacheSize), " ", "", -1)
-		stats.CacheSizeBytes, _ = units.ParseMetricBytes(sanitizedCacheSize)
+		stats.CacheSizeBytes, err = units.ParseMetricBytes(sanitizedCacheSize)
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
 	matches = rules["maxCacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.MaxCacheSize = matches[1]
 		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(stats.MaxCacheSize), " ", "", -1)
-		stats.MaxCacheSizeBytes, _ = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
+		stats.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
+		if err != nil {
+			return &Statistics{}, err
+		}
 	}
 
-	return stats
+	return stats, nil
 }

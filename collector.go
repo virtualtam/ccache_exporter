@@ -5,9 +5,8 @@
 package ccache
 
 import (
-	"log"
-
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -124,10 +123,13 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	out, err := c.wrapper.ShowStats()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Collect")
 	}
 
-	stats := Parse(out)
+	stats, err := Parse(out)
+	if err != nil {
+		log.Error().Err(err).Msg("Parse")
+	}
 
 	// counters
 	ch <- prometheus.MustNewConstMetric(

@@ -5,6 +5,7 @@
 package ccache
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/alecthomas/units"
@@ -12,9 +13,10 @@ import (
 
 func TestParse(t *testing.T) {
 	cases := []struct {
-		tname string
-		input string
-		want  *Statistics
+		tname   string
+		input   string
+		want    *Statistics
+		wantErr error
 	}{
 		// ccache 3.4.3
 		{
@@ -239,15 +241,63 @@ max cache size                      57.0 kB
 				MaxCacheSizeBytes: units.MetricBytes(57000),
 			},
 		},
+
+		// error cases
+		{
+			tname: "unexpected date format",
+			input: `stats zeroed                        not a date
+`,
+			want:    &Statistics{},
+			wantErr: errors.New("parsing time \"not a date\" as \"Mon Jan 2 15:04:05 2006\": cannot parse \"not a date\" as \"Mon\""),
+		},
+		{
+			tname: "unexpected cache size unit",
+			input: `cache size                         655.4 zB
+`,
+			want:    &Statistics{},
+			wantErr: errors.New("units: unknown unit ZB in 655.4ZB"),
+		},
+		{
+			tname: "unexpected max cache size unit",
+			input: `max cache size                      10.7 dB
+`,
+			want:    &Statistics{},
+			wantErr: errors.New("units: unknown unit DB in 10.7DB"),
+		},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.tname, func(t *testing.T) {
-			s := Parse(tt.input)
+			s, err := Parse(tt.input)
 
+			assertErrorExpectations(t, err, tt.wantErr)
 			assertStatisticsEqual(t, s, tt.want)
 		})
 	}
+}
+
+func assertErrorExpectations(t *testing.T, gotErr, wantErr error) {
+	if wantErr == nil {
+		if gotErr == nil {
+			// got no error, expected none
+			return
+		}
+
+		t.Errorf("expected no error but got %q", gotErr.Error())
+		return
+	}
+
+	if gotErr == nil {
+		t.Errorf("expected an error but got none")
+		return
+	}
+
+	if gotErr.Error() == wantErr.Error() {
+		// expected an error and got it
+		return
+	}
+
+	t.Errorf("expected error %q, got %q", wantErr, gotErr)
 }
 
 func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
