@@ -14,7 +14,7 @@ func TestParse(t *testing.T) {
 	cases := []struct {
 		tname string
 		input string
-		want  Statistics
+		want  *Statistics
 	}{
 		// ccache 3.4.3
 		{
@@ -34,7 +34,7 @@ cache size                           0.0 kB
 max cache size                      15.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly: "/etc/ccache.conf",
@@ -64,7 +64,7 @@ cache size                           6.4 MB
 max cache size                      15.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly:  "/etc/ccache.conf",
@@ -101,7 +101,7 @@ cache size                          12.1 MB
 max cache size                      15.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly:  "/etc/ccache.conf",
@@ -139,7 +139,7 @@ cache size                           0.0 kB
 max cache size                       5.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly: "/etc/ccache.conf",
@@ -168,7 +168,7 @@ cache size                          44.5 MB
 max cache size                       5.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly: "/etc/ccache.conf",
@@ -207,7 +207,7 @@ cache size                          46.7 MB
 max cache size                       5.0 GB
 `,
 
-			want: Statistics{
+			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
 				SecondaryConfigReadonly: "/etc/ccache.conf",
@@ -232,7 +232,7 @@ max cache size                       5.0 GB
 			input: `cache size                          16.7 kB
 max cache size                      57.0 kB
 `,
-			want: Statistics{
+			want: &Statistics{
 				CacheSize:         "16.7 kB",
 				CacheSizeBytes:    units.MetricBytes(16700),
 				MaxCacheSize:      "57.0 kB",
@@ -243,15 +243,14 @@ max cache size                      57.0 kB
 
 	for _, tt := range cases {
 		t.Run(tt.tname, func(t *testing.T) {
-			s := Statistics{}
-			s.Parse(tt.input)
+			s := Parse(tt.input)
 
 			assertStatisticsEqual(t, s, tt.want)
 		})
 	}
 }
 
-func assertStatisticsEqual(t *testing.T, got, want Statistics) {
+func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
 	t.Helper()
 
 	assertStringFieldEquals(t, "CacheDirectory", got.CacheDirectory, want.CacheDirectory)

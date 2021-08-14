@@ -31,8 +31,7 @@ func main() {
 	for scanner.Scan() {
 		text += scanner.Text() + "\n"
 	}
-	stats := ccache.Statistics{}
-	stats.Parse(text)
+	stats := ccache.Parse(text)
 	statsJSON, err := json.Marshal(stats)
 	if err != nil {
 		log.Fatal(err)

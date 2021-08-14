@@ -33,96 +33,100 @@ var rules = map[string]*regexp.Regexp{
 }
 
 // Parse reads ccache statistics as formatted by the `ccache -s` command.
-func (s *Statistics) Parse(text string) {
+func Parse(text string) *Statistics {
+	stats := &Statistics{}
+
 	matches := rules["cacheDirectory"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CacheDirectory = matches[1]
+		stats.CacheDirectory = matches[1]
 	}
 
 	matches = rules["primaryConfig"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.PrimaryConfig = matches[1]
+		stats.PrimaryConfig = matches[1]
 	}
 
 	matches = rules["secondaryConfigReadonly"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.SecondaryConfigReadonly = matches[1]
+		stats.SecondaryConfigReadonly = matches[1]
 	} else if len(matches) == 3 {
-		s.SecondaryConfigReadonly = matches[2]
+		stats.SecondaryConfigReadonly = matches[2]
 	}
 
 	// now's the time
-	s.StatsTime = time.Now()
+	stats.StatsTime = time.Now()
 
 	// assume stats originate from the local host
 	matches = rules["statsZeroTime"].FindStringSubmatch(text)
 	if len(matches) == 3 {
 		statsZeroTime := rules["statsZeroTime"].FindStringSubmatch(text)[2]
-		s.StatsZeroTime, _ = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, s.StatsTime.Location())
+		stats.StatsZeroTime, _ = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, stats.StatsTime.Location())
 	}
 
 	matches = rules["cacheHitDirect"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CacheHitDirect, _ = strconv.Atoi(matches[1])
+		stats.CacheHitDirect, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["cacheHitPreprocessed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CacheHitPreprocessed, _ = strconv.Atoi(matches[1])
+		stats.CacheHitPreprocessed, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["cacheMiss"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CacheMiss, _ = strconv.Atoi(matches[1])
+		stats.CacheMiss, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["cacheHitRate"].FindStringSubmatch(text)
 	if len(matches) == 3 {
-		s.CacheHitRate, _ = strconv.ParseFloat(matches[1], 64)
-		s.CacheHitRatio = s.CacheHitRate / 100
+		stats.CacheHitRate, _ = strconv.ParseFloat(matches[1], 64)
+		stats.CacheHitRatio = stats.CacheHitRate / 100
 	}
 
 	matches = rules["calledForLink"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CalledForLink, _ = strconv.Atoi(matches[1])
+		stats.CalledForLink, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["calledForPreprocessing"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CalledForPreprocessing, _ = strconv.Atoi(matches[1])
+		stats.CalledForPreprocessing, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["unsupportedCodeDirective"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.UnsupportedCodeDirective, _ = strconv.Atoi(matches[1])
+		stats.UnsupportedCodeDirective, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["noInputFile"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.NoInputFile, _ = strconv.Atoi(matches[1])
+		stats.NoInputFile, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["cleanupsPerformed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CleanupsPerformed, _ = strconv.Atoi(matches[1])
+		stats.CleanupsPerformed, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["filesInCache"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.FilesInCache, _ = strconv.Atoi(matches[1])
+		stats.FilesInCache, _ = strconv.Atoi(matches[1])
 	}
 
 	matches = rules["cacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.CacheSize = matches[1]
-		sanitizedCacheSize := strings.Replace(strings.ToUpper(s.CacheSize), " ", "", -1)
-		s.CacheSizeBytes, _ = units.ParseMetricBytes(sanitizedCacheSize)
+		stats.CacheSize = matches[1]
+		sanitizedCacheSize := strings.Replace(strings.ToUpper(stats.CacheSize), " ", "", -1)
+		stats.CacheSizeBytes, _ = units.ParseMetricBytes(sanitizedCacheSize)
 	}
 
 	matches = rules["maxCacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		s.MaxCacheSize = matches[1]
-		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(s.MaxCacheSize), " ", "", -1)
-		s.MaxCacheSizeBytes, _ = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
+		stats.MaxCacheSize = matches[1]
+		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(stats.MaxCacheSize), " ", "", -1)
+		stats.MaxCacheSizeBytes, _ = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
 	}
+
+	return stats
 }

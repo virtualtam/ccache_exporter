@@ -127,8 +127,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		log.Fatal(err)
 	}
 
-	stats := Statistics{}
-	stats.Parse(out)
+	stats := Parse(out)
 
 	// counters
 	ch <- prometheus.MustNewConstMetric(
