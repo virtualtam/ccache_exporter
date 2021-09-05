@@ -1,5 +1,5 @@
 # Step 1: build Go binaries
-FROM golang:1.13-alpine as builder
+FROM golang:1.17-alpine as builder
 
 ARG CGO_ENABLED=1
 
@@ -14,7 +14,7 @@ ADD . .
 RUN go build -trimpath ./cmd/ccache_exporter 2>&1
 
 # Step 2: build the actual image
-FROM alpine:3.10
+FROM alpine:3.14
 
 RUN apk add --update --no-cache ccache \
     && adduser -D exporter
