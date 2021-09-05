@@ -15,7 +15,11 @@ master .. image:: https://travis-ci.com/virtualtam/ccache_exporter.svg?branch=ma
 Metrics exposed
 ---------------
 
-Counters:
+Counters (internal):
+
+- ``ccache_collector_parsing_errors_total``
+
+Counters (ccache):
 
 - ``ccache_call_total``
 - ``ccache_call_hit_total``
@@ -26,7 +30,7 @@ Counters:
 - ``ccache_cleanups_performed_total``
 
 
-Gauges:
+Gauges (ccache):
 
 - ``ccache_cache_hit_ratio``
 - ``ccache_cache_size_bytes``

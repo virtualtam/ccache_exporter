@@ -13,9 +13,25 @@ const (
 	namespace = "ccache"
 )
 
+var (
+	parsingErrors = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: "collector",
+			Name:      "parsing_errors_total",
+			Help:      "Collector parsing errors (total)",
+		},
+	)
+)
+
+func init() {
+	prometheus.MustRegister(parsingErrors)
+}
+
 type collector struct {
 	wrapper Wrapper
 
+	// ccache metrics
 	call                     *prometheus.Desc
 	callHit                  *prometheus.Desc
 	cacheHitRatio            *prometheus.Desc
@@ -129,6 +145,8 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	stats, err := Parse(out)
 	if err != nil {
 		log.Error().Err(err).Msg("Parse")
+		parsingErrors.Inc()
+		return
 	}
 
 	// counters
