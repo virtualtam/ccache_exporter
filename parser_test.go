@@ -266,38 +266,27 @@ max cache size                      57.0 kB
 		},
 	}
 
-	for _, tt := range cases {
-		t.Run(tt.tname, func(t *testing.T) {
-			s, err := Parse(tt.input)
+	for _, tc := range cases {
+		t.Run(tc.tname, func(t *testing.T) {
+			s, err := Parse(tc.input)
 
-			assertErrorExpectations(t, err, tt.wantErr)
-			assertStatisticsEqual(t, s, tt.want)
+			if tc.wantErr != nil {
+				if err == nil {
+					t.Fatal("expected an error, got none")
+				} else if err.Error() != tc.wantErr.Error() {
+					t.Fatalf("want error %q, got %q", tc.wantErr, err)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("expected no error, got %q", err)
+			}
+
+			assertStatisticsEqual(t, s, tc.want)
 		})
 	}
-}
-
-func assertErrorExpectations(t *testing.T, gotErr, wantErr error) {
-	if wantErr == nil {
-		if gotErr == nil {
-			// got no error, expected none
-			return
-		}
-
-		t.Errorf("expected no error but got %q", gotErr.Error())
-		return
-	}
-
-	if gotErr == nil {
-		t.Errorf("expected an error but got none")
-		return
-	}
-
-	if gotErr.Error() == wantErr.Error() {
-		// expected an error and got it
-		return
-	}
-
-	t.Errorf("expected error %q, got %q", wantErr, gotErr)
 }
 
 func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
