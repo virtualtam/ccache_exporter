@@ -6,36 +6,23 @@ package ccache
 
 import (
 	"errors"
+	"io/ioutil"
 	"testing"
 
 	"github.com/alecthomas/units"
 )
 
-func TestParse(t *testing.T) {
+func TestParseReference(t *testing.T) {
 	cases := []struct {
-		tname   string
-		input   string
-		want    *Statistics
-		wantErr error
+		tname     string
+		inputFile string
+		want      *Statistics
+		wantErr   error
 	}{
 		// ccache 3.4.3
 		{
-			tname: "3.4.3 empty cache",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-stats zero time                     Sun Sep 23 01:18:52 2018
-cache hit (direct)                     0
-cache hit (preprocessed)               0
-cache miss                             0
-cache hit rate                      0.00 %
-cleanups performed                     0
-files in cache                         0
-cache size                           0.0 kB
-max cache size                      15.0 GB
-`,
-
+			tname:     "3.4.3 empty cache",
+			inputFile: "testdata/3.4.3/empty",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -46,26 +33,8 @@ max cache size                      15.0 GB
 			},
 		},
 		{
-			tname: "3.4.3 first build",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-stats zero time                     Sun Sep 23 01:18:52 2018
-cache hit (direct)                     0
-cache hit (preprocessed)               0
-cache miss                           116
-cache hit rate                      0.00 %
-called for link                       14
-called for preprocessing              85
-unsupported code directive             2
-no input file                         29
-cleanups performed                     0
-files in cache                       361
-cache size                           6.4 MB
-max cache size                      15.0 GB
-`,
-
+			tname:     "3.4.3 first build",
+			inputFile: "testdata/3.4.3/firstbuild",
 			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
@@ -83,26 +52,8 @@ max cache size                      15.0 GB
 			},
 		},
 		{
-			tname: "3.4.3 second build",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-stats zero time                     Sun Sep 23 01:18:52 2018
-cache hit (direct)                    73
-cache hit (preprocessed)               4
-cache miss                           207
-cache hit rate                     27.11 %
-called for link                       28
-called for preprocessing             170
-unsupported code directive             4
-no input file                         58
-cleanups performed                     0
-files in cache                       639
-cache size                          12.1 MB
-max cache size                      15.0 GB
-`,
-
+			tname:     "3.4.3 second build",
+			inputFile: "testdata/3.4.3/secondbuild",
 			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
@@ -126,21 +77,8 @@ max cache size                      15.0 GB
 
 		// ccache 3.5
 		{
-			tname: "3.5 empty cache",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-cache hit (direct)                     0
-cache hit (preprocessed)               0
-cache miss                             0
-cache hit rate                      0.00 %
-cleanups performed                     0
-files in cache                         0
-cache size                           0.0 kB
-max cache size                       5.0 GB
-`,
-
+			tname:     "3.5 empty cache",
+			inputFile: "testdata/3.5/empty",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -151,25 +89,8 @@ max cache size                       5.0 GB
 			},
 		},
 		{
-			tname: "3.5 first build",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-stats updated                       Sat Oct 20 00:49:12 2018
-cache hit (direct)                     1
-cache hit (preprocessed)              15
-cache miss                           342
-cache hit rate                      4.47 %
-called for link                       14
-called for preprocessing               1
-preprocessor error                     1
-cleanups performed                     0
-files in cache                       867
-cache size                          44.5 MB
-max cache size                       5.0 GB
-`,
-
+			tname:     "3.5 first build",
+			inputFile: "testdata/3.5/firstbuild",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -189,26 +110,8 @@ max cache size                       5.0 GB
 			},
 		},
 		{
-			tname: "3.5 second build",
-
-			input: `cache directory                     /home/virtualtam/.ccache
-primary config                      /home/virtualtam/.ccache/ccache.conf
-secondary config      (readonly)    /etc/ccache.conf
-stats updated                       Sat Oct 20 00:50:26 2018
-stats zeroed                        Sat Oct 20 00:49:42 2018
-cache hit (direct)                   349
-cache hit (preprocessed)              10
-cache miss                            28
-cache hit rate                     92.76 %
-called for link                       14
-called for preprocessing               1
-preprocessor error                     1
-cleanups performed                     0
-files in cache                       943
-cache size                          46.7 MB
-max cache size                       5.0 GB
-`,
-
+			tname:     "3.5 second build",
+			inputFile: "testdata/3.5/secondbuild",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -227,7 +130,43 @@ max cache size                       5.0 GB
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 		},
+	}
 
+	for _, tc := range cases {
+		t.Run(tc.tname, func(t *testing.T) {
+			input, err := ioutil.ReadFile(tc.inputFile)
+			if err != nil {
+				t.Fatalf("failed to open test input: %q", err)
+			}
+
+			s, err := Parse(string(input))
+
+			if tc.wantErr != nil {
+				if err == nil {
+					t.Fatal("expected an error, got none")
+				} else if err.Error() != tc.wantErr.Error() {
+					t.Fatalf("want error %q, got %q", tc.wantErr, err)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("expected no error, got %q", err)
+			}
+
+			assertStatisticsEqual(t, s, tc.want)
+		})
+	}
+}
+
+func TestParse(t *testing.T) {
+	cases := []struct {
+		tname   string
+		input   string
+		want    *Statistics
+		wantErr error
+	}{
 		// ccache cache size units
 		{
 			tname: "cache size in kB",

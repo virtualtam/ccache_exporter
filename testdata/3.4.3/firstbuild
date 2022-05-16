@@ -1,0 +1,16 @@
+cache directory                     /home/virtualtam/.ccache
+primary config                      /home/virtualtam/.ccache/ccache.conf
+secondary config      (readonly)    /etc/ccache.conf
+stats zero time                     Sun Sep 23 01:18:52 2018
+cache hit (direct)                     0
+cache hit (preprocessed)               0
+cache miss                           116
+cache hit rate                      0.00 %
+called for link                       14
+called for preprocessing              85
+unsupported code directive             2
+no input file                         29
+cleanups performed                     0
+files in cache                       361
+cache size                           6.4 MB
+max cache size                      15.0 GB
