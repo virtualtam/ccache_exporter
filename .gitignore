@@ -9,3 +9,6 @@
 # Binaries
 /ccache_exporter
 /ccacheparser
+
+# Integration testdata output
+integration/output/
