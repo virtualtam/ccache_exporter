@@ -28,7 +28,7 @@ type testSession struct {
 	testCases        []testCase
 }
 
-func TestParseReference(t *testing.T) {
+func TestLegacyParserParseReference(t *testing.T) {
 
 	sessions := []testSession{
 		{
@@ -355,7 +355,8 @@ func TestParseReference(t *testing.T) {
 					t.Fatalf("failed to open test input: %q", err)
 				}
 
-				s, err := Parse(string(input))
+				parser := NewLegacyParser()
+				s, err := parser.Parse(string(input))
 
 				if tc.wantErr != nil {
 					if err == nil {
@@ -377,7 +378,7 @@ func TestParseReference(t *testing.T) {
 	}
 }
 
-func TestParse(t *testing.T) {
+func TestLegacyParserParse(t *testing.T) {
 	cases := []struct {
 		tname   string
 		input   string
@@ -424,7 +425,8 @@ max cache size                      57.0 kB
 
 	for _, tc := range cases {
 		t.Run(tc.tname, func(t *testing.T) {
-			s, err := Parse(tc.input)
+			parser := NewLegacyParser()
+			s, err := parser.Parse(tc.input)
 
 			if tc.wantErr != nil {
 				if err == nil {

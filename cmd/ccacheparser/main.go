@@ -37,7 +37,9 @@ func main() {
 		text += scanner.Text() + "\n"
 	}
 
-	stats, err := ccache.Parse(text)
+	parser := ccache.NewLegacyParser()
+
+	stats, err := parser.Parse(text)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parse")
 	}
