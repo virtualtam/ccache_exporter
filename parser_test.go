@@ -19,10 +19,10 @@ func TestParseReference(t *testing.T) {
 		want      *Statistics
 		wantErr   error
 	}{
-		// ccache 3.4.3
+		// ccache 3.4.3 on Arch Linux
 		{
 			tname:     "3.4.3 empty cache",
-			inputFile: "testdata/3.4.3/empty",
+			inputFile: "testdata/arch-3.4.3/empty",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -34,7 +34,7 @@ func TestParseReference(t *testing.T) {
 		},
 		{
 			tname:     "3.4.3 first build",
-			inputFile: "testdata/3.4.3/firstbuild",
+			inputFile: "testdata/arch-3.4.3/firstbuild",
 			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
@@ -53,7 +53,7 @@ func TestParseReference(t *testing.T) {
 		},
 		{
 			tname:     "3.4.3 second build",
-			inputFile: "testdata/3.4.3/secondbuild",
+			inputFile: "testdata/arch-3.4.3/secondbuild",
 			want: &Statistics{
 				CacheDirectory:           "/home/virtualtam/.ccache",
 				PrimaryConfig:            "/home/virtualtam/.ccache/ccache.conf",
@@ -75,10 +75,10 @@ func TestParseReference(t *testing.T) {
 			},
 		},
 
-		// ccache 3.5
+		// ccache 3.5 on Arch Linux
 		{
 			tname:     "3.5 empty cache",
-			inputFile: "testdata/3.5/empty",
+			inputFile: "testdata/arch-3.5/empty",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -90,7 +90,7 @@ func TestParseReference(t *testing.T) {
 		},
 		{
 			tname:     "3.5 first build",
-			inputFile: "testdata/3.5/firstbuild",
+			inputFile: "testdata/arch-3.5/firstbuild",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
@@ -111,7 +111,7 @@ func TestParseReference(t *testing.T) {
 		},
 		{
 			tname:     "3.5 second build",
-			inputFile: "testdata/3.5/secondbuild",
+			inputFile: "testdata/arch-3.5/secondbuild",
 			want: &Statistics{
 				CacheDirectory:          "/home/virtualtam/.ccache",
 				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
