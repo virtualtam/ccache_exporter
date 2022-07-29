@@ -1,0 +1,19 @@
+cache directory                     /home/cached/.ccache
+primary config                      /home/cached/.ccache/ccache.conf
+secondary config      (readonly)    /etc/ccache.conf
+stats zero time                     Fri Jul 29 16:28:05 2022
+cache hit (direct)                    50
+cache hit (preprocessed)               3
+cache miss                            53
+cache hit rate                     50.00 %
+called for link                        2
+called for preprocessing              22
+compile failed                         8
+preprocessor error                     2
+bad compiler arguments                 2
+autoconf compile/link                 48
+no input file                          8
+cleanups performed                     0
+files in cache                       104
+cache size                           1.6 MB
+max cache size                       5.0 GB
