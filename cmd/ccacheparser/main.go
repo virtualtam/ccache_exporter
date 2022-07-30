@@ -28,6 +28,7 @@ func main() {
 	if stat.Mode()&os.ModeNamedPipe == 0 {
 		// TODO add flags, read from stdin / file(s)
 		// TODO add help
+		// TODO switch between legacy / TSV parsers
 		panic("No data piped to stdin")
 	}
 
@@ -37,9 +38,9 @@ func main() {
 		text += scanner.Text() + "\n"
 	}
 
-	parser := ccache.NewLegacyParser()
+	parser := ccache.NewTSVParser()
 
-	_, stats, err := parser.ParseShowStats(text)
+	stats, err := parser.ParsePrintStats(text)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parse")
 	}

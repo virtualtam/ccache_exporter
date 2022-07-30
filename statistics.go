@@ -17,6 +17,8 @@ type Statistics struct {
 	CacheHitDirect           int               `json:"cache_hit_direct"`
 	CacheHitPreprocessed     int               `json:"cache_hit_preprocessed"`
 	CacheMiss                int               `json:"cache_miss"`
+	CacheMissDirect          int               `json:"cache_miss_direct"`
+	CacheMissPreprocessed    int               `json:"cache_miss_preprocessed"`
 	CacheHitRate             float64           `json:"cache_hit_rate"`
 	CacheHitRatio            float64           `json:"cache_hit_ratio"`
 	CalledForLink            int               `json:"called_for_link"`

@@ -12,6 +12,10 @@ type fakeCommand struct {
 	version string
 }
 
+func (c *fakeCommand) PrintStats() (string, error) {
+	return "", nil
+}
+
 func (c *fakeCommand) ShowStats() (string, error) {
 	return "", nil
 }
@@ -24,7 +28,7 @@ func TestWrapperVersion(t *testing.T) {
 	cases := []struct {
 		tname      string
 		cmdVersion string
-		want       string
+		want       *semver.Version
 	}{
 		{
 			tname: "ccache 3.3.4",
@@ -39,7 +43,7 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 3 of the License, or (at your option) any later
 version.
 `,
-			want: "3.3.4",
+			want: semver.MustParse("3.3.4"),
 		},
 		{
 			tname: "ccache 4.6.1",
@@ -56,7 +60,7 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 3 of the License, or (at your option) any later
 version.
 `,
-			want: "4.6.1",
+			want: semver.MustParse("4.6.1"),
 		},
 	}
 
@@ -72,13 +76,8 @@ version.
 				t.Fatalf("want no error, got %q", err)
 			}
 
-			wantVersion, err := semver.NewVersion(tc.want)
-			if err != nil {
-				t.Fatalf("failed to instantiate wantVersion: %q", err)
-			}
-
-			if !got.Equal(wantVersion) {
-				t.Errorf("want version %q, got %q", wantVersion.String(), got.String())
+			if !got.Equal(tc.want) {
+				t.Errorf("want version %q, got %q", tc.want.String(), got.String())
 			}
 		})
 	}

@@ -14,24 +14,23 @@ import (
 	"github.com/alecthomas/units"
 )
 
-type testCase struct {
+type legacyTestCase struct {
 	tname         string
 	inputFilename string
 	wantStats     Statistics
 	wantErr       error
 }
 
-type testSession struct {
+type legacyTestSession struct {
 	osAndVersion     string
 	osAndVersionCode string
 	ccacheVersion    string
 	wantConfig       Configuration
-	testCases        []testCase
+	testCases        []legacyTestCase
 }
 
 func TestLegacyParserParseShowStats(t *testing.T) {
-
-	sessions := []testSession{
+	sessions := []legacyTestSession{
 		{
 			osAndVersion:     "Arch Linux",
 			osAndVersionCode: "arch",
@@ -44,7 +43,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 				MaxCacheSizeBytes:       units.MetricBytes(15000000000),
 			},
 
-			testCases: []testCase{
+			testCases: []legacyTestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -99,7 +98,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 
-			testCases: []testCase{
+			testCases: []legacyTestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -154,7 +153,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 
-			testCases: []testCase{
+			testCases: []legacyTestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -208,7 +207,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 
-			testCases: []testCase{
+			testCases: []legacyTestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -261,7 +260,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
 			},
 
-			testCases: []testCase{
+			testCases: []legacyTestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -408,61 +407,5 @@ max cache size                      57.0 kB
 			assertConfigurationsEqual(t, c, &tc.wantConfig)
 			assertStatisticsEqual(t, s, &tc.wantStats)
 		})
-	}
-}
-
-func assertConfigurationsEqual(t *testing.T, got, want *Configuration) {
-	t.Helper()
-
-	assertStringFieldEquals(t, "CacheDirectory", got.CacheDirectory, want.CacheDirectory)
-	assertStringFieldEquals(t, "PrimaryConfig", got.PrimaryConfig, want.PrimaryConfig)
-	assertStringFieldEquals(t, "SecondaryConfigReadonly", got.SecondaryConfigReadonly, want.SecondaryConfigReadonly)
-	assertStringFieldEquals(t, "MaxCacheSize", got.MaxCacheSize, want.MaxCacheSize)
-	assertMetricByteFieldEquals(t, "MaxCacheSizeBytes", got.MaxCacheSizeBytes, want.MaxCacheSizeBytes)
-}
-
-func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
-	t.Helper()
-
-	assertIntFieldEquals(t, "CacheHitDirect", got.CacheHitDirect, want.CacheHitDirect)
-	assertIntFieldEquals(t, "CacheHitPreprocessed", got.CacheHitPreprocessed, want.CacheHitPreprocessed)
-	assertIntFieldEquals(t, "CacheMiss", got.CacheMiss, want.CacheMiss)
-	assertFloatFieldEquals(t, "CacheHitRate", got.CacheHitRate, want.CacheHitRate)
-	assertFloatFieldEquals(t, "CacheHitRatio", got.CacheHitRatio, want.CacheHitRatio)
-	assertIntFieldEquals(t, "CalledForLink", got.CalledForLink, want.CalledForLink)
-	assertIntFieldEquals(t, "CalledForPreprocessing", got.CalledForPreprocessing, want.CalledForPreprocessing)
-	assertIntFieldEquals(t, "UnsupportedCodeDirective", got.UnsupportedCodeDirective, want.UnsupportedCodeDirective)
-	assertIntFieldEquals(t, "NoInputFile", got.NoInputFile, want.NoInputFile)
-	assertIntFieldEquals(t, "CleanupsPerformed", got.CleanupsPerformed, want.CleanupsPerformed)
-	assertIntFieldEquals(t, "FilesInCache", got.FilesInCache, want.FilesInCache)
-	assertStringFieldEquals(t, "CacheSize", got.CacheSize, want.CacheSize)
-	assertMetricByteFieldEquals(t, "CacheSizeBytes", got.CacheSizeBytes, want.CacheSizeBytes)
-}
-
-func assertFloatFieldEquals(t *testing.T, fieldName string, got, want float64) {
-	t.Helper()
-	if got != want {
-		t.Errorf("%s: want %f, got %f", fieldName, want, got)
-	}
-}
-
-func assertIntFieldEquals(t *testing.T, fieldName string, got, want int) {
-	t.Helper()
-	if got != want {
-		t.Errorf("%s: want %d, got %d", fieldName, want, got)
-	}
-}
-
-func assertMetricByteFieldEquals(t *testing.T, fieldName string, got, want units.MetricBytes) {
-	t.Helper()
-	if got != want {
-		t.Errorf("%s: want %d, got %d", fieldName, want, got)
-	}
-}
-
-func assertStringFieldEquals(t *testing.T, fieldName, got, want string) {
-	t.Helper()
-	if got != want {
-		t.Errorf("%s: want %q, got %q", fieldName, want, got)
 	}
 }

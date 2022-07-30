@@ -53,28 +53,26 @@ Parser usage
 
 ::
 
-   $ ccache -s | ccacheparser | jq
+   $ ccache --print-stats | ccacheparser | jq
 
    {
-     "cache_directory": "/home/virtualtam/.ccache",
-     "primary_config": "/home/virtualtam/.ccache/ccache.conf",
-     "secondary_config_readonly": "/etc/ccache.conf",
-     "stats_time": "2018-09-24T21:19:07.997866938+02:00",
-     "stats_zero_time": "2018-09-23T01:18:52+02:00",
-     "cache_hit_direct": 124,
-     "cache_hit_preprocessed": 8,
-     "cache_miss": 297,
-     "cache_hit_rate": 30.77,
-     "called_for_link": 39,
-     "called_for_preprocessing": 263,
-     "unsupported_code_directive": 5,
-     "no_input_file": 83,
+     "stats_time": "2022-07-31T20:39:33Z",
+     "stats_zero_time": "2022-07-29T17:04:53Z",
+     "cache_hit_direct": 192,
+     "cache_hit_preprocessed": 2,
+     "cache_miss": 535,
+     "cache_miss_direct": 276,
+     "cache_miss_preprocessed": 259,
+     "cache_hit_rate": 26.611796982167352,
+     "cache_hit_ratio": 0.2661179698216735,
+     "called_for_link": 132,
+     "called_for_preprocessing": 0,
+     "unsupported_code_directive": 0,
+     "no_input_file": 13,
      "cleanups_performed": 0,
-     "files_in_cache": 926,
-     "cache_size": "17.5 MB",
-     "cache_size_bytes": 17500000,
-     "max_cache_size": "15.0 GB",
-     "max_cache_size_bytes": 15000000000
+     "files_in_cache": 508,
+     "cache_size": "8MB",
+     "cache_size_bytes": 8159232
    }
 
 Running with Docker Compose

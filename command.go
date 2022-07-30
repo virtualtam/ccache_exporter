@@ -14,6 +14,7 @@ var _ Command = &LocalCommand{}
 
 // Command exposes supported ccache commands.
 type Command interface {
+	PrintStats() (string, error)
 	ShowStats() (string, error)
 	Version() (string, error)
 }
@@ -23,8 +24,8 @@ type LocalCommand struct {
 	path string
 }
 
-func (w *LocalCommand) exec(option string) (string, error) {
-	out, err := exec.Command(w.path, option).Output()
+func (c *LocalCommand) exec(option string) (string, error) {
+	out, err := exec.Command(c.path, option).Output()
 
 	if err != nil {
 		return "", err
@@ -33,14 +34,21 @@ func (w *LocalCommand) exec(option string) (string, error) {
 	return string(out[:]), nil
 }
 
+// PrintStats returns the result of `ccache --print-stats`.
+//
+// Available since ccache 3.7
+func (c *LocalCommand) PrintStats() (string, error) {
+	return c.exec("--print-stats")
+}
+
 // ShowStats returns the result of ``ccache --show-stats''.
-func (w *LocalCommand) ShowStats() (string, error) {
-	return w.exec("--show-stats")
+func (c *LocalCommand) ShowStats() (string, error) {
+	return c.exec("--show-stats")
 }
 
 // Version returns the result of ``ccache --version''.
-func (w *LocalCommand) Version() (string, error) {
-	return w.exec("--version")
+func (c *LocalCommand) Version() (string, error) {
+	return c.exec("--version")
 }
 
 // NewLocalCommand ensures the ccache executable exists and can be invoked, and

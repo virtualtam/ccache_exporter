@@ -16,53 +16,90 @@ var (
 )
 
 var (
-	versionRegex = regexp.MustCompile("ccache version (.+)")
+	versionRegex                    = regexp.MustCompile("ccache version (.+)")
+	useLegacyParserForVersionsBelow = semver.MustParse("3.7")
 )
 
 // Wrapper provides an abstraction for ccache commands.
 type Wrapper struct {
-	command Command
-	parser  *LegacyParser
+	command      Command
+	version      semver.Version
+	legacyParser *LegacyParser
+	tsvParser    *TSVParser
 }
 
 // NewWrapper initializes and returns a new Wrapper.
 func NewWrapper(c Command) *Wrapper {
-	p := NewLegacyParser()
+	lp := NewLegacyParser()
+	tp := NewTSVParser()
 
-	return &Wrapper{
-		command: c,
-		parser:  p,
+	w := &Wrapper{
+		command:      c,
+		legacyParser: lp,
+		tsvParser:    tp,
 	}
+
+	v, err := w.Version()
+	if err != nil {
+		panic(err)
+	}
+
+	w.version = *v
+
+	return w
 }
 
 // Configuration returns the current cache configuration.
 func (w *Wrapper) Configuration() (*Configuration, error) {
+	if w.version.LessThan(useLegacyParserForVersionsBelow) {
+		return w.legacyConfiguration()
+	}
+
+	return w.tsvConfiguration()
+}
+
+func (w *Wrapper) legacyConfiguration() (*Configuration, error) {
 	out, err := w.command.ShowStats()
 	if err != nil {
 		return &Configuration{}, err
 	}
 
-	config, _, err := w.parser.ParseShowStats(out)
-	if err != nil {
-		return &Configuration{}, err
-	}
+	config, _, err := w.legacyParser.ParseShowStats(out)
+	return config, err
+}
 
-	return config, nil
+func (w *Wrapper) tsvConfiguration() (*Configuration, error) {
+	// TODO
+	return &Configuration{}, nil
 }
 
 // Statistics returns the current ccache statistics.
 func (w *Wrapper) Statistics() (*Statistics, error) {
+	if w.version.LessThan(useLegacyParserForVersionsBelow) {
+		return w.legacyStatistics()
+	}
+
+	return w.tsvStatistics()
+}
+
+func (w *Wrapper) legacyStatistics() (*Statistics, error) {
 	out, err := w.command.ShowStats()
 	if err != nil {
 		return &Statistics{}, err
 	}
 
-	_, stats, err := w.parser.ParseShowStats(out)
+	_, stats, err := w.legacyParser.ParseShowStats(out)
+
+	return stats, err
+}
+
+func (w *Wrapper) tsvStatistics() (*Statistics, error) {
+	out, err := w.command.PrintStats()
 	if err != nil {
 		return &Statistics{}, err
 	}
 
-	return stats, nil
+	return w.tsvParser.ParsePrintStats(out)
 }
 
 // Version returns the semantic version for ccache.
