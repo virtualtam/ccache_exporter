@@ -29,8 +29,7 @@ func init() {
 }
 
 type collector struct {
-	parser  Parser
-	wrapper Wrapper
+	wrapper *Wrapper
 
 	// ccache metrics
 	call                     *prometheus.Desc
@@ -48,10 +47,11 @@ type collector struct {
 
 // NewCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func NewCollector(w Wrapper) *collector {
+func NewCollector(cmd Command) *collector {
+	wrapper := NewWrapper(cmd)
+
 	return &collector{
-		parser:  NewLegacyParser(),
-		wrapper: w,
+		wrapper: wrapper,
 		call: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "call_total"),
 			"Cache calls (total)",
@@ -139,14 +139,9 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
-	out, err := c.wrapper.ShowStats()
+	stats, err := c.wrapper.Statistics()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Collect")
-	}
-
-	stats, err := c.parser.Parse(out)
-	if err != nil {
-		log.Error().Err(err).Msg("Parse")
+		log.Error().Err(err).Msg("Statistics")
 		parsingErrors.Inc()
 		return
 	}

@@ -4,50 +4,68 @@
 
 package ccache
 
-import "os/exec"
+import (
+	"errors"
+	"regexp"
 
-const (
-	DefaultBinaryPath = "/usr/bin/ccache"
+	"github.com/Masterminds/semver/v3"
 )
 
-// Wrapper exposes supported ccache commands.
-type Wrapper interface {
-	ShowStats() (string, error)
-	Version() (string, error)
+var (
+	ErrVersionMissing error = errors.New("command: missing version")
+)
+
+var (
+	versionRegex = regexp.MustCompile("ccache version (.+)")
+)
+
+// Wrapper provides an abstraction for ccache commands.
+type Wrapper struct {
+	command Command
+	parser  Parser
 }
 
-// BinaryWrapper runs ccache commands locally.
-type BinaryWrapper struct {
-	path string
+// NewWrapper initializes and returns a new Wrapper.
+func NewWrapper(c Command) *Wrapper {
+	p := NewLegacyParser()
+
+	return &Wrapper{
+		command: c,
+		parser:  p,
+	}
 }
 
-func (w *BinaryWrapper) exec(option string) (string, error) {
-	out, err := exec.Command(w.path, option).Output()
-
+// Statistics returns the current ccache statistics.
+func (w *Wrapper) Statistics() (*Statistics, error) {
+	out, err := w.command.ShowStats()
 	if err != nil {
-		return "", err
+		return &Statistics{}, err
 	}
 
-	return string(out[:]), nil
-}
-
-// ShowStats returns the result of ``ccache --show-stats''.
-func (w *BinaryWrapper) ShowStats() (string, error) {
-	return w.exec("--show-stats")
-}
-
-// Version returns the result of ``ccache --version''.
-func (w *BinaryWrapper) Version() (string, error) {
-	return w.exec("--version")
-}
-
-// NewBinaryWrapper ensures the ccache executable exists and can be invoked, and
-// returns an initialized BinaryWrapper.
-func NewBinaryWrapper(path string) (*BinaryWrapper, error) {
-	err := exec.Command(path, "-s").Run()
+	stats, err := w.parser.Parse(out)
 	if err != nil {
-		return &BinaryWrapper{}, err
+		return &Statistics{}, err
 	}
 
-	return &BinaryWrapper{path: path}, nil
+	return stats, nil
+}
+
+// Version returns the semantic version for ccache.
+func (w *Wrapper) Version() (*semver.Version, error) {
+	out, err := w.command.Version()
+	if err != nil {
+		return &semver.Version{}, err
+	}
+
+	matches := versionRegex.FindStringSubmatch(out)
+	if len(matches) != 2 {
+		return &semver.Version{}, ErrVersionMissing
+	}
+
+	version, err := semver.NewVersion(matches[1])
+	if err != nil {
+		return &semver.Version{}, err
+	}
+
+	return version, nil
 }

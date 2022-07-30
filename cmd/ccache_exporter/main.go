@@ -49,7 +49,7 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	wrapper, err := ccache.NewBinaryWrapper(*ccacheBinaryPath)
+	wrapper, err := ccache.NewLocalCommand(*ccacheBinaryPath)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to instantiate ccache wrapper")
 	}
