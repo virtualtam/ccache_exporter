@@ -6,6 +6,8 @@ import (
 	"github.com/Masterminds/semver/v3"
 )
 
+var _ Command = &fakeCommand{}
+
 type fakeCommand struct {
 	version string
 }

@@ -10,6 +10,8 @@ const (
 	DefaultBinaryPath = "/usr/bin/ccache"
 )
 
+var _ Command = &LocalCommand{}
+
 // Command exposes supported ccache commands.
 type Command interface {
 	ShowStats() (string, error)
