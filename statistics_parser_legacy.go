@@ -47,26 +47,27 @@ func NewLegacyParser() *LegacyParser {
 	return &LegacyParser{}
 }
 
-// Parse reads ccache statistics as formatted by the `ccache -s` command.
-func (p *LegacyParser) Parse(text string) (*Statistics, error) {
+// ParseShowStats reads ccache configuration and statistics as formatted by the `ccache --show-stats` command.
+func (p *LegacyParser) ParseShowStats(text string) (*Configuration, *Statistics, error) {
+	config := &Configuration{}
 	stats := &Statistics{}
 	var err error
 
 	matches := rules["cacheDirectory"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CacheDirectory = matches[1]
+		config.CacheDirectory = matches[1]
 	}
 
 	matches = rules["primaryConfig"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.PrimaryConfig = matches[1]
+		config.PrimaryConfig = matches[1]
 	}
 
 	matches = rules["secondaryConfigReadonly"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.SecondaryConfigReadonly = matches[1]
+		config.SecondaryConfigReadonly = matches[1]
 	} else if len(matches) == 3 {
-		stats.SecondaryConfigReadonly = matches[2]
+		config.SecondaryConfigReadonly = matches[2]
 	}
 
 	// now's the time
@@ -78,7 +79,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 		statsZeroTime := rules["statsZeroTime"].FindStringSubmatch(text)[2]
 		stats.StatsZeroTime, err = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, stats.StatsTime.Location())
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -86,7 +87,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CacheHitDirect, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -94,7 +95,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CacheHitPreprocessed, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -102,7 +103,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CacheMiss, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -111,7 +112,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 		stats.CacheHitRate, err = strconv.ParseFloat(matches[1], 64)
 		stats.CacheHitRatio = stats.CacheHitRate / 100
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -119,7 +120,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CalledForLink, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -127,7 +128,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CalledForPreprocessing, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -135,7 +136,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.UnsupportedCodeDirective, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -143,7 +144,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.NoInputFile, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -151,7 +152,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.CleanupsPerformed, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -159,7 +160,7 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 	if len(matches) == 2 {
 		stats.FilesInCache, err = strconv.Atoi(matches[1])
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
@@ -169,19 +170,19 @@ func (p *LegacyParser) Parse(text string) (*Statistics, error) {
 		sanitizedCacheSize := strings.Replace(strings.ToUpper(stats.CacheSize), " ", "", -1)
 		stats.CacheSizeBytes, err = units.ParseMetricBytes(sanitizedCacheSize)
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
 	matches = rules["maxCacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.MaxCacheSize = matches[1]
-		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(stats.MaxCacheSize), " ", "", -1)
-		stats.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
+		config.MaxCacheSize = matches[1]
+		sanitizedMaxCacheSizeBytes := strings.Replace(strings.ToUpper(config.MaxCacheSize), " ", "", -1)
+		config.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSizeBytes)
 		if err != nil {
-			return &Statistics{}, err
+			return &Configuration{}, &Statistics{}, err
 		}
 	}
 
-	return stats, nil
+	return config, stats, nil
 }

@@ -139,6 +139,13 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
+	config, err := c.wrapper.Configuration()
+	if err != nil {
+		log.Error().Err(err).Msg("Configuration")
+		parsingErrors.Inc()
+		return
+	}
+
 	stats, err := c.wrapper.Statistics()
 	if err != nil {
 		log.Error().Err(err).Msg("Statistics")
@@ -164,5 +171,5 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.cacheHitRatio, prometheus.GaugeValue, stats.CacheHitRatio)
 	ch <- prometheus.MustNewConstMetric(c.filesInCache, prometheus.GaugeValue, float64(stats.FilesInCache))
 	ch <- prometheus.MustNewConstMetric(c.cacheSizeBytes, prometheus.GaugeValue, float64(stats.CacheSizeBytes))
-	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.GaugeValue, float64(stats.MaxCacheSizeBytes))
+	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.GaugeValue, float64(config.MaxCacheSizeBytes))
 }

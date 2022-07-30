@@ -10,11 +10,8 @@ import (
 	"github.com/alecthomas/units"
 )
 
-// Statistics represents information about ccache configuration and usage.
+// Statistics represents information about ccache usage.
 type Statistics struct {
-	CacheDirectory           string            `json:"cache_directory"`
-	PrimaryConfig            string            `json:"primary_config"`
-	SecondaryConfigReadonly  string            `json:"secondary_config_readonly"`
 	StatsTime                time.Time         `json:"stats_time"`
 	StatsZeroTime            time.Time         `json:"stats_zero_time"`
 	CacheHitDirect           int               `json:"cache_hit_direct"`
@@ -30,6 +27,4 @@ type Statistics struct {
 	FilesInCache             int               `json:"files_in_cache"`
 	CacheSize                string            `json:"cache_size"`
 	CacheSizeBytes           units.MetricBytes `json:"cache_size_bytes"`
-	MaxCacheSize             string            `json:"max_cache_size"`
-	MaxCacheSizeBytes        units.MetricBytes `json:"max_cache_size_bytes"`
 }

@@ -22,7 +22,7 @@ var (
 // Wrapper provides an abstraction for ccache commands.
 type Wrapper struct {
 	command Command
-	parser  Parser
+	parser  *LegacyParser
 }
 
 // NewWrapper initializes and returns a new Wrapper.
@@ -35,6 +35,21 @@ func NewWrapper(c Command) *Wrapper {
 	}
 }
 
+// Configuration returns the current cache configuration.
+func (w *Wrapper) Configuration() (*Configuration, error) {
+	out, err := w.command.ShowStats()
+	if err != nil {
+		return &Configuration{}, err
+	}
+
+	config, _, err := w.parser.ParseShowStats(out)
+	if err != nil {
+		return &Configuration{}, err
+	}
+
+	return config, nil
+}
+
 // Statistics returns the current ccache statistics.
 func (w *Wrapper) Statistics() (*Statistics, error) {
 	out, err := w.command.ShowStats()
@@ -42,7 +57,7 @@ func (w *Wrapper) Statistics() (*Statistics, error) {
 		return &Statistics{}, err
 	}
 
-	stats, err := w.parser.Parse(out)
+	_, stats, err := w.parser.ParseShowStats(out)
 	if err != nil {
 		return &Statistics{}, err
 	}

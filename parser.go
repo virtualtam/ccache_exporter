@@ -3,8 +3,3 @@
 // that can be found in the LICENSE file.
 
 package ccache
-
-type Parser interface {
-	// Parse reads machine-readable ccache statistics.
-	Parse(text string) (*Statistics, error)
-}

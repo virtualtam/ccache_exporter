@@ -39,7 +39,7 @@ func main() {
 
 	parser := ccache.NewLegacyParser()
 
-	stats, err := parser.Parse(text)
+	_, stats, err := parser.ParseShowStats(text)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parse")
 	}
