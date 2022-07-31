@@ -53,7 +53,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to instantiate ccache wrapper")
 	}
-	collector := ccache.NewCollector(wrapper)
+	collector := NewCollector(wrapper)
 
 	prometheus.MustRegister(collector)
 

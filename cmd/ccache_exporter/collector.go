@@ -2,11 +2,12 @@
 // Use of this source code is governed by a MIT license
 // that can be found in the LICENSE file.
 
-package ccache
+package main
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog/log"
+	ccache "github.com/virtualtam/ccache_exporter"
 )
 
 const (
@@ -29,7 +30,7 @@ func init() {
 }
 
 type collector struct {
-	wrapper *Wrapper
+	wrapper *ccache.Wrapper
 
 	// ccache metrics
 	call                     *prometheus.Desc
@@ -47,8 +48,8 @@ type collector struct {
 
 // NewCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func NewCollector(cmd Command) *collector {
-	wrapper := NewWrapper(cmd)
+func NewCollector(cmd ccache.Command) *collector {
+	wrapper := ccache.NewWrapper(cmd)
 
 	return &collector{
 		wrapper: wrapper,
