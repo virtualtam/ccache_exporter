@@ -20,7 +20,7 @@ services:
       - ${HOME}/.ccache:/home/exporter/.ccache:ro
 
   grafana:
-    image: grafana/grafana:8.1.2
+    image: grafana/grafana:9.0.5
     depends_on:
       - prometheus
     networks:
@@ -34,7 +34,7 @@ services:
       - grafana-data:/var/lib/grafana
 
   node-exporter:
-    image: prom/node-exporter:v1.2.2
+    image: prom/node-exporter:v1.3.1
     networks:
       prometheus:
     pid: 'host'
@@ -50,7 +50,7 @@ services:
       - '--path.sysfs=/host/sys'
 
   prometheus:
-    image: prom/prometheus:v2.29.2
+    image: prom/prometheus:v2.37.0
     networks:
       prometheus:
     ports:
