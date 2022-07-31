@@ -1,5 +1,7 @@
 # ccache parser and Prometheus exporter
 
+<img src="https://github.com/virtualtam/ccache_exporter/actions/workflows/build-and-test.yml/badge.svg?branch=main" alt="Build and test workflow status">
+
 A [Prometheus](https://prometheus.io/) exporter for the
 [ccache](https://ccache.dev/) compiler cache statistics, and its companion Go
 parser.
@@ -116,3 +118,11 @@ Then, login to Grafana with the default credentials (`admin/admin`) and load
 the `ccache` dashboard:
 
 <img src="./dashboard.jpg" alt="Grafana dashboard for ccache_exporter metrics">
+
+## Change Log
+
+See [CHANGELOG](./CHANGELOG.md)
+
+## License
+
+`ccache_exporter` is licenced under the MIT License.

@@ -5,7 +5,7 @@ repository:
   path: github.com/virtualtam/ccache_exporter
 
 go:
-  # Whenever the Go version is updated here, .travis.yml should also be updated.
+  # Whenever the Go version is updated here, .github/workflows/build-and-test.yml should also be updated.
   version: "1.18"
   cgo: false
 

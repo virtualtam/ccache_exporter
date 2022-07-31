@@ -1,5 +1,4 @@
-Change Log
-==========
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -9,19 +8,18 @@ The format is based on `Keep a Changelog`_ and this project adheres to
 .. _Keep A Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: https://semver.org/
 
-`v2.0.0 <https://github.com/virtualtam/ccache_exporter/releases/tag/v2.0.0>`_ - 2019-10-26
-------------------------------------------------------------------------------------------
+## [v2.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v2.0.0) - 2019-10-26
 
 Major refactoring.
 
-**Added**
+### Added
 
 - Allow to specify the path to the ccache binary
 - Setup promu from cross-platform exporter builds
 - Add license information to all Go source headers
 - Document all exported types and methods
 
-**Changed**
+### Changed
 
 - Explicitly handle or silence errors
 - Relocate parser code to this repository
@@ -30,20 +28,18 @@ Major refactoring.
   type and method names
 - Trim build paths
 
-`v1.1.0 <https://github.com/virtualtam/ccache_exporter/releases/tag/v1.1.0>`_ - 2018-10-20
-------------------------------------------------------------------------------------------
+## [v1.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v1.1.0) - 2018-10-20
 
-**Changed**
+### Changed
 
 - Add support for ccache 3.5
 - Setup out-of-tree builds
 
-`v1.0.0 <https://github.com/virtualtam/ccache_exporter/releases/tag/v1.0.0>`_ - 2018-10-09
-------------------------------------------------------------------------------------------
+## [v1.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v1.0.0) - 2018-10-09
 
 Initial release.
 
-**Added**
+### Added
 
 - Setup Go project with module support
 - Gather metrics  from local ccache statistics

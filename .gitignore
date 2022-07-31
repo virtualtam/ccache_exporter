@@ -1,14 +1,12 @@
 *~
 *.swp
 
-
 # Promu builds
 .build/
 .tarballs/
 
 # Binaries
-/ccache_exporter
-/ccacheparser
+build/
 
 # Integration testdata output
 integration/output/
