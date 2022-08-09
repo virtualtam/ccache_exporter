@@ -14,8 +14,12 @@ var _ Command = &LocalCommand{}
 
 // Command exposes supported ccache commands.
 type Command interface {
+	PrintConfig() (string, error)
+	ShowConfig() (string, error)
+
 	PrintStats() (string, error)
 	ShowStats() (string, error)
+
 	Version() (string, error)
 }
 
@@ -34,6 +38,20 @@ func (c *LocalCommand) exec(option string) (string, error) {
 	return string(out[:]), nil
 }
 
+// PrintConfig returns the result of `ccache --print-config`.
+//
+// Available for ccache < 3.7
+func (c *LocalCommand) PrintConfig() (string, error) {
+	return c.exec("--print-config")
+}
+
+// ShowConfig returns the result of `ccache --show-config`.
+//
+// Available since ccache 3.7
+func (c *LocalCommand) ShowConfig() (string, error) {
+	return c.exec("--show-config")
+}
+
 // PrintStats returns the result of `ccache --print-stats`.
 //
 // Available since ccache 3.7
@@ -41,12 +59,12 @@ func (c *LocalCommand) PrintStats() (string, error) {
 	return c.exec("--print-stats")
 }
 
-// ShowStats returns the result of ``ccache --show-stats''.
+// ShowStats returns the result of “ccache --show-stats”.
 func (c *LocalCommand) ShowStats() (string, error) {
 	return c.exec("--show-stats")
 }
 
-// Version returns the result of ``ccache --version''.
+// Version returns the result of “ccache --version”.
 func (c *LocalCommand) Version() (string, error) {
 	return c.exec("--version")
 }

@@ -12,6 +12,14 @@ type fakeCommand struct {
 	version string
 }
 
+func (c *fakeCommand) PrintConfig() (string, error) {
+	return "", nil
+}
+
+func (c *fakeCommand) ShowConfig() (string, error) {
+	return "", nil
+}
+
 func (c *fakeCommand) PrintStats() (string, error) {
 	return "", nil
 }

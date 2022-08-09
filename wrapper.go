@@ -49,28 +49,22 @@ func NewWrapper(c Command) *Wrapper {
 	return w
 }
 
-// Configuration returns the current cache configuration.
+// Configuration returns the current ccache configuration.
 func (w *Wrapper) Configuration() (*Configuration, error) {
+	var out string
+	var err error
+
 	if w.version.LessThan(useLegacyParserForVersionsBelow) {
-		return w.legacyConfiguration()
+		out, err = w.command.PrintConfig()
+	} else {
+		out, err = w.command.ShowConfig()
 	}
 
-	return w.tsvConfiguration()
-}
-
-func (w *Wrapper) legacyConfiguration() (*Configuration, error) {
-	out, err := w.command.ShowStats()
 	if err != nil {
 		return &Configuration{}, err
 	}
 
-	config, _, err := w.legacyParser.ParseShowStats(out)
-	return config, err
-}
-
-func (w *Wrapper) tsvConfiguration() (*Configuration, error) {
-	// TODO
-	return &Configuration{}, nil
+	return ParseConfiguration(out)
 }
 
 // Statistics returns the current ccache statistics.
