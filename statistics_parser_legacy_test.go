@@ -7,7 +7,7 @@ package ccache
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -310,7 +310,7 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 					fmt.Sprintf("%s-%s", ts.osAndVersionCode, ts.ccacheVersion),
 					tc.inputFilename,
 				)
-				input, err := ioutil.ReadFile(inputFilepath)
+				input, err := os.ReadFile(inputFilepath)
 				if err != nil {
 					t.Fatalf("failed to open test input: %q", err)
 				}
