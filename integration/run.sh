@@ -36,6 +36,20 @@ function _version {
     echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
 }
 
+function _print_config() {
+    # Print ccache configuration to a local directory.
+    local output_dir=$1
+    local version=$2
+    local name="config"
+
+    if [[ $(_version $version) -lt $(_version "3.7") ]]
+    then
+        docker exec $NAME ccache --print-config > $output_dir/$name
+    else
+        docker exec $NAME ccache --show-config > $output_dir/$name
+    fi
+}
+
 function _print_stats() {
     # Print ccache stats to a local directory.
     local output_dir=$1
@@ -66,6 +80,9 @@ mkdir -p $OUTPUT_DIR
 
 # Clear cache and reset stats
 docker exec $NAME ccache --clear --zero-stats
+
+# Initial cache status
+_print_config $OUTPUT_DIR $VERSION
 _print_stats $OUTPUT_DIR $VERSION empty
 
 # First build
