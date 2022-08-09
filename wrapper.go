@@ -24,13 +24,13 @@ var (
 type Wrapper struct {
 	command      Command
 	version      semver.Version
-	legacyParser *LegacyParser
+	legacyParser *LegacyStatisticsParser
 	tsvParser    *TSVParser
 }
 
 // NewWrapper initializes and returns a new Wrapper.
 func NewWrapper(c Command) *Wrapper {
-	lp := NewLegacyParser()
+	lp := NewLegacyStatisticsParser()
 	tp := NewTSVParser()
 
 	w := &Wrapper{
@@ -82,7 +82,7 @@ func (w *Wrapper) legacyStatistics() (*Statistics, error) {
 		return &Statistics{}, err
 	}
 
-	_, stats, err := w.legacyParser.ParseShowStats(out)
+	stats, err := w.legacyParser.ParseShowStats(out)
 
 	return stats, err
 }

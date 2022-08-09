@@ -25,23 +25,15 @@ type legacyTestSession struct {
 	osAndVersion     string
 	osAndVersionCode string
 	ccacheVersion    string
-	wantConfig       Configuration
 	testCases        []legacyTestCase
 }
 
-func TestLegacyParserParseShowStats(t *testing.T) {
+func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 	sessions := []legacyTestSession{
 		{
 			osAndVersion:     "Arch Linux",
 			osAndVersionCode: "arch",
 			ccacheVersion:    "3.4.3",
-			wantConfig: Configuration{
-				CacheDirectory:          "/home/virtualtam/.ccache",
-				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
-				SecondaryConfigReadonly: "/etc/ccache.conf",
-				MaxCacheSize:            "15.0 GB",
-				MaxCacheSizeBytes:       units.MetricBytes(15000000000),
-			},
 
 			testCases: []legacyTestCase{
 				{
@@ -90,13 +82,6 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 			osAndVersion:     "Arch Linux",
 			osAndVersionCode: "arch",
 			ccacheVersion:    "3.5",
-			wantConfig: Configuration{
-				CacheDirectory:          "/home/virtualtam/.ccache",
-				PrimaryConfig:           "/home/virtualtam/.ccache/ccache.conf",
-				SecondaryConfigReadonly: "/etc/ccache.conf",
-				MaxCacheSize:            "5.0 GB",
-				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
-			},
 
 			testCases: []legacyTestCase{
 				{
@@ -145,13 +130,6 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 			osAndVersion:     "Debian 9",
 			osAndVersionCode: "debian-9",
 			ccacheVersion:    "3.3.4",
-			wantConfig: Configuration{
-				CacheDirectory:          "/home/cached/.ccache",
-				PrimaryConfig:           "/home/cached/.ccache/ccache.conf",
-				SecondaryConfigReadonly: "/etc/ccache.conf",
-				MaxCacheSize:            "5.0 GB",
-				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
-			},
 
 			testCases: []legacyTestCase{
 				{
@@ -199,13 +177,6 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 			osAndVersion:     "Debian 10",
 			osAndVersionCode: "debian-10",
 			ccacheVersion:    "3.6",
-			wantConfig: Configuration{
-				CacheDirectory:          "/home/cached/.ccache",
-				PrimaryConfig:           "/home/cached/.ccache/ccache.conf",
-				SecondaryConfigReadonly: "/etc/ccache.conf",
-				MaxCacheSize:            "5.0 GB",
-				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
-			},
 
 			testCases: []legacyTestCase{
 				{
@@ -252,13 +223,6 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 			osAndVersion:     "Ubuntu 18.04",
 			osAndVersionCode: "ubuntu-18.04",
 			ccacheVersion:    "3.4.1",
-			wantConfig: Configuration{
-				CacheDirectory:          "/home/cached/.ccache",
-				PrimaryConfig:           "/home/cached/.ccache/ccache.conf",
-				SecondaryConfigReadonly: "/etc/ccache.conf",
-				MaxCacheSize:            "5.0 GB",
-				MaxCacheSizeBytes:       units.MetricBytes(5000000000),
-			},
 
 			testCases: []legacyTestCase{
 				{
@@ -315,8 +279,8 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 					t.Fatalf("failed to open test input: %q", err)
 				}
 
-				parser := NewLegacyParser()
-				c, s, err := parser.ParseShowStats(string(input))
+				parser := NewLegacyStatisticsParser()
+				s, err := parser.ParseShowStats(string(input))
 
 				if tc.wantErr != nil {
 					if err == nil {
@@ -332,20 +296,18 @@ func TestLegacyParserParseShowStats(t *testing.T) {
 					t.Fatalf("expected no error, got %q", err)
 				}
 
-				assertConfigurationsEqual(t, c, &ts.wantConfig)
 				assertStatisticsEqual(t, s, &tc.wantStats)
 			})
 		}
 	}
 }
 
-func TestLegacyParserParseShowStatsEdgeCases(t *testing.T) {
+func TestLegacyStatisticsParserParseShowStatsEdgeCases(t *testing.T) {
 	cases := []struct {
-		tname      string
-		input      string
-		wantConfig Configuration
-		wantStats  Statistics
-		wantErr    error
+		tname     string
+		input     string
+		wantStats Statistics
+		wantErr   error
 	}{
 		// ccache cache size units
 		{
@@ -353,11 +315,6 @@ func TestLegacyParserParseShowStatsEdgeCases(t *testing.T) {
 			input: `cache size                          16.7 kB
 max cache size                      57.0 kB
 `,
-			wantConfig: Configuration{
-
-				MaxCacheSize:      "57.0 kB",
-				MaxCacheSizeBytes: units.MetricBytes(57000),
-			},
 			wantStats: Statistics{
 				CacheSize:      "16.7 kB",
 				CacheSizeBytes: units.MetricBytes(16700),
@@ -387,8 +344,8 @@ max cache size                      57.0 kB
 
 	for _, tc := range cases {
 		t.Run(tc.tname, func(t *testing.T) {
-			parser := NewLegacyParser()
-			c, s, err := parser.ParseShowStats(tc.input)
+			parser := NewLegacyStatisticsParser()
+			s, err := parser.ParseShowStats(tc.input)
 
 			if tc.wantErr != nil {
 				if err == nil {
@@ -404,7 +361,6 @@ max cache size                      57.0 kB
 				t.Fatalf("expected no error, got %q", err)
 			}
 
-			assertConfigurationsEqual(t, c, &tc.wantConfig)
 			assertStatisticsEqual(t, s, &tc.wantStats)
 		})
 	}
