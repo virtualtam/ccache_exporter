@@ -6,7 +6,7 @@ repository:
 
 go:
   # Whenever the Go version is updated here, .github/workflows/build-and-test.yml should also be updated.
-  version: "1.18"
+  version: "1.19"
   cgo: false
 
 build:
