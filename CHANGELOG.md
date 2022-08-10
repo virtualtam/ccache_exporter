@@ -2,11 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on `Keep a Changelog`_ and this project adheres to
-`Semantic Versioning`_.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
-.. _Keep A Changelog: http://keepachangelog.com/
-.. _Semantic Versioning: https://semver.org/
 
 ## v3.0.0 - Unreleased
 
@@ -16,8 +14,8 @@ Major refactoring with breaking changes.
 
 - Add support for ccache 3.7 and above, that comes with a new format for
   machine-readable statistics
-- Add utilities to generate reference testdata using ccache on long-term Debian
-  and Ubuntu releases
+- Add utilities to generate reference testdata using ccache on long-term-support
+  Debian and Ubuntu releases
 
 ### Changed
 
@@ -27,14 +25,12 @@ Major refactoring with breaking changes.
     - 3.7 and above configuration (--show-config) and statistics (--print-stats)
       output
 - Relocate Prometheus collector
-- Bump Go to 1.18 for CI, Promu and Docker builds
+- Bump Go to 1.19 for CI, Promu and Docker builds
 - Switch to Github Actions
 - Rewrite README and CHANGELOG in Markdown
 - Refactor tests and test helpers to make it easier to add golden test cases
+- Update Prometheus Makefile library
 
-### Removed
-
-- Remove common Prometheus Makefile library
 
 ## [v2.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v2.0.0) - 2019-10-26
 
