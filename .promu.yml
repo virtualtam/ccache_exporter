@@ -12,9 +12,9 @@ go:
 build:
   prefix: .
   binaries:
-    - name: build/ccache_exporter
+    - name: ccache_exporter
       path: ./cmd/ccache_exporter
-    - name: build/ccacheparser
+    - name: ccacheparser
       path: ./cmd/ccacheparser
   flags: -a -trimpath
   ldflags: |

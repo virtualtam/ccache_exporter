@@ -26,3 +26,8 @@ test:
 cover:
 	go test -cover -race ./...
 .PHONY: cover
+
+release:
+	promu crossbuild
+	promu crossbuild tarballs
+.phony: release
