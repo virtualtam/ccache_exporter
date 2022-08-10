@@ -80,6 +80,157 @@ func TestParseTSVStatistics(t *testing.T) {
 				},
 			},
 		},
+		{
+			osAndVersion:     "Debian 11",
+			osAndVersionCode: "debian-11",
+			ccacheVersion:    "4.2",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:              197,
+						CalledForLink:          45,
+						CalledForPreprocessing: 74,
+						CompilationFailed:      1,
+						NoInputFile:            5,
+						PreprocessingFailed:    4,
+						FilesInCache:           390,
+						CacheSize:              "38MB",
+						CacheSizeBytes:         units.MetricBytes(38199296),
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:         121,
+						CacheHitPreprocessed:   2,
+						CacheMiss:              197,
+						CacheHitRate:           100, // FIXME most likely erroneous
+						CacheHitRatio:          1,   // FIXME most likely erroneous
+						CalledForLink:          90,
+						CalledForPreprocessing: 76,
+						CompilationFailed:      2,
+						NoInputFile:            10,
+						PreprocessingFailed:    8,
+						FilesInCache:           390,
+						CacheSize:              "38MB",
+						CacheSizeBytes:         units.MetricBytes(38199296),
+					},
+				},
+			},
+		},
+		{
+			osAndVersion:     "Ubuntu 20.04",
+			osAndVersionCode: "ubuntu-20.04",
+			ccacheVersion:    "3.7.7",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:              69,
+						CalledForLink:          2,
+						CalledForPreprocessing: 11,
+						CompilationFailed:      5,
+						NoInputFile:            4,
+						PreprocessingFailed:    1,
+						FilesInCache:           121,
+						CacheSize:              "2MB",
+						CacheSizeBytes:         units.MetricBytes(2371584),
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:         51,
+						CacheHitPreprocessed:   18,
+						CacheMiss:              69,
+						CacheHitRate:           100, // FIXME most likely erroneous
+						CacheHitRatio:          1,   // FIXME most likely erroneous
+						CalledForLink:          4,
+						CalledForPreprocessing: 22,
+						CompilationFailed:      10,
+						NoInputFile:            8,
+						PreprocessingFailed:    2,
+						FilesInCache:           121,
+						CacheSize:              "2MB",
+						CacheSizeBytes:         units.MetricBytes(2371584),
+					},
+				},
+			},
+		},
+		{
+			osAndVersion:     "Ubuntu 22.04",
+			osAndVersionCode: "ubuntu-22.04",
+			ccacheVersion:    "4.5.1",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:              255,
+						CacheMissDirect:        260,
+						CacheMissPreprocessed:  256,
+						CalledForLink:          45,
+						CalledForPreprocessing: 103,
+						CompilationFailed:      1,
+						NoInputFile:            6,
+						PreprocessingFailed:    4,
+						FilesInCache:           506,
+						CacheSize:              "134MB",
+						CacheSizeBytes:         units.MetricBytes(134987776),
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:         150,
+						CacheHitPreprocessed:   2,
+						CacheMiss:              255,
+						CacheMissDirect:        267,
+						CacheMissPreprocessed:  257,
+						CacheHitRate:           22.485207,
+						CacheHitRatio:          0.224852,
+						CalledForLink:          90,
+						CalledForPreprocessing: 105,
+						CompilationFailed:      2,
+						NoInputFile:            12,
+						PreprocessingFailed:    8,
+						FilesInCache:           506,
+						CacheSize:              "134MB",
+						CacheSizeBytes:         units.MetricBytes(134987776),
+					},
+				},
+			},
+		},
 	}
 
 	for _, ts := range sessions {
