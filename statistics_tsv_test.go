@@ -67,8 +67,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:             150,
 						CacheMissDirect:       164,
 						CacheMissPreprocessed: 152,
-						CacheHitRate:          32.188841,
-						CacheHitRatio:         0.321888,
+						CacheHitRate:          24.350649,
+						CacheHitRatio:         0.2435049,
 						CalledForLink:         88,
 						CompilationFailed:     2,
 						NoInputFile:           9,
@@ -115,8 +115,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheHitDirect:         121,
 						CacheHitPreprocessed:   2,
 						CacheMiss:              197,
-						CacheHitRate:           100, // FIXME most likely erroneous
-						CacheHitRatio:          1,   // FIXME most likely erroneous
+						CacheHitRate:           38.437500,
+						CacheHitRatio:          0.384375,
 						CalledForLink:          90,
 						CalledForPreprocessing: 76,
 						CompilationFailed:      2,
@@ -164,8 +164,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheHitDirect:         51,
 						CacheHitPreprocessed:   18,
 						CacheMiss:              69,
-						CacheHitRate:           100, // FIXME most likely erroneous
-						CacheHitRatio:          1,   // FIXME most likely erroneous
+						CacheHitRate:           50,
+						CacheHitRatio:          0.5,
 						CalledForLink:          4,
 						CalledForPreprocessing: 22,
 						CompilationFailed:      10,
@@ -217,8 +217,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:              255,
 						CacheMissDirect:        267,
 						CacheMissPreprocessed:  257,
-						CacheHitRate:           22.485207,
-						CacheHitRatio:          0.224852,
+						CacheHitRate:           16.326531,
+						CacheHitRatio:          0.163265,
 						CalledForLink:          90,
 						CalledForPreprocessing: 105,
 						CompilationFailed:      2,

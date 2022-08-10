@@ -133,8 +133,12 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 	}
 
 	// Compute fields for compatibility
+	//
+	// FIXME: "ccache --show-stats" returns seemingly incoherent values
+	//        regarding cache hits and misses, making it hard to tell how ratios
+	//        should be computed
 	cacheHitTotal := stats.CacheHitDirect + stats.CacheHitPreprocessed
-	cacheCallTotal := stats.CacheHitDirect + stats.CacheHitPreprocessed + stats.CacheMissDirect + stats.CacheMissPreprocessed
+	cacheCallTotal := stats.CacheHitDirect + stats.CacheHitPreprocessed + stats.CacheMiss + stats.CacheMissDirect + stats.CacheMissPreprocessed
 
 	if cacheCallTotal > 0 {
 		stats.CacheHitRatio = float64(cacheHitTotal) / float64(cacheCallTotal)

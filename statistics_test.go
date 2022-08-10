@@ -35,7 +35,7 @@ func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
 
 func assertFloatFieldAlmostEquals(t *testing.T, fieldName string, got, want float64) {
 	t.Helper()
-	if math.Abs(got-want) > 0.1 {
+	if math.Abs(got-want) > 0.01 {
 		t.Errorf("%s: want %f, got %f", fieldName, want, got)
 	}
 }
