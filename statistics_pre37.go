@@ -13,7 +13,7 @@ import (
 	"github.com/alecthomas/units"
 )
 
-var rules = map[string]*regexp.Regexp{
+var pre37StatisticsRules = map[string]*regexp.Regexp{
 	"statsZeroTime":            regexp.MustCompile(`stats zero( time|ed)\s+(.*)`),
 	"cacheHitDirect":           regexp.MustCompile(`cache hit \(direct\)\s+(\d+)`),
 	"cacheHitPreprocessed":     regexp.MustCompile(`cache hit \(preprocessed\)\s+(\d+)`),
@@ -28,23 +28,12 @@ var rules = map[string]*regexp.Regexp{
 	"cacheSize":                regexp.MustCompile(`cache size\s+(.+)`),
 }
 
-// LegacyStatisticsParser provides support for ccache versions 3.3 to 3.6 (included).
-//
-// It relies upon the `ccache --show-stats` command to ouptut machine-readable
-// statistics.
+// ParsePre37Statistics reads ccache configuration and statistics as formatted by the `ccache --show-stats` command.
 //
 // Starting with ccache 3.7, this command was overhauled to print human-readable
 // statistics, with `ccache --print-stats` being the new command to get
 // machine-readable statistics.
-type LegacyStatisticsParser struct{}
-
-// NewLegacyStatisticsParser initializes and returns a new LegacyParser.
-func NewLegacyStatisticsParser() *LegacyStatisticsParser {
-	return &LegacyStatisticsParser{}
-}
-
-// ParseShowStats reads ccache configuration and statistics as formatted by the `ccache --show-stats` command.
-func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error) {
+func ParsePre37Statistics(text string) (*Statistics, error) {
 	stats := &Statistics{}
 	var err error
 
@@ -52,16 +41,16 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 	stats.StatsTime = time.Now()
 
 	// assume stats originate from the local host
-	matches := rules["statsZeroTime"].FindStringSubmatch(text)
+	matches := pre37StatisticsRules["statsZeroTime"].FindStringSubmatch(text)
 	if len(matches) == 3 {
-		statsZeroTime := rules["statsZeroTime"].FindStringSubmatch(text)[2]
+		statsZeroTime := pre37StatisticsRules["statsZeroTime"].FindStringSubmatch(text)[2]
 		stats.StatsZeroTime, err = time.ParseInLocation("Mon Jan 2 15:04:05 2006", statsZeroTime, stats.StatsTime.Location())
 		if err != nil {
 			return &Statistics{}, err
 		}
 	}
 
-	matches = rules["cacheHitDirect"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cacheHitDirect"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheHitDirect, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -69,7 +58,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["cacheHitPreprocessed"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cacheHitPreprocessed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheHitPreprocessed, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -77,7 +66,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["cacheMiss"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cacheMiss"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheMiss, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -85,7 +74,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["cacheHitRate"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cacheHitRate"].FindStringSubmatch(text)
 	if len(matches) == 3 {
 		stats.CacheHitRate, err = strconv.ParseFloat(matches[1], 64)
 		stats.CacheHitRatio = stats.CacheHitRate / 100
@@ -94,7 +83,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["calledForLink"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["calledForLink"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CalledForLink, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -102,7 +91,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["calledForPreprocessing"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["calledForPreprocessing"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CalledForPreprocessing, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -110,7 +99,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["unsupportedCodeDirective"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["unsupportedCodeDirective"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.UnsupportedCodeDirective, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -118,7 +107,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["noInputFile"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["noInputFile"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.NoInputFile, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -126,7 +115,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["cleanupsPerformed"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cleanupsPerformed"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CleanupsPerformed, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -134,7 +123,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["filesInCache"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["filesInCache"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.FilesInCache, err = strconv.Atoi(matches[1])
 		if err != nil {
@@ -142,7 +131,7 @@ func (p *LegacyStatisticsParser) ParseShowStats(text string) (*Statistics, error
 		}
 	}
 
-	matches = rules["cacheSize"].FindStringSubmatch(text)
+	matches = pre37StatisticsRules["cacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheSize = matches[1]
 		sanitizedCacheSize := strings.Replace(strings.ToUpper(stats.CacheSize), " ", "", -1)

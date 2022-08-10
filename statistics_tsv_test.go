@@ -23,7 +23,7 @@ type tsvTestSession struct {
 	testCases        []tsvTestCase
 }
 
-func TestTSVParserParsePrintStats(t *testing.T) {
+func TestParseTSVStatistics(t *testing.T) {
 	sessions := []tsvTestSession{
 		{
 			osAndVersion:     "Arch Linux",
@@ -87,8 +87,7 @@ func TestTSVParserParsePrintStats(t *testing.T) {
 					t.Fatalf("failed to open test input: %q", err)
 				}
 
-				parser := NewTSVParser()
-				s, err := parser.ParsePrintStats(string(input))
+				s, err := ParseTSVStatistics(string(input))
 
 				if tc.wantErr != nil {
 					if err == nil {

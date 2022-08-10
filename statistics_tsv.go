@@ -10,19 +10,11 @@ import (
 	"github.com/alecthomas/units"
 )
 
-// TSVParser provides support for ccache versions 3.7 and newer.
+// ParseTSVStatistics reads ccache statistics as formatted by the `ccache --print-stats` command.
 //
 // It relies upon the `ccache --print-stats` command to ouptut machine-readable
 // statistics.
-type TSVParser struct{}
-
-// NewTSVParser initializes and returns a new TSVParser.
-func NewTSVParser() *TSVParser {
-	return &TSVParser{}
-}
-
-// ParsePrintStats reads ccache statistics as formatted by the `ccache --print-stats` command.
-func (p *TSVParser) ParsePrintStats(text string) (*Statistics, error) {
+func ParseTSVStatistics(text string) (*Statistics, error) {
 	r := strings.NewReader(text)
 
 	tsvReader := csv.NewReader(r)

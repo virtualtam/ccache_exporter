@@ -14,28 +14,28 @@ import (
 	"github.com/alecthomas/units"
 )
 
-type legacyTestCase struct {
+type pre37TestCase struct {
 	tname         string
 	inputFilename string
 	wantStats     Statistics
 	wantErr       error
 }
 
-type legacyTestSession struct {
+type pre37TestSession struct {
 	osAndVersion     string
 	osAndVersionCode string
 	ccacheVersion    string
-	testCases        []legacyTestCase
+	testCases        []pre37TestCase
 }
 
-func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
-	sessions := []legacyTestSession{
+func TestParsePre37Statistics(t *testing.T) {
+	sessions := []pre37TestSession{
 		{
 			osAndVersion:     "Arch Linux",
 			osAndVersionCode: "arch",
 			ccacheVersion:    "3.4.3",
 
-			testCases: []legacyTestCase{
+			testCases: []pre37TestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -83,7 +83,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 			osAndVersionCode: "arch",
 			ccacheVersion:    "3.5",
 
-			testCases: []legacyTestCase{
+			testCases: []pre37TestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -131,7 +131,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 			osAndVersionCode: "debian-9",
 			ccacheVersion:    "3.3.4",
 
-			testCases: []legacyTestCase{
+			testCases: []pre37TestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -178,7 +178,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 			osAndVersionCode: "debian-10",
 			ccacheVersion:    "3.6",
 
-			testCases: []legacyTestCase{
+			testCases: []pre37TestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -224,7 +224,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 			osAndVersionCode: "ubuntu-18.04",
 			ccacheVersion:    "3.4.1",
 
-			testCases: []legacyTestCase{
+			testCases: []pre37TestCase{
 				{
 					tname:         "empty cache",
 					inputFilename: "empty",
@@ -279,8 +279,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 					t.Fatalf("failed to open test input: %q", err)
 				}
 
-				parser := NewLegacyStatisticsParser()
-				s, err := parser.ParseShowStats(string(input))
+				s, err := ParsePre37Statistics(string(input))
 
 				if tc.wantErr != nil {
 					if err == nil {
@@ -302,7 +301,7 @@ func TestLegacyStatisticsParserParseShowStats(t *testing.T) {
 	}
 }
 
-func TestLegacyStatisticsParserParseShowStatsEdgeCases(t *testing.T) {
+func TestParsePre37StatisticsEdgeCases(t *testing.T) {
 	cases := []struct {
 		tname     string
 		input     string
@@ -344,8 +343,7 @@ max cache size                      57.0 kB
 
 	for _, tc := range cases {
 		t.Run(tc.tname, func(t *testing.T) {
-			parser := NewLegacyStatisticsParser()
-			s, err := parser.ParseShowStats(tc.input)
+			s, err := ParsePre37Statistics(tc.input)
 
 			if tc.wantErr != nil {
 				if err == nil {

@@ -38,9 +38,7 @@ func main() {
 		text += scanner.Text() + "\n"
 	}
 
-	parser := ccache.NewTSVParser()
-
-	stats, err := parser.ParsePrintStats(text)
+	stats, err := ccache.ParseTSVStatistics(text)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parse")
 	}
