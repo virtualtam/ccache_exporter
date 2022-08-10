@@ -12,9 +12,9 @@ go:
 build:
   prefix: .
   binaries:
-    - name: ccache_exporter
+    - name: build/ccache_exporter
       path: ./cmd/ccache_exporter
-    - name: ccacheparser
+    - name: build/ccacheparser
       path: ./cmd/ccacheparser
   flags: -a -trimpath
   ldflags: |
@@ -34,5 +34,6 @@ crossbuild:
 tarball:
   prefix: .
   files:
+    - CHANGELOG.md
     - LICENSE
-    - README.rst
+    - README.md
