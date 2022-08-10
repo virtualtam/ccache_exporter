@@ -56,6 +56,13 @@ Build platform-specific binaries with [Promu](https://github.com/prometheus/prom
 $ promu crossbuild
 ```
 
+Build and archive platform-specific binaries:
+
+```shell
+$ promu crossbuild
+$ promu crossbuild tarballs
+```
+
 Parser usage
 ------------
 
