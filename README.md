@@ -19,7 +19,9 @@ Counters (ccache):
 - `ccache_called_for_link_total`
 - `ccache_called_for_preprocessing_total`
 - `ccache_cleanups_performed_total`
+- `ccache_compilation_failed_total`
 - `ccache_no_input_file_total`
+- `ccache_preprocessing_failed_total`
 - `ccache_unsupported_code_directive_total`
 
 

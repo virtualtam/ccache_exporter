@@ -23,6 +23,8 @@ func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
 	assertFloatFieldAlmostEquals(t, "CacheHitRatio", got.CacheHitRatio, want.CacheHitRatio)
 	assertIntFieldEquals(t, "CalledForLink", got.CalledForLink, want.CalledForLink)
 	assertIntFieldEquals(t, "CalledForPreprocessing", got.CalledForPreprocessing, want.CalledForPreprocessing)
+	assertIntFieldEquals(t, "CompilationFailed", got.CompilationFailed, want.CompilationFailed)
+	assertIntFieldEquals(t, "PreProcessorError", got.PreprocessingFailed, want.PreprocessingFailed)
 	assertIntFieldEquals(t, "UnsupportedCodeDirective", got.UnsupportedCodeDirective, want.UnsupportedCodeDirective)
 	assertIntFieldEquals(t, "NoInputFile", got.NoInputFile, want.NoInputFile)
 	assertIntFieldEquals(t, "CleanupsPerformed", got.CleanupsPerformed, want.CleanupsPerformed)

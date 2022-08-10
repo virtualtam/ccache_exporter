@@ -38,6 +38,8 @@ type collector struct {
 	cacheHitRatio            *prometheus.Desc
 	calledForLink            *prometheus.Desc
 	calledForPreprocessing   *prometheus.Desc
+	compilationFailed        *prometheus.Desc
+	preprocessingFailed      *prometheus.Desc
 	unsupportedCodeDirective *prometheus.Desc
 	noInputFile              *prometheus.Desc
 	cleanupsPerformed        *prometheus.Desc
@@ -80,6 +82,18 @@ func NewCollector(cmd ccache.Command) *collector {
 		calledForPreprocessing: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "called_for_preprocessing_total"),
 			"Called for preprocessing",
+			nil,
+			nil,
+		),
+		compilationFailed: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "compilation_failed_total"),
+			"Compilation failed",
+			nil,
+			nil,
+		),
+		preprocessingFailed: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "preprocessing_failed_total"),
+			"Preprocessing failed",
 			nil,
 			nil,
 		),
@@ -130,6 +144,8 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.cacheHitRatio
 	ch <- c.calledForLink
 	ch <- c.calledForPreprocessing
+	ch <- c.compilationFailed
+	ch <- c.preprocessingFailed
 	ch <- c.unsupportedCodeDirective
 	ch <- c.noInputFile
 	ch <- c.cleanupsPerformed
@@ -164,6 +180,8 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.callHit, prometheus.CounterValue, float64(stats.CacheHitPreprocessed), "preprocessed")
 	ch <- prometheus.MustNewConstMetric(c.calledForLink, prometheus.CounterValue, float64(stats.CalledForLink))
 	ch <- prometheus.MustNewConstMetric(c.calledForPreprocessing, prometheus.CounterValue, float64(stats.CalledForPreprocessing))
+	ch <- prometheus.MustNewConstMetric(c.compilationFailed, prometheus.CounterValue, float64(stats.CompilationFailed))
+	ch <- prometheus.MustNewConstMetric(c.preprocessingFailed, prometheus.CounterValue, float64(stats.PreprocessingFailed))
 	ch <- prometheus.MustNewConstMetric(c.unsupportedCodeDirective, prometheus.CounterValue, float64(stats.UnsupportedCodeDirective))
 	ch <- prometheus.MustNewConstMetric(c.noInputFile, prometheus.CounterValue, float64(stats.NoInputFile))
 	ch <- prometheus.MustNewConstMetric(c.cleanupsPerformed, prometheus.CounterValue, float64(stats.CleanupsPerformed))

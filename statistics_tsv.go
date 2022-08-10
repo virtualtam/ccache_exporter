@@ -62,6 +62,12 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 				return &Statistics{}, err
 			}
 
+		case "compile_failed":
+			stats.CompilationFailed, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "direct_cache_hit":
 			stats.CacheHitDirect, err = strconv.Atoi(row[1])
 			if err != nil {
@@ -94,6 +100,12 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 
 		case "preprocessed_cache_miss":
 			stats.CacheMissPreprocessed, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "preprocessor_error":
+			stats.PreprocessingFailed, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
