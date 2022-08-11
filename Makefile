@@ -27,7 +27,8 @@ cover:
 	go test -cover -race ./...
 .PHONY: cover
 
-release:
+release: clean
 	promu crossbuild
 	promu crossbuild tarballs
+	cd .tarballs; sha256sum * > sha256sums
 .phony: release
