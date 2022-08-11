@@ -2,18 +2,12 @@
 # https://github.com/prometheus/prometheus/blob/master/Makefile.common
 include Makefile.common
 
-BUILD_DIR ?= build
-SRC_FILES := $(shell find . -name "*.go")
-
 all: lint cover build
 .PHONY: all
 
 clean:
-	rm -rf .build $(BUILD_DIR)
+	rm -rf .build .tarballs ccache_exporter ccacheparser
 .PHONY: clean
-
-$(BUILD_DIR)/%: $(SRC_FILES)
-	go build -trimpath -o $@ ./cmd/$*
 
 lint:
 	golangci-lint run ./...
