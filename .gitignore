@@ -6,8 +6,8 @@
 .tarballs/
 
 # Binaries
-ccache_exporter
-ccacheparser
+./ccache_exporter
+./ccacheparser
 
 # Integration testdata output
 integration/output/

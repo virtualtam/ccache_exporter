@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
-## v3.0.0 - Unreleased
+## [v3.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.0.0) - 2022-08-11
 
 Major refactoring with breaking changes.
 
