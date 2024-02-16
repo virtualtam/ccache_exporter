@@ -110,6 +110,48 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 				return &Statistics{}, err
 			}
 
+		case "remote_storage_error":
+			stats.RemoteStorageError, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_hit":
+			stats.RemoteStorageHit, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_miss":
+			stats.RemoteStorageMiss, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_read_hit":
+			stats.RemoteStorageReadHit, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_read_miss":
+			stats.RemoteStorageReadMiss, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_timeout":
+			stats.RemoteStorageTimeout, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "remote_storage_write":
+			stats.RemoteStorageWrite, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "stats_updated_timestamp":
 			unixTime, err := strconv.ParseInt(row[1], 10, 64)
 			if err != nil {

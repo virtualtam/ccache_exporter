@@ -33,9 +33,18 @@ type Statistics struct {
 	CalledForLink          int     `json:"called_for_link"`
 	CalledForPreprocessing int     `json:"called_for_preprocessing"`
 
-	// Uncacheablew
+	// Uncacheable
 	CompilationFailed        int `json:"compilation_failed"`
 	PreprocessingFailed      int `json:"preprocessing_failed"`
 	UnsupportedCodeDirective int `json:"unsupported_code_directive"`
 	NoInputFile              int `json:"no_input_file"`
+
+	// Remote storage
+	RemoteStorageError    int `json:"remote_storage_error"`
+	RemoteStorageHit      int `json:"remote_storage_hit"`
+	RemoteStorageMiss     int `json:"remote_storage_miss"`
+	RemoteStorageReadHit  int `json:"remote_storage_read_hit"`
+	RemoteStorageReadMiss int `json:"remote_storage_read_miss"`
+	RemoteStorageTimeout  int `json:"remote_storage_timeout"`
+	RemoteStorageWrite    int `json:"remote_storage_write"`
 }

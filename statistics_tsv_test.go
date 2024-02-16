@@ -24,6 +24,7 @@ type tsvTestSession struct {
 	osAndVersion     string
 	osAndVersionCode string
 	ccacheVersion    string
+	redisVersion     string
 	testCases        []tsvTestCase
 }
 
@@ -340,9 +341,103 @@ func TestParseTSVStatistics(t *testing.T) {
 	for _, ts := range sessions {
 		for _, tc := range ts.testCases {
 			t.Run(fmt.Sprintf("ccache %s on %s (%s)", ts.ccacheVersion, ts.osAndVersion, tc.tname), func(t *testing.T) {
+
 				inputFilepath := filepath.Join(
 					"testdata",
 					fmt.Sprintf("%s-%s", ts.osAndVersionCode, ts.ccacheVersion),
+					tc.inputFilename,
+				)
+				input, err := os.ReadFile(inputFilepath)
+				if err != nil {
+					t.Fatalf("failed to open test input: %q", err)
+				}
+
+				s, err := ParseTSVStatistics(string(input))
+
+				if tc.wantErr != nil {
+					if err == nil {
+						t.Fatal("expected an error, got none")
+					} else if err.Error() != tc.wantErr.Error() {
+						t.Fatalf("want error %q, got %q", tc.wantErr, err)
+					}
+
+					return
+				}
+
+				if err != nil {
+					t.Fatalf("expected no error, got %q", err)
+				}
+
+				assertStatisticsEqual(t, s, &tc.wantStats)
+			})
+		}
+	}
+}
+
+func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
+	sessions := []tsvTestSession{
+		{
+			osAndVersion:     "Ubuntu 24.04",
+			osAndVersionCode: "ubuntu-24.04",
+			ccacheVersion:    "4.9.1",
+			redisVersion:     "7",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:             147,
+						CacheMissDirect:       157,
+						CacheMissPreprocessed: 154,
+						CacheSize:             "0B",
+						CalledForLink:         35,
+						CompilationFailed:     7,
+						NoInputFile:           15,
+						PreprocessingFailed:   3,
+						RemoteStorageMiss:     147,
+						RemoteStorageReadMiss: 309,
+						RemoteStorageWrite:    292,
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:        116,
+						CacheHitPreprocessed:  2,
+						CacheMiss:             176,
+						CacheMissDirect:       198,
+						CacheMissPreprocessed: 190,
+						CacheHitRate:          17.302053,
+						CacheHitRatio:         0.173020,
+						CalledForLink:         70,
+						CompilationFailed:     14,
+						NoInputFile:           30,
+						PreprocessingFailed:   6,
+						FilesInCache:          350,
+						CacheSize:             "79MB",
+						CacheSizeBytes:        units.MetricBytes(79892480),
+					},
+				},
+			},
+		},
+	}
+
+	for _, ts := range sessions {
+		for _, tc := range ts.testCases {
+			t.Run(fmt.Sprintf("ccache %s on %s using Redis %s (%s)", ts.ccacheVersion, ts.osAndVersion, ts.redisVersion, tc.tname), func(t *testing.T) {
+
+				inputFilepath := filepath.Join(
+					"testdata",
+					fmt.Sprintf("%s-%s-redis-%s", ts.osAndVersionCode, ts.ccacheVersion, ts.redisVersion),
 					tc.inputFilename,
 				)
 				input, err := os.ReadFile(inputFilepath)

@@ -46,6 +46,13 @@ type collector struct {
 	filesInCache             *prometheus.Desc
 	cacheSizeBytes           *prometheus.Desc
 	maxCacheSizeBytes        *prometheus.Desc
+	remoteStorageError       *prometheus.Desc
+	remoteStorageHit         *prometheus.Desc
+	remoteStorageMiss        *prometheus.Desc
+	remoteStorageReadHit     *prometheus.Desc
+	remoteStorageReadMiss    *prometheus.Desc
+	remoteStorageTimeout     *prometheus.Desc
+	remoteStorageWrite       *prometheus.Desc
 }
 
 // NewCollector initializes and returns a Prometheus collector for ccache
@@ -133,6 +140,48 @@ func NewCollector(cmd ccache.Command) *collector {
 			nil,
 			nil,
 		),
+		remoteStorageError: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_error_total"),
+			"Remote storage errors",
+			nil,
+			nil,
+		),
+		remoteStorageHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_hit_total"),
+			"Remote storage hits",
+			nil,
+			nil,
+		),
+		remoteStorageMiss: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_miss_total"),
+			"Remote storage misses",
+			nil,
+			nil,
+		),
+		remoteStorageReadHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_read_hit_total"),
+			"Remote storage read hits",
+			nil,
+			nil,
+		),
+		remoteStorageReadMiss: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_read_miss_total"),
+			"Remote storage read miss",
+			nil,
+			nil,
+		),
+		remoteStorageTimeout: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_timeout_total"),
+			"Remote storage timeouts",
+			nil,
+			nil,
+		),
+		remoteStorageWrite: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "remote_storage_write_total"),
+			"Remote storage writes",
+			nil,
+			nil,
+		),
 	}
 }
 
@@ -152,6 +201,13 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.filesInCache
 	ch <- c.cacheSizeBytes
 	ch <- c.maxCacheSizeBytes
+	ch <- c.remoteStorageError
+	ch <- c.remoteStorageHit
+	ch <- c.remoteStorageMiss
+	ch <- c.remoteStorageReadHit
+	ch <- c.remoteStorageReadMiss
+	ch <- c.remoteStorageTimeout
+	ch <- c.remoteStorageWrite
 }
 
 // Collect gathers metrics from ccache.
@@ -185,6 +241,13 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.unsupportedCodeDirective, prometheus.CounterValue, float64(stats.UnsupportedCodeDirective))
 	ch <- prometheus.MustNewConstMetric(c.noInputFile, prometheus.CounterValue, float64(stats.NoInputFile))
 	ch <- prometheus.MustNewConstMetric(c.cleanupsPerformed, prometheus.CounterValue, float64(stats.CleanupsPerformed))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageError, prometheus.CounterValue, float64(stats.RemoteStorageError))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageHit, prometheus.CounterValue, float64(stats.RemoteStorageHit))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageMiss, prometheus.CounterValue, float64(stats.RemoteStorageMiss))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageReadHit, prometheus.CounterValue, float64(stats.RemoteStorageReadHit))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageReadMiss, prometheus.CounterValue, float64(stats.RemoteStorageReadMiss))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageTimeout, prometheus.CounterValue, float64(stats.RemoteStorageTimeout))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageWrite, prometheus.CounterValue, float64(stats.RemoteStorageWrite))
 
 	// gauges
 	ch <- prometheus.MustNewConstMetric(c.cacheHitRatio, prometheus.GaugeValue, stats.CacheHitRatio)
