@@ -27,7 +27,7 @@ TAG=$2
 NAME=$3
 
 function _version {
-    # Convert a version code (up to 4 digits) to a integer for version
+    # Convert a version code (up to 4 digits) to an integer for version
     # comparisons.
     #
     # Reference:

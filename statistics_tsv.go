@@ -16,7 +16,7 @@ import (
 
 // ParseTSVStatistics reads ccache statistics as formatted by the `ccache --print-stats` command.
 //
-// It relies upon the `ccache --print-stats` command to ouptut machine-readable
+// It relies upon the `ccache --print-stats` command to output machine-readable
 // statistics.
 func ParseTSVStatistics(text string) (*Statistics, error) {
 	r := strings.NewReader(text)
