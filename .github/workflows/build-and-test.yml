@@ -1,9 +1,10 @@
 ---
 name: build-and-test
 
-on:  # yamllint disable-line rule:truthy
+on:
   push:
-    branches: []
+    branches:
+      - "*"
     tags:
       - v*
   pull_request: {}
@@ -11,11 +12,6 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version:
-          # Whenever the Go version is updated here, .promu.yml should also be updated.
-          - 1.19.x
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +19,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go-version }}
+          # Whenever the Go version is updated here, .promu.yml should also be updated.
+          go-version-file: go.mod
           cache: true
 
       - name: Build
