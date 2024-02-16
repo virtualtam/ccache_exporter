@@ -13,7 +13,9 @@ ENV CCACHE_DIR="/home/cached/.ccache"
 
 # Enable source repositories and install build dependencies to compile the
 # ccache package ;-)
-RUN sed -n 'p; s/^deb/deb-src/p' -i /etc/apt/sources.list \
+ADD enable-deb-src /usr/local/bin/
+
+RUN enable-deb-src \
     && apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
@@ -25,11 +27,11 @@ RUN sed -n 'p; s/^deb/deb-src/p' -i /etc/apt/sources.list \
     && apt build-dep -y ccache
 
 # Create an unprivileged user to run compilation and cache operations
-RUN groupadd --gid 1000 cached \
+RUN groupadd --gid 1010 cached \
     && useradd \
         --create-home \
         --shell /bin/bash \
-        --uid 1000 \
+        --uid 1010 \
         --gid cached \
         cached
 

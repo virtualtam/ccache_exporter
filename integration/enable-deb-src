@@ -1,0 +1,18 @@
+#!/bin/bash -eux
+#
+# Enable source package repositories.
+
+# APT deb822 sources for newer distributions
+#
+# - https://www.jeffgeerling.com/blog/2022/aptkey-deprecated-debianubuntu-how-fix-ansible
+# - https://discourse.ubuntu.com/t/spec-apt-deb822-sources-by-default/29333
+for f in $(find /etc/apt/sources.list.d -type f)
+do
+    sed 's/Types: deb/Types: deb deb-src/' -i ${f}
+done
+
+# Older APT sources.list
+if [[ -f /etc/apt/sources.list ]]
+then
+    sed -n 'p; s/^deb/deb-src/p' -i /etc/apt/sources.list
+fi

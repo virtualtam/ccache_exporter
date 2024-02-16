@@ -5,6 +5,7 @@
 docker-all: docker-debian docker-ubuntu
 
 docker-debian: \
+	docker-debian-12 \
 	docker-debian-11 \
 	docker-debian-10 \
 	docker-debian-9
@@ -18,6 +19,7 @@ docker-debian-%: Dockerfile
 		.
 
 docker-ubuntu: \
+	docker-ubuntu-24.04 \
 	docker-ubuntu-22.04 \
 	docker-ubuntu-20.04 \
 	docker-ubuntu-18.04
@@ -37,6 +39,7 @@ docker-ubuntu-%: Dockerfile
 ccache-testdata-all: ccache-testdata-debian ccache-testdata-ubuntu
 
 ccache-testdata-debian: \
+	ccache-testdata-debian-12 \
 	ccache-testdata-debian-11 \
 	ccache-testdata-debian-10 \
 	ccache-testdata-debian-9
@@ -45,6 +48,7 @@ ccache-testdata-debian-%:
 	./run.sh local/ccache debian-$* $@
 
 ccache-testdata-ubuntu: \
+	ccache-testdata-ubuntu-24.04 \
 	ccache-testdata-ubuntu-22.04 \
 	ccache-testdata-ubuntu-20.04 \
 	ccache-testdata-ubuntu-18.04
