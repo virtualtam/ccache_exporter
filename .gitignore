@@ -6,5 +6,5 @@
 .tarballs/
 
 # Binaries
-./ccache_exporter
-./ccacheparser
+/ccache_exporter
+/ccacheparser
