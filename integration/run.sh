@@ -11,11 +11,12 @@
 #
 # Usage
 #
-#   ./run.sh <docker image> <docker image tag> <container name>
+#   ./run.sh <docker image> <docker image tag> <container name> [remote_storage]
 #
-# Example
+# Examples
 #
 #  ./run.sh local/ccache debian-11 ccache-testdata-debian-11
+#  ./run.sh local/ccache ubuntu-24.04 ccache-testdata-ubuntu-24.04 1
 
 # Docker image
 IMAGE=$1
@@ -26,7 +27,13 @@ TAG=$2
 # Docker container name
 NAME=$3
 
-function _version {
+# Remote storage enabled?
+REMOTE_STORAGE=$4
+
+REMOTE_STORAGE_NETWORK="${NAME}-remote-storage"
+REMOTE_STORAGE_REDIS_NAME="${NAME}-redis"
+
+function parse-version {
     # Convert a version code (up to 4 digits) to an integer for version
     # comparisons.
     #
@@ -36,13 +43,13 @@ function _version {
     echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
 }
 
-function _print_config() {
+function ccache-print-config() {
     # Print ccache configuration to a local directory.
     local output_dir=$1
     local version=$2
     local name="config"
 
-    if [[ $(_version $version) -lt $(_version "3.7") ]]
+    if [[ $(parse-version $version) -lt $(parse-version "3.7") ]]
     then
         docker exec $NAME ccache --print-config > $output_dir/$name
     else
@@ -50,7 +57,7 @@ function _print_config() {
     fi
 }
 
-function _print_stats() {
+function ccache-print-stats() {
     # Print ccache stats to a local directory.
     local output_dir=$1
     local version=$2
@@ -62,14 +69,27 @@ function _print_stats() {
 
     # ccache >= 3.7: machine-readable stats (tab-separated values)
     # https://ccache.dev/releasenotes.html#_ccache_3_7
-    if [[ $(_version $version) -ge $(_version "3.7") ]]
+    if [[ $(parse-version $version) -ge $(parse-version "3.7") ]]
     then
         docker exec $NAME ccache --print-stats > $output_dir/$name.tsv
     fi
 }
 
-# Start ccache container
-docker run --rm --name $NAME -d -it $IMAGE:$TAG
+
+if [[ -z ${REMOTE_STORAGE} ]]
+then
+    docker run --rm --name $NAME -d -it $IMAGE:$TAG
+else
+    # Enable remote storage with Redis
+    docker network create ${REMOTE_STORAGE_NETWORK}
+    docker run --rm --name ${REMOTE_STORAGE_REDIS_NAME} -d -it --network=${REMOTE_STORAGE_NETWORK} redis:7
+    docker run \
+        --rm --name $NAME -d -it \
+        --network=${REMOTE_STORAGE_NETWORK} \
+        -e CCACHE_REMOTE_STORAGE="redis://${REMOTE_STORAGE_REDIS_NAME}:6379" \
+        -e CCACHE_REMOTE_ONLY="true" \
+        $IMAGE:$TAG
+fi
 
 # Retrieve ccache version code
 docker exec $NAME ccache --version
@@ -82,16 +102,23 @@ mkdir -p $OUTPUT_DIR
 docker exec $NAME ccache --clear --zero-stats
 
 # Initial cache status
-_print_config $OUTPUT_DIR $VERSION
-_print_stats $OUTPUT_DIR $VERSION empty
+ccache-print-config $OUTPUT_DIR $VERSION
+ccache-print-stats $OUTPUT_DIR $VERSION empty
 
 # First build
 docker exec $NAME apt source --compile ccache
-_print_stats $OUTPUT_DIR $VERSION firstbuild
+ccache-print-stats $OUTPUT_DIR $VERSION firstbuild
 
 # Second build
 docker exec $NAME apt source --compile ccache
-_print_stats $OUTPUT_DIR $VERSION secondbuild
+ccache-print-stats $OUTPUT_DIR $VERSION secondbuild
 
 # Stop and remove ccache container
-docker stop $NAME
+docker stop ${NAME}
+
+if [[ -n ${REMOTE_STORAGE} ]]
+then
+    # Stop and remove the Redis container and network bridge
+    docker stop ${REMOTE_STORAGE_REDIS_NAME}
+    docker network rm ${REMOTE_STORAGE_NETWORK}
+fi

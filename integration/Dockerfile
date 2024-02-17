@@ -11,6 +11,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/usr/lib/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ENV CCACHE_DIR="/home/cached/.ccache"
 
+# Optionally configure a remote storage:
+# - https://github.com/ccache/ccache/blob/master/doc/MANUAL.adoc#config_remote_storage
+# - https://github.com/ccache/ccache/blob/master/doc/MANUAL.adoc#config_remote_only
+ENV CCACHE_REMOTE_ONLY=""
+ENV CCACHE_REMOTE_STORAGE=""
+
 # Enable source repositories and install build dependencies to compile the
 # ccache package ;-)
 ADD enable-deb-src /usr/local/bin/
