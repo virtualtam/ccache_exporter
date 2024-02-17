@@ -1,5 +1,6 @@
 module github.com/virtualtam/ccache_exporter
 
+// Whenever the Go version is updated here, .promu.yml should also be updated.
 go 1.22
 
 require (
