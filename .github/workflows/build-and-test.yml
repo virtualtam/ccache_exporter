@@ -42,3 +42,10 @@ jobs:
 
       - name: Lint
         uses: golangci/golangci-lint-action@v4
+
+      - name: Vulnerabilities
+        id: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+          go-version-file: go.mod
+          repo-checkout: false
