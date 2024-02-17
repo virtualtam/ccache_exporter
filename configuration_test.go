@@ -17,7 +17,7 @@ func TestParseConfiguration(t *testing.T) {
 		want  Configuration
 	}{
 		{
-			tname: "configured via environment and file",
+			tname: "configured via environment and file (without size unit)",
 			input: `(environment) cache_dir = /home/cached/.ccache
 (/home/cached/.ccache/ccache.conf) max_size = 5.0G
 `,
@@ -29,7 +29,7 @@ func TestParseConfiguration(t *testing.T) {
 			},
 		},
 		{
-			tname: "configured via file",
+			tname: "configured via file (without size unit)",
 			input: `(default) cache_dir = /home/cached/.ccache
 (/home/cached/.ccache/ccache.conf) max_size = 15.0G
 `,
@@ -38,6 +38,18 @@ func TestParseConfiguration(t *testing.T) {
 				PrimaryConfig:     "/home/cached/.ccache/ccache.conf",
 				MaxCacheSize:      "15.0GB",
 				MaxCacheSizeBytes: units.MetricBytes(15000000000),
+			},
+		},
+		{
+			tname: "configured via file",
+			input: `(default) cache_dir = /home/cached/.ccache
+(/home/cached/.ccache/ccache.conf) max_size = 17.0 GB
+`,
+			want: Configuration{
+				CacheDirectory:    "/home/cached/.ccache",
+				PrimaryConfig:     "/home/cached/.ccache/ccache.conf",
+				MaxCacheSize:      "17.0GB",
+				MaxCacheSizeBytes: units.MetricBytes(17000000000),
 			},
 		},
 	}

@@ -6,7 +6,6 @@ package ccache
 
 import (
 	"bufio"
-	"fmt"
 	"path/filepath"
 	"strings"
 	"unicode"
@@ -43,7 +42,7 @@ func ParseConfiguration(text string) (*Configuration, error) {
 		//
 		// (<configuration source>) <key> = <value>
 		fields := strings.FieldsFunc(scanner.Text(), splitConfigurationField)
-		if len(fields) != 3 {
+		if len(fields) < 3 {
 			continue
 		}
 
@@ -51,11 +50,21 @@ func ParseConfiguration(text string) (*Configuration, error) {
 		case "cache_dir":
 			configuration.CacheDirectory = fields[2]
 			configuration.PrimaryConfig = filepath.Join(fields[2], "ccache.conf")
+
 		case "max_size":
-			sanitizedMaxCacheSize := fmt.Sprintf(
-				"%sB",
-				strings.Replace(strings.ToUpper(fields[2]), " ", "", -1),
-			)
+			var sanitizedMaxCacheSize string
+			if len(fields) == 4 {
+				sanitizedMaxCacheSize = fields[2] + fields[3]
+			} else {
+				sanitizedMaxCacheSize = fields[2]
+			}
+
+			sanitizedMaxCacheSize = strings.Replace(strings.ToUpper(sanitizedMaxCacheSize), " ", "", -1)
+
+			if !strings.HasSuffix(sanitizedMaxCacheSize, "B") {
+				sanitizedMaxCacheSize += "B"
+			}
+
 			configuration.MaxCacheSize = sanitizedMaxCacheSize
 			configuration.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSize)
 			if err != nil {
