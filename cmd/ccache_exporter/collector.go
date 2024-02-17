@@ -141,7 +141,7 @@ func NewCollector(cmd ccache.Command) *collector {
 			nil,
 		),
 		remoteStorageError: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_error_total"),
+			prometheus.BuildFQName(namespace, "", "remote_storage_errors_total"),
 			"Remote storage errors",
 			nil,
 			nil,

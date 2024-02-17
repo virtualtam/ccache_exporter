@@ -22,6 +22,13 @@ Counters (ccache):
 - `ccache_compilation_failed_total`
 - `ccache_no_input_file_total`
 - `ccache_preprocessing_failed_total`
+- `ccache_remote_storage_errors_total`
+- `ccache_remote_storage_hit_total`
+- `ccache_remote_storage_miss_total`
+- `ccache_remote_storage_read_hit_total`
+- `ccache_remote_storage_read_miss_total`
+- `ccache_remote_storage_timeout_total`
+- `ccache_remote_storage_write_total`
 - `ccache_unsupported_code_directive_total`
 
 
