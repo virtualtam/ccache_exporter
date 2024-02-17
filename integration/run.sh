@@ -32,6 +32,7 @@ REMOTE_STORAGE=$4
 
 REMOTE_STORAGE_NETWORK="${NAME}-remote-storage"
 REMOTE_STORAGE_REDIS_NAME="${NAME}-redis"
+REMOTE_STORAGE_REDIS_VERSION=7
 
 function parse-version {
     # Convert a version code (up to 4 digits) to an integer for version
@@ -82,7 +83,7 @@ then
 else
     # Enable remote storage with Redis
     docker network create ${REMOTE_STORAGE_NETWORK}
-    docker run --rm --name ${REMOTE_STORAGE_REDIS_NAME} -d -it --network=${REMOTE_STORAGE_NETWORK} redis:7
+    docker run --rm --name ${REMOTE_STORAGE_REDIS_NAME} -d -it --network=${REMOTE_STORAGE_NETWORK} redis:${REMOTE_STORAGE_REDIS_VERSION}
     docker run \
         --rm --name $NAME -d -it \
         --network=${REMOTE_STORAGE_NETWORK} \
@@ -95,8 +96,13 @@ fi
 docker exec $NAME ccache --version
 VERSION=$(docker exec $NAME bash -c 'ccache --version | grep "ccache version" | cut -d " " -f 3')
 
-OUTPUT_DIR=output/$TAG-ccache-$VERSION
-mkdir -p $OUTPUT_DIR
+if [[ -z ${REMOTE_STORAGE} ]]
+then
+    OUTPUT_DIR="output/${TAG}-ccache-${VERSION}"
+else
+    OUTPUT_DIR="output/${TAG}-ccache-${VERSION}-redis-${REMOTE_STORAGE_REDIS_VERSION}"
+fi
+mkdir -p ${OUTPUT_DIR}
 
 # Clear cache and reset stats
 docker exec $NAME ccache --clear --zero-stats

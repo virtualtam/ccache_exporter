@@ -44,8 +44,8 @@ remote_storage_read_hit	0
 remote_storage_read_miss	309
 remote_storage_timeout	0
 remote_storage_write	292
-stats_updated_timestamp	1708120300
-stats_zeroed_timestamp	1708120098
+stats_updated_timestamp	1708190042
+stats_zeroed_timestamp	1708189840
 unsupported_code_directive	0
 unsupported_compiler_option	0
 unsupported_environment_variable	0
