@@ -1,4 +1,8 @@
 ##
+# Generate ccache testdata by building ccache in Docker, wich ccache enabled.
+##
+
+##
 # Build Docker images used to generate ccache output testdata
 ##
 
@@ -45,7 +49,7 @@ ccache-testdata-debian: \
 	ccache-testdata-debian-9
 
 ccache-testdata-debian-%:
-	./run.sh local/ccache debian-$* $@
+	./generate-testdata local/ccache debian-$* $@
 
 ccache-testdata-ubuntu: \
 	ccache-testdata-ubuntu-24.04 \
@@ -54,4 +58,4 @@ ccache-testdata-ubuntu: \
 	ccache-testdata-ubuntu-18.04
 
 ccache-testdata-ubuntu-%:
-	./run.sh local/ccache ubuntu-$* $@
+	./generate-testdata local/ccache ubuntu-$* $@

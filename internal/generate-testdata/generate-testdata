@@ -5,18 +5,18 @@
 # This script:
 #
 # - creates a Docker container
-# - outputs ccache data with an empty cache
-# - runs a first build to populate the cache, then outputs ccache data
-# - runs a second build to reuse the cache, then outputs ccache data
+# - saves ccache statistics with an empty cache
+# - runs a first build to populate the cache, then saves ccache statistics
+# - runs a second build to reuse the cache, then saves ccache statistics
 #
 # Usage
 #
-#   ./run.sh <docker image> <docker image tag> <container name> [remote_storage]
+#   ./generate-testdata <docker image> <docker image tag> <container name> [remote_storage]
 #
 # Examples
 #
-#  ./run.sh local/ccache debian-11 ccache-testdata-debian-11
-#  ./run.sh local/ccache ubuntu-24.04 ccache-testdata-ubuntu-24.04 1
+#  ./generate-testdata local/ccache debian-11 ccache-testdata-debian-11
+#  ./generate-testdata local/ccache ubuntu-24.04 ccache-testdata-ubuntu-24.04 1
 
 # Docker image
 IMAGE=$1
@@ -98,9 +98,9 @@ VERSION=$(docker exec $NAME bash -c 'ccache --version | grep "ccache version" | 
 
 if [[ -z ${REMOTE_STORAGE} ]]
 then
-    OUTPUT_DIR="output/${TAG}-ccache-${VERSION}"
+    OUTPUT_DIR="../../testdata/${TAG}-ccache-${VERSION}"
 else
-    OUTPUT_DIR="output/${TAG}-ccache-${VERSION}-redis-${REMOTE_STORAGE_REDIS_VERSION}"
+    OUTPUT_DIR="../../testdata/${TAG}-ccache-${VERSION}-redis-${REMOTE_STORAGE_REDIS_VERSION}"
 fi
 mkdir -p ${OUTPUT_DIR}
 
