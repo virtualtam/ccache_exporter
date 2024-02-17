@@ -32,7 +32,7 @@ func TestParsePre37Statistics(t *testing.T) {
 	sessions := []pre37TestSession{
 		{
 			osAndVersion:     "Arch Linux",
-			osAndVersionCode: "arch",
+			osAndVersionCode: "arch-rolling",
 			ccacheVersion:    "3.4.3",
 
 			testCases: []pre37TestCase{
@@ -80,7 +80,7 @@ func TestParsePre37Statistics(t *testing.T) {
 
 		{
 			osAndVersion:     "Arch Linux",
-			osAndVersionCode: "arch",
+			osAndVersionCode: "arch-rolling",
 			ccacheVersion:    "3.5",
 
 			testCases: []pre37TestCase{
@@ -271,7 +271,7 @@ func TestParsePre37Statistics(t *testing.T) {
 			t.Run(fmt.Sprintf("ccache %s on %s (%s)", ts.ccacheVersion, ts.osAndVersion, tc.tname), func(t *testing.T) {
 				inputFilepath := filepath.Join(
 					"testdata",
-					fmt.Sprintf("%s-%s", ts.osAndVersionCode, ts.ccacheVersion),
+					fmt.Sprintf("%s-ccache-%s", ts.osAndVersionCode, ts.ccacheVersion),
 					tc.inputFilename,
 				)
 				input, err := os.ReadFile(inputFilepath)

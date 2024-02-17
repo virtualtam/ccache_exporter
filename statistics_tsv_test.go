@@ -32,7 +32,7 @@ func TestParseTSVStatistics(t *testing.T) {
 	sessions := []tsvTestSession{
 		{
 			osAndVersion:     "Arch Linux",
-			osAndVersionCode: "arch",
+			osAndVersionCode: "arch-rolling",
 			ccacheVersion:    "4.6.1",
 
 			testCases: []tsvTestCase{
@@ -344,7 +344,7 @@ func TestParseTSVStatistics(t *testing.T) {
 
 				inputFilepath := filepath.Join(
 					"testdata",
-					fmt.Sprintf("%s-%s", ts.osAndVersionCode, ts.ccacheVersion),
+					fmt.Sprintf("%s-ccache-%s", ts.osAndVersionCode, ts.ccacheVersion),
 					tc.inputFilename,
 				)
 				input, err := os.ReadFile(inputFilepath)
@@ -437,7 +437,7 @@ func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 
 				inputFilepath := filepath.Join(
 					"testdata",
-					fmt.Sprintf("%s-%s-redis-%s", ts.osAndVersionCode, ts.ccacheVersion, ts.redisVersion),
+					fmt.Sprintf("%s-ccache-%s-redis-%s", ts.osAndVersionCode, ts.ccacheVersion, ts.redisVersion),
 					tc.inputFilename,
 				)
 				input, err := os.ReadFile(inputFilepath)
