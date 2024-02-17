@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
+## [v3.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.1.0) - 2024-02-17
+
+### Added
+
+- Add metrics for remote storage (e.g. Redis)
+- Add test cases for Debian 12 and Ubuntu 24.04
+- Update configuration parser to support new output format for `max_size` values
+- Add Go vulnerability checker to the CI workflow
+
+### Changed
+
+- Require Go 1.22
+- Refactor and document testdata generation utilities
+- Update example Docker Compose stack and dashboard
+
+
 ## [v3.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.0.0) - 2022-08-11
 
 Major refactoring with breaking changes.
