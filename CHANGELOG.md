@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.2.0) - UNRELEASED
+
+### Changed
+
+- Require Go 1.23
+
 
 ## [v3.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.1.0) - 2024-02-17
 
