@@ -25,10 +25,10 @@ release: clean
 	promu crossbuild
 	promu crossbuild tarballs
 	cd .tarballs; sha256sum * > sha256sums
-.phony: release
+.PHONY: release
 
 # Live development server
 live:
 	@echo "== Watching for changes... (hit Ctrl+C when done)"
-	@watchexec --restart --exts css,go,gohtml -- go run ./cmd/ccache_exporter/
+	@watchexec --restart --exts go -- go run ./cmd/ccache_exporter/
 .PHONY: live
