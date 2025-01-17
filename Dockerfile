@@ -1,30 +1,42 @@
-# Step 1: build Go binaries
-FROM golang:1.23-alpine as builder
+# Step 1: Build Go binaries
+FROM golang:1.23-bookworm AS builder
 
 ARG CGO_ENABLED=1
 
-RUN apk add --update --no-cache \
-        ca-certificates \
-        gcc \
-        git \
-        musl-dev
-
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
+
 ADD . .
-RUN go build -trimpath ./cmd/ccache_exporter 2>&1
+RUN --mount=type=cache,target=/root/.cache/go-build make common-build
 
 # Step 2: build the actual image
-FROM alpine:3.19
+FROM debian:bookworm-slim
 
-RUN apk add --update --no-cache ccache \
-    && adduser -D exporter
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    --mount=type=cache,target=/var/cache/apt \
+    rm -f /etc/apt/apt.conf.d/docker-clean \
+    && apt update \
+    && apt install -y ccache
 
-COPY --from=builder /app/ccache_exporter /usr/local/bin
+RUN groupadd \
+        --gid 1000 \
+        exporter \
+    && useradd \
+        --create-home \
+        --home-dir /var/lib/exporter \
+        --shell /bin/bash \
+        --uid 1000 \
+        --gid exporter \
+        exporter
+
+COPY --from=builder /app/ccache_exporter /usr/local/bin/ccache_exporter
 
 USER exporter
+WORKDIR /var/lib/exporter
 
 EXPOSE 9508
 
-VOLUME /home/exporter/.ccache
+VOLUME /var/lib/exporter/.ccache
 
 CMD ["ccache_exporter"]

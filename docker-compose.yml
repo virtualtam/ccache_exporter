@@ -17,7 +17,7 @@ services:
     ports:
       - 19508:9508
     volumes:
-      - ${HOME}/.ccache:/home/exporter/.ccache:ro
+      - ${HOME}/.ccache:/var/lib/exporter/.ccache:ro
 
   grafana:
     image: grafana/grafana:10.2.4
