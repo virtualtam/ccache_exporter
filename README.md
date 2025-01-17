@@ -1,6 +1,6 @@
 # ccache parser and Prometheus exporter
 
-<img src="https://github.com/virtualtam/ccache_exporter/actions/workflows/build-and-test.yml/badge.svg?branch=main" alt="Build and test workflow status">
+<img src="https://github.com/virtualtam/ccache_exporter/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI workflow status">
 
 A [Prometheus](https://prometheus.io/) exporter for the
 [ccache](https://ccache.dev/) compiler cache statistics, and its companion Go

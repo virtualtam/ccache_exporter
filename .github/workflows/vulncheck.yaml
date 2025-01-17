@@ -1,0 +1,24 @@
+---
+name: Vulnerabilities
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request: {}
+
+jobs:
+  vulnerabilities:
+    runs-on: ubuntu-latest
+    steps:
+      - name: vulncheck
+        id: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+          # The setup-go action does not necessarily use the latest Go patch release.
+          # As such, this job may fail due to vulnerabilities present in previous
+          # patch releases (including the one used by the setup-go action).
+          # See https://github.com/actions/setup-go/issues/407
+          go-version-file: go.mod
