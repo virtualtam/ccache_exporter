@@ -1,12 +1,10 @@
 ---
-version: "3"
-
 networks:
-  prometheus:
+  prometheus: {}
 
 volumes:
-  grafana-data:
-  prometheus-data:
+  grafana-data: {}
+  prometheus-data: {}
 
 services:
   ccache-exporter:
@@ -20,7 +18,7 @@ services:
       - ${HOME}/.ccache:/var/lib/exporter/.ccache:ro
 
   grafana:
-    image: grafana/grafana:10.2.4
+    image: grafana/grafana:11.4.0
     depends_on:
       - prometheus
     networks:
@@ -34,7 +32,7 @@ services:
       - grafana-data:/var/lib/grafana
 
   node-exporter:
-    image: prom/node-exporter:v1.7.0
+    image: prom/node-exporter:v1.8.2
     networks:
       prometheus:
     pid: 'host'
@@ -50,7 +48,7 @@ services:
       - '--path.sysfs=/host/sys'
 
   prometheus:
-    image: prom/prometheus:v2.49.1
+    image: prom/prometheus:v3.1.0
     networks:
       prometheus:
     ports:
