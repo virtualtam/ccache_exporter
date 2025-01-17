@@ -1,20 +1,18 @@
 ---
-verbose: false
-
 repository:
   path: github.com/virtualtam/ccache_exporter
 
 go:
   # Whenever the Go version is updated here, go.mod must also be updated.
   version: "1.23"
-  cgo: false
+  cgo: true
 
 build:
   prefix: .
   binaries:
-    - name: ccache_exporter
+    - name: build/ccache_exporter
       path: ./cmd/ccache_exporter
-    - name: ccacheparser
+    - name: build/ccacheparser
       path: ./cmd/ccacheparser
   flags: -a -trimpath
   ldflags: |

@@ -30,7 +30,7 @@ RUN groupadd \
         --gid exporter \
         exporter
 
-COPY --from=builder /app/ccache_exporter /usr/local/bin/ccache_exporter
+COPY --from=builder /app/build/ccache_exporter /usr/local/bin/ccache_exporter
 
 USER exporter
 WORKDIR /var/lib/exporter

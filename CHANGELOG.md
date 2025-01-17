@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Require Go 1.23
 - Switch base Docker image from Alpine Linux to Debian 12 Bookworm
 - Update example Docker Compose stack
+- Update Prometheus' Makefile.common and Promu configuration
 
 
 ## [v3.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.1.0) - 2024-02-17

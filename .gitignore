@@ -6,5 +6,4 @@
 .tarballs/
 
 # Binaries
-/ccache_exporter
-/ccacheparser
+build/

@@ -27,6 +27,10 @@ release: clean
 	cd .tarballs; sha256sum * > sha256sums
 .PHONY: release
 
+# Tools
+install-tools: promu install-govulncheck
+.PHONY: install-tools
+
 # Live development server
 live:
 	@echo "== Watching for changes... (hit Ctrl+C when done)"
