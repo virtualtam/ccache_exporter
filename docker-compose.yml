@@ -8,7 +8,7 @@ volumes:
 
 services:
   ccache-exporter:
-    image: virtualtam/ccache-exporter
+    image: ghcr.io/virtualtam/ccache-exporter
     build: .
     networks:
       prometheus:

@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Update example Docker Compose stack
 - Update Prometheus' Makefile.common and Promu configuration
 - Update CI workflow, move vulncheck step to a dedicated workflow
-
+- Publish Docker images to the Github Container Registry (ghcr.io)
 
 ## [v3.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.1.0) - 2024-02-17
 
