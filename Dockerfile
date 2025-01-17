@@ -13,10 +13,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build make common-build
 # Step 2: build the actual image
 FROM debian:bookworm-slim
 
-RUN --mount=type=cache,target=/var/lib/apt/lists \
-    --mount=type=cache,target=/var/cache/apt \
-    while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do echo "Sleeping for 1 second because of dpkg lock"; sleep 1; done \
-    && rm -f /etc/apt/apt.conf.d/docker-clean \
+RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
+    --mount=type=cache,sharing=locked,target=/var/cache/apt \
+    rm -f /etc/apt/apt.conf.d/docker-clean \
     && apt-get update \
     && apt-get install -y ccache
 
