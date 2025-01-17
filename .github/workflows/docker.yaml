@@ -1,5 +1,10 @@
 ---
 name: Docker Image
+# Multi-platform Docker image build
+#
+# Reference:
+# - https://docs.docker.com/build/ci/github-actions/multi-platform/
+# - https://docs.docker.com/build/ci/github-actions/cache/
 
 on:
   push:
@@ -7,6 +12,10 @@ on:
       - main
     tags:
       - v*
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   docker-image:
@@ -21,7 +30,7 @@ jobs:
       - name: Log in to the Github Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -35,7 +44,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=auto
           tags: |
@@ -47,6 +56,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cache,mode=max
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}

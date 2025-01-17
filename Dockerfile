@@ -16,6 +16,7 @@ FROM debian:bookworm-slim
 RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
     --mount=type=cache,sharing=locked,target=/var/cache/apt \
     rm -f /etc/apt/apt.conf.d/docker-clean \
+    && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
     && apt-get update \
     && apt-get install -y ccache
 
