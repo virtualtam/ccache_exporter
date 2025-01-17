@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [v3.2.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.2.0) - UNRELEASED
 
+### Added
+
+- Add Github Actions workflow to build and publish multi-platform Docker images
+
 ### Changed
 
 - Require Go 1.23
