@@ -16,8 +16,8 @@ FROM debian:bookworm-slim
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     --mount=type=cache,target=/var/cache/apt \
     rm -f /etc/apt/apt.conf.d/docker-clean \
-    && apt update \
-    && apt install -y ccache
+    && apt-get update \
+    && apt-get install -y ccache
 
 RUN groupadd \
         --gid 1000 \
