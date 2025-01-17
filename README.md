@@ -4,9 +4,8 @@
 <img src="https://github.com/virtualtam/ccache_exporter/actions/workflows/docker.yaml/badge.svg?branch=main" alt="Docker image workflow status">
 
 
-A [Prometheus](https://prometheus.io/) exporter for the
-[ccache](https://ccache.dev/) compiler cache statistics, and its companion Go
-parser.
+A [Prometheus](https://prometheus.io/) exporter for the [ccache](https://ccache.dev/)
+compiler cache statistics, and its companion Go parser.
 
 ## Metrics exposed
 
@@ -41,41 +40,8 @@ Gauges (ccache):
 - `ccache_cache_size_max_bytes`
 - `ccache_cached_files`
 
-## Building
 
-Get the sources:
-
-```shell
-$ git clone https://github.com/virtualtam/ccache_exporter.git
-$ cd ccache_exporter
-```
-
-Run linters:
-```shell
-$ make lint
-```
-
-Build the parser and exporter:
-
-```shell
-$ make build
-```
-
-Build platform-specific binaries with [Promu](https://github.com/prometheus/promu):
-
-```shell
-$ promu crossbuild
-```
-
-Build and archive platform-specific binaries:
-
-```shell
-$ promu crossbuild
-$ promu crossbuild tarballs
-```
-
-Parser usage
-------------
+## Parser usage
 
 For ccache 3.7 and above:
 
@@ -138,9 +104,10 @@ the `ccache` dashboard:
 <img src="./dashboard.jpg" alt="Grafana dashboard for ccache_exporter metrics">
 
 ## Change Log
-
 See [CHANGELOG](./CHANGELOG.md)
 
-## License
+## Contributing
+See [CONTRIBUTING](./CONTRIBUTING.md)
 
+## License
 `ccache_exporter` is licenced under the MIT License.

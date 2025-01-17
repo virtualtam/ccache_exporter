@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Add Github Actions workflow to build and publish multi-platform Docker images
+- Add a contributing guide
 
 ### Changed
 
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Update Prometheus' Makefile.common and Promu configuration
 - Update CI workflow, move vulncheck step to a dedicated workflow
 - Publish Docker images to the Github Container Registry (ghcr.io)
+
 
 ## [v3.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v3.1.0) - 2024-02-17
 
