@@ -5,10 +5,10 @@ ARG CGO_ENABLED=1
 
 WORKDIR /app
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod go mod download
+RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod go mod download
 
 ADD . .
-RUN --mount=type=cache,target=/root/.cache/go-build make common-build
+RUN make common-build
 
 # Step 2: build the actual image
 FROM debian:bookworm-slim
