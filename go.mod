@@ -6,6 +6,7 @@ go 1.23
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b
+	github.com/earthboundkid/versioninfo/v2 v2.24.1
 	github.com/justinas/alice v1.2.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/rs/zerolog v1.33.0

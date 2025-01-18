@@ -24,7 +24,7 @@ func NewRunCommand() *cobra.Command {
 		Use:   "run",
 		Short: "Start the exporter's HTTP server",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			httpServer := metrics.NewServer(ccacheCommand, listenAddr)
+			httpServer := metrics.NewServer(ccacheCommand, listenAddr, versionDetails)
 
 			log.Info().Str("addr", listenAddr).Msg("starting HTTP server")
 			return httpServer.ListenAndServe()

@@ -55,9 +55,9 @@ type collector struct {
 	remoteStorageWrite       *prometheus.Desc
 }
 
-// NewCcacheCollector initializes and returns a Prometheus collector for ccache
+// newCcacheCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func NewCcacheCollector(cmd ccache.Command) *collector {
+func newCcacheCollector(cmd ccache.Command) *collector {
 	wrapper := ccache.NewWrapper(cmd)
 
 	return &collector{

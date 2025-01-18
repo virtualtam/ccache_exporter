@@ -16,13 +16,20 @@ import (
 	"github.com/virtualtam/venom"
 
 	"github.com/virtualtam/ccache_exporter/cmd/ccache_exporter/config"
+	"github.com/virtualtam/ccache_exporter/internal/version"
 	"github.com/virtualtam/ccache_exporter/pkg/ccache"
+)
+
+const (
+	rootCmdName string = "ccache_exporter"
 )
 
 var (
 	logFormat            string
 	defaultLogLevelValue string = zerolog.LevelInfoValue
 	logLevelValue        string
+
+	versionDetails *version.Details
 
 	ccacheBinaryPath string
 	ccacheCommand    *ccache.LocalCommand
@@ -31,9 +38,16 @@ var (
 // NewRootCommand initializes the exporter's CLI entrypoint and global command flags.
 func NewRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "ccache_exporter",
+		Use:   rootCmdName,
 		Short: "Prometheus exporter for ccache metrics",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			versionDetails = version.NewDetails()
+
+			if cmd.Name() == versionCmdName {
+				// Do not setup the service stack for these commands
+				return nil
+			}
+
 			// Configuration file lookup paths
 			home, err := os.UserHomeDir()
 			if err != nil {

@@ -13,6 +13,7 @@ import (
 	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
 
+	"github.com/virtualtam/ccache_exporter/internal/version"
 	"github.com/virtualtam/ccache_exporter/pkg/ccache"
 )
 
@@ -37,9 +38,14 @@ func accessLogger(r *http.Request, status, size int, dur time.Duration) {
 }
 
 // NewServer registers metrics collectors and returns a HTTP server to expose them.
-func NewServer(wrapper *ccache.LocalCommand, listenAddr string) *http.Server {
-	ccacheCollector := NewCcacheCollector(wrapper)
-	prometheus.MustRegister(ccacheCollector)
+func NewServer(wrapper *ccache.LocalCommand, listenAddr string, versionDetails *version.Details) *http.Server {
+	ccacheCollector := newCcacheCollector(wrapper)
+	versionCollector := newVersionCollector("ccache_exporter", versionDetails)
+
+	prometheus.MustRegister(
+		ccacheCollector,
+		versionCollector,
+	)
 
 	router := http.NewServeMux()
 

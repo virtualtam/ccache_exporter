@@ -21,7 +21,10 @@ func main() {
 	})
 
 	rootCommand := command.NewRootCommand()
-	rootCommand.AddCommand(command.NewRunCommand())
+	rootCommand.AddCommand(
+		command.NewRunCommand(),
+		command.NewVersionCommand(),
+	)
 
 	cobra.CheckErr(rootCommand.Execute())
 }
