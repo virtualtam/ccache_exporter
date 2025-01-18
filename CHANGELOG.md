@@ -17,6 +17,7 @@ Minor refactoring with breaking changes.
 
 - Add Github Actions workflow to build and publish multi-platform Docker images
 - Add a contributing guide
+- Setup Hashicorp Copywrite to automate license header management
 
 ### Changed
 

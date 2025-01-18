@@ -1,3 +1,6 @@
+# Copyright (c) VirtualTam
+# SPDX-License-Identifier: MIT
+
 # Generic Dockerfile for Debian- and Ubuntu-based images
 ARG DOCKER_IMAGE
 ARG DOCKER_TAG

@@ -1,0 +1,23 @@
+---
+name: Copywrite
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request: {}
+
+jobs:
+  copywrite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install copywrite
+        uses: hashicorp/setup-copywrite@v1.0.0
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate license header compliance
+        run: copywrite headers --plan

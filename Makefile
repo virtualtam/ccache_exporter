@@ -29,7 +29,13 @@ release: clean
 
 # Tools
 install-tools: promu install-govulncheck
+	go install github.com/hashicorp/copywrite@latest
 .PHONY: install-tools
+
+# Licence headers
+copywrite:
+	copywrite headers
+.PHONY: copywrite
 
 # Live development server
 live:
