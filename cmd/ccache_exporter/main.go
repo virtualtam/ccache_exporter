@@ -16,7 +16,7 @@ import (
 	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
 
-	ccache "github.com/virtualtam/ccache_exporter"
+	"github.com/virtualtam/ccache_exporter/pkg/ccache"
 )
 
 const (
