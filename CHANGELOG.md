@@ -20,7 +20,7 @@ Major refactoring with breaking changes.
 - Add a contributing guide
 - Setup Hashicorp Copywrite to automate license header management
 - Allow configuring the exporter via command-line flags, environment variables and configuration file
-- Add subcommand to display the exporter version
+- Add subcommand to display the exporter and ccache versions
 
 ### Changed
 

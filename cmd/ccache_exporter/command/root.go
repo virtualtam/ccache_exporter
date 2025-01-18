@@ -32,7 +32,7 @@ var (
 	versionDetails *version.Details
 
 	ccacheBinaryPath string
-	ccacheCommand    *ccache.LocalCommand
+	ccacheWrapper    *ccache.Wrapper
 )
 
 // NewRootCommand initializes the exporter's CLI entrypoint and global command flags.
@@ -41,13 +41,6 @@ func NewRootCommand() *cobra.Command {
 		Use:   rootCmdName,
 		Short: "Prometheus exporter for ccache metrics",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			versionDetails = version.NewDetails()
-
-			if cmd.Name() == versionCmdName {
-				// Do not setup the service stack for these commands
-				return nil
-			}
-
 			// Configuration file lookup paths
 			home, err := os.UserHomeDir()
 			if err != nil {
@@ -66,6 +59,22 @@ func NewRootCommand() *cobra.Command {
 				return err
 			}
 
+			// Setup ccache wrapper
+			ccacheCommand, err := ccache.NewLocalCommand(ccacheBinaryPath)
+			if err != nil {
+				log.Fatal().Err(err).Msg("ccache: failed to instantiate command wrapper")
+			}
+
+			ccacheWrapper = ccache.NewWrapper(ccacheCommand)
+
+			// Retrieve exporter and ccache versions
+			versionDetails = version.NewDetails(ccacheWrapper.Version())
+
+			if cmd.Name() == versionCmdName {
+				// Do not setup the service stack for these commands
+				return nil
+			}
+
 			// Global logger configuration
 			if err := config.SetupGlobalLogger(logFormat, logLevelValue); err != nil {
 				return err
@@ -77,13 +86,10 @@ func NewRootCommand() *cobra.Command {
 				log.Info().Strs("config_paths", configPaths).Msg("configuration: no file found")
 			}
 
-			// ccache exporter services
-			ccacheCommand, err = ccache.NewLocalCommand(ccacheBinaryPath)
-			if err != nil {
-				log.Fatal().Err(err).Msg("ccache: failed to instantiate command wrapper")
-			}
-
-			log.Info().Str("ccache_binary", ccacheBinaryPath).Msg("ccache: command wrapper created")
+			log.Info().
+				Str("ccache_binary", ccacheBinaryPath).
+				Str("ccache_version", ccacheWrapper.Version()).
+				Msg("ccache: command wrapper created")
 
 			return nil
 		},

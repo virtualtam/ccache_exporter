@@ -35,7 +35,7 @@ func (c *fakeCommand) Version() (string, error) {
 	return c.version, nil
 }
 
-func TestWrapperVersion(t *testing.T) {
+func TestWrapperParseVersion(t *testing.T) {
 	cases := []struct {
 		tname      string
 		cmdVersion string
@@ -82,7 +82,7 @@ version.
 			}
 			wrapper := NewWrapper(cmd)
 
-			got, err := wrapper.Version()
+			got, err := wrapper.ParseVersion()
 			if err != nil {
 				t.Fatalf("want no error, got %q", err)
 			}

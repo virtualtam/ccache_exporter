@@ -21,8 +21,9 @@ var (
 
 // Wrapper provides an abstraction for ccache commands.
 type Wrapper struct {
-	command Command
-	version semver.Version
+	command    Command
+	version    semver.Version
+	versionStr string
 }
 
 // NewWrapper initializes and returns a new Wrapper.
@@ -31,12 +32,13 @@ func NewWrapper(c Command) *Wrapper {
 		command: c,
 	}
 
-	v, err := w.Version()
+	v, err := w.ParseVersion()
 	if err != nil {
 		panic(err)
 	}
 
 	w.version = *v
+	w.versionStr = v.Original()
 
 	return w
 }
@@ -88,8 +90,8 @@ func (w *Wrapper) tsvStatistics() (*Statistics, error) {
 	return ParseTSVStatistics(out)
 }
 
-// Version returns the semantic version for ccache.
-func (w *Wrapper) Version() (*semver.Version, error) {
+// ParseVersion parses the semantic version for ccache.
+func (w *Wrapper) ParseVersion() (*semver.Version, error) {
 	out, err := w.command.Version()
 	if err != nil {
 		return &semver.Version{}, err
@@ -106,4 +108,9 @@ func (w *Wrapper) Version() (*semver.Version, error) {
 	}
 
 	return version, nil
+}
+
+// Version returns the parsed version for ccache.
+func (w *Wrapper) Version() string {
+	return w.versionStr
 }

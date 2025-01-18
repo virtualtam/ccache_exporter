@@ -49,7 +49,8 @@ func NewVersionCommand() *cobra.Command {
 					fmt.Fprintf(tw, "Committed At:\t%s\n", versionDetails.CommittedAt.Format(time.UnixDate))
 				}
 
-				fmt.Fprintf(tw, "Dirty Build:\t%t\n", versionDetails.DirtyBuild)
+				fmt.Fprintf(tw, "Dirty build:\t%t\n", versionDetails.DirtyBuild)
+				fmt.Fprintf(tw, "ccache version\t%s\n", versionDetails.CcacheVersion)
 
 				tw.Flush()
 
@@ -57,6 +58,7 @@ func NewVersionCommand() *cobra.Command {
 			}
 
 			fmt.Println(rootCmdName, "version", versionDetails.Short)
+			fmt.Println("ccache version", versionDetails.CcacheVersion)
 
 			return nil
 		},

@@ -7,38 +7,46 @@
 A [Prometheus](https://prometheus.io/) exporter for the [ccache](https://ccache.dev/)
 compiler cache statistics, and its companion Go parser.
 
-## Metrics exposed
+## Exposed Metrics
+### Internal
+| Metric                                  | Type    | Labels                                         |
+| --------------------------------------- | ------- | ---------------------------------------------- |
+| `ccache_collector_parsing_errors_total` | Counter | -                                              |
+| `ccache_exporter_version`               | Untyped | committed_at_seconds,is_dirty,revision,version |
+| `ccache_version`                        | Untyped | version                                        |
 
-Counters (internal):
+### ccache
+> [!TIP]
+> For details about each metric, see the [Cache statistics](https://ccache.dev/manual/latest.html#_cache_statistics)
+> section of the [ccache(1) manual](https://ccache.dev/manual/latest.html).
 
-- `ccache_collector_parsing_errors_total`
-
-Counters (ccache):
-
-- `ccache_call_total`
-- `ccache_call_hit_total`
-- `ccache_called_for_link_total`
-- `ccache_called_for_preprocessing_total`
-- `ccache_cleanups_performed_total`
-- `ccache_compilation_failed_total`
-- `ccache_no_input_file_total`
-- `ccache_preprocessing_failed_total`
-- `ccache_remote_storage_errors_total`
-- `ccache_remote_storage_hit_total`
-- `ccache_remote_storage_miss_total`
-- `ccache_remote_storage_read_hit_total`
-- `ccache_remote_storage_read_miss_total`
-- `ccache_remote_storage_timeout_total`
-- `ccache_remote_storage_write_total`
-- `ccache_unsupported_code_directive_total`
+> [!WARNING]
+> Depending on the version of the local `ccache` binary, some metrics may not be available.
+> See the [ccache release notes](https://ccache.dev/releasenotes.html) for more information.
 
 
-Gauges (ccache):
-
-- `ccache_cache_hit_ratio`
-- `ccache_cache_size_bytes`
-- `ccache_cache_size_max_bytes`
-- `ccache_cached_files`
+| Metric                                    | Type    | Labels |
+| ----------------------------------------- | ------- | ------ |
+| `ccache_call_total`                       | Counter | -      |
+| `ccache_call_hit_total`                   | Counter | mode   |
+| `ccache_called_for_link_total`            | Counter | -      |
+| `ccache_called_for_preprocessing_total`   | Counter | -      |
+| `ccache_cleanups_performed_total`         | Counter | -      |
+| `ccache_compilation_failed_total`         | Counter | -      |
+| `ccache_no_input_file_total`              | Counter | -      |
+| `ccache_preprocessing_failed_total`       | Counter | -      |
+| `ccache_remote_storage_errors_total`      | Counter | -      |
+| `ccache_remote_storage_hit_total`         | Counter | -      |
+| `ccache_remote_storage_miss_total`        | Counter | -      |
+| `ccache_remote_storage_read_hit_total`    | Counter | -      |
+| `ccache_remote_storage_read_miss_total`   | Counter | -      |
+| `ccache_remote_storage_timeout_total`     | Counter | -      |
+| `ccache_remote_storage_write_total`       | Counter | -      |
+| `ccache_unsupported_code_directive_total` | Counter | -      |
+| `ccache_cache_hit_ratio`                  | Gauge   | -      |
+| `ccache_cache_size_bytes`                 | Gauge   | -      |
+| `ccache_cache_size_max_bytes`             | Gauge   | -      |
+| `ccache_cached_files`                     | Gauge   | -      |
 
 
 ## Parser usage

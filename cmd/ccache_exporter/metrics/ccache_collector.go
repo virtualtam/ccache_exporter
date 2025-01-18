@@ -53,15 +53,14 @@ type collector struct {
 	remoteStorageReadMiss    *prometheus.Desc
 	remoteStorageTimeout     *prometheus.Desc
 	remoteStorageWrite       *prometheus.Desc
+	version                  *prometheus.Desc
 }
 
 // newCcacheCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func newCcacheCollector(cmd ccache.Command) *collector {
-	wrapper := ccache.NewWrapper(cmd)
-
+func newCcacheCollector(ccacheWrapper *ccache.Wrapper) *collector {
 	return &collector{
-		wrapper: wrapper,
+		wrapper: ccacheWrapper,
 		call: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "call_total"),
 			"Cache calls (total)",
@@ -182,6 +181,12 @@ func newCcacheCollector(cmd ccache.Command) *collector {
 			nil,
 			nil,
 		),
+		version: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "version"),
+			"ccache version",
+			[]string{"version"},
+			nil,
+		),
 	}
 }
 
@@ -208,20 +213,21 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.remoteStorageReadMiss
 	ch <- c.remoteStorageTimeout
 	ch <- c.remoteStorageWrite
+	ch <- c.version
 }
 
 // Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	config, err := c.wrapper.Configuration()
 	if err != nil {
-		log.Error().Err(err).Msg("Configuration")
+		log.Error().Err(err).Msg("ccache: failed to collect configuration")
 		parsingErrors.Inc()
 		return
 	}
 
 	stats, err := c.wrapper.Statistics()
 	if err != nil {
-		log.Error().Err(err).Msg("Statistics")
+		log.Error().Err(err).Msg("ccache: failed to collect statistics")
 		parsingErrors.Inc()
 		return
 	}
@@ -254,4 +260,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.filesInCache, prometheus.GaugeValue, float64(stats.FilesInCache))
 	ch <- prometheus.MustNewConstMetric(c.cacheSizeBytes, prometheus.GaugeValue, float64(stats.CacheSizeBytes))
 	ch <- prometheus.MustNewConstMetric(c.maxCacheSizeBytes, prometheus.GaugeValue, float64(config.MaxCacheSizeBytes))
+
+	// version
+	ch <- prometheus.MustNewConstMetric(c.version, prometheus.UntypedValue, 1, c.wrapper.Version())
 }
