@@ -21,6 +21,7 @@ Major refactoring with breaking changes.
 - Setup Hashicorp Copywrite to automate license header management
 - Allow configuring the exporter via command-line flags, environment variables and configuration file
 - Add subcommand to display the exporter and ccache versions
+- Automate release creation and artifact upload
 
 ### Changed
 

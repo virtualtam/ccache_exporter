@@ -1,0 +1,36 @@
+---
+name: release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Install Promu
+        run: make promu
+
+      - name: Build release artifacts with Promu
+        run: make release
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: True
+          prerelease: ${{ contains(github.ref, 'rc') }}
+          fail_on_unmatched_files: True
+          files: |
+            .tarballs/*
