@@ -40,5 +40,5 @@ copywrite:
 # Live development server
 live:
 	@echo "== Watching for changes... (hit Ctrl+C when done)"
-	@watchexec --restart --exts go -- go run ./cmd/ccache_exporter/
+	@watchexec --restart --exts go -- go run ./cmd/ccache_exporter/ run
 .PHONY: live

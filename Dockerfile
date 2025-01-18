@@ -39,8 +39,13 @@ COPY --from=builder /app/build/ccache_exporter /usr/local/bin/ccache_exporter
 USER exporter
 WORKDIR /var/lib/exporter
 
+ENV \
+    CCACHE_EXPORTER_LISTEN_ADDR="0.0.0.0:9508" \
+    CCACHE_EXPORTER_LOG_FORMAT="json" \
+    CCACHE_EXPORTER_LOG_LEVEL="info"
+
 EXPOSE 9508
 
 VOLUME /var/lib/exporter/.ccache
 
-CMD ["ccache_exporter"]
+CMD ["/usr/local/bin/ccache_exporter", "run"]

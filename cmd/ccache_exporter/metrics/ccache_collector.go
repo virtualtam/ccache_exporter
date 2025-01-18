@@ -1,7 +1,7 @@
 // Copyright (c) VirtualTam
 // SPDX-License-Identifier: MIT
 
-package main
+package metrics
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
@@ -55,9 +55,9 @@ type collector struct {
 	remoteStorageWrite       *prometheus.Desc
 }
 
-// NewCollector initializes and returns a Prometheus collector for ccache
+// NewCcacheCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func NewCollector(cmd ccache.Command) *collector {
+func NewCcacheCollector(cmd ccache.Command) *collector {
 	wrapper := ccache.NewWrapper(cmd)
 
 	return &collector{

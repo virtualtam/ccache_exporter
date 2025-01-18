@@ -12,12 +12,14 @@ Minor refactoring with breaking changes.
 ### Breaking
 
 - Relocate ccache wrapper and parser to a dedicated package
+- Rework command-line argument parsing with Cobra, Viper and Venom
 
 ### Added
 
 - Add Github Actions workflow to build and publish multi-platform Docker images
 - Add a contributing guide
 - Setup Hashicorp Copywrite to automate license header management
+- Allow configuring the exporter via command-line flags, environment variables and configuration file
 
 ### Changed
 
