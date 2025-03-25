@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v4.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.0.0) - UNRELEASED
+
+### Changed
+
+- Bump direct and transitive dependencies
+
+
 ## [v4.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.0.0) - 2025-01-18
 
 Major refactoring with breaking changes.
