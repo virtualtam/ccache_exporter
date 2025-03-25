@@ -1,4 +1,4 @@
-module github.com/virtualtam/ccache_exporter
+module github.com/virtualtam/ccache_exporter/v4
 
 // Whenever the Go version is updated here, .promu.yml must also be updated.
 go 1.24.1

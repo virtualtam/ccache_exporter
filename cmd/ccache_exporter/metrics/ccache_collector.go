@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog/log"
 
-	"github.com/virtualtam/ccache_exporter/pkg/ccache"
+	"github.com/virtualtam/ccache_exporter/v4/pkg/ccache"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/virtualtam/ccache_exporter/internal/version"
+	"github.com/virtualtam/ccache_exporter/v4/internal/version"
 )
 
 type versionCollector struct {

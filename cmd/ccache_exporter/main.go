@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
-	"github.com/virtualtam/ccache_exporter/cmd/ccache_exporter/command"
+	"github.com/virtualtam/ccache_exporter/v4/cmd/ccache_exporter/command"
 )
 
 func main() {

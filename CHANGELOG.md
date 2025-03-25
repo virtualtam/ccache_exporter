@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Require Go 1.24
 - Bump direct and transitive dependencies
+- Update module path to `github.com/virtualtam/ccache_exporter/v4` to match Go versioning strategy
 
 
 ## [v4.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.0.0) - 2025-01-18

@@ -13,8 +13,8 @@ import (
 	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/virtualtam/ccache_exporter/internal/version"
-	"github.com/virtualtam/ccache_exporter/pkg/ccache"
+	"github.com/virtualtam/ccache_exporter/v4/internal/version"
+	"github.com/virtualtam/ccache_exporter/v4/pkg/ccache"
 )
 
 const (

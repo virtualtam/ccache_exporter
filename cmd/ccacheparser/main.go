@@ -12,7 +12,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/virtualtam/ccache_exporter/pkg/ccache"
+	"github.com/virtualtam/ccache_exporter/v4/pkg/ccache"
 )
 
 func main() {

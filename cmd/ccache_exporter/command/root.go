@@ -15,9 +15,9 @@ import (
 	"github.com/spf13/viper"
 	"github.com/virtualtam/venom"
 
-	"github.com/virtualtam/ccache_exporter/cmd/ccache_exporter/config"
-	"github.com/virtualtam/ccache_exporter/internal/version"
-	"github.com/virtualtam/ccache_exporter/pkg/ccache"
+	"github.com/virtualtam/ccache_exporter/v4/cmd/ccache_exporter/config"
+	"github.com/virtualtam/ccache_exporter/v4/internal/version"
+	"github.com/virtualtam/ccache_exporter/v4/pkg/ccache"
 )
 
 const (

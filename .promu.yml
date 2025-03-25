@@ -1,6 +1,6 @@
 ---
 repository:
-  path: github.com/virtualtam/ccache_exporter
+  path: github.com/virtualtam/ccache_exporter/v4
 
 go:
   # Whenever the Go version is updated here, go.mod must also be updated.
@@ -17,11 +17,11 @@ build:
   flags: -a -trimpath
   ldflags: |
     -s
-    -X {{repoPath}}/version.Version={{.Version}}
-    -X {{repoPath}}/version.Revision={{.Revision}}
-    -X {{repoPath}}/version.Branch={{.Branch}}
-    -X {{repoPath}}/version.BuildUser={{user}}@{{host}}
-    -X {{repoPath}}/version.BuildDate={{date "20060102-15:04:05"}}
+    -X {{repoPath}}/v4/version.Version={{.Version}}
+    -X {{repoPath}}/v4/version.Revision={{.Revision}}
+    -X {{repoPath}}/v4/version.Branch={{.Branch}}
+    -X {{repoPath}}/v4/version.BuildUser={{user}}@{{host}}
+    -X {{repoPath}}/v4/version.BuildDate={{date "20060102-15:04:05"}}
 
 crossbuild:
   platforms:

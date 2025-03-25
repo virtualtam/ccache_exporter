@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
-	"github.com/virtualtam/ccache_exporter/cmd/ccache_exporter/metrics"
+	"github.com/virtualtam/ccache_exporter/v4/cmd/ccache_exporter/metrics"
 )
 
 const (
