@@ -4,7 +4,7 @@ repository:
 
 go:
   # Whenever the Go version is updated here, go.mod must also be updated.
-  version: "1.23"
+  version: "1.24"
   cgo: true
 
 build:

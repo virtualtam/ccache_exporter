@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 # Step 1: Build Go binaries
-FROM golang:1.23-bookworm AS builder
+FROM golang:1.24-bookworm AS builder
 
 ARG CGO_ENABLED=1
 

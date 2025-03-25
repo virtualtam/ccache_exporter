@@ -1,9 +1,7 @@
 module github.com/virtualtam/ccache_exporter
 
 // Whenever the Go version is updated here, .promu.yml must also be updated.
-go 1.23.0
-
-toolchain go1.24.1
+go 1.24.1
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
