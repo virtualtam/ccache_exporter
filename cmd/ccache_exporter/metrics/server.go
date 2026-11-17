@@ -4,6 +4,7 @@
 package metrics
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -38,8 +39,8 @@ func accessLogger(r *http.Request, status, size int, dur time.Duration) {
 }
 
 // NewServer registers metrics collectors and returns a HTTP server to expose them.
-func NewServer(ccacheWrapper *ccache.Wrapper, listenAddr string, versionDetails *version.Details) *http.Server {
-	ccacheCollector := newCcacheCollector(ccacheWrapper)
+func NewServer(ctx context.Context, ccacheWrapper *ccache.Wrapper, listenAddr string, versionDetails *version.Details) *http.Server {
+	ccacheCollector := newCcacheCollector(ctx, ccacheWrapper)
 	versionCollector := newVersionCollector("ccache_exporter", versionDetails)
 
 	prometheus.MustRegister(

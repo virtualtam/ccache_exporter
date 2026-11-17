@@ -3,7 +3,10 @@
 
 package ccache
 
-import "os/exec"
+import (
+	"context"
+	"os/exec"
+)
 
 const (
 	DefaultBinaryPath = "/usr/bin/ccache"
@@ -13,13 +16,13 @@ var _ Command = &LocalCommand{}
 
 // Command exposes supported ccache commands.
 type Command interface {
-	PrintConfig() (string, error)
-	ShowConfig() (string, error)
+	PrintConfig(ctx context.Context) (string, error)
+	ShowConfig(ctx context.Context) (string, error)
 
-	PrintStats() (string, error)
-	ShowStats() (string, error)
+	PrintStats(ctx context.Context) (string, error)
+	ShowStats(ctx context.Context) (string, error)
 
-	Version() (string, error)
+	Version(ctx context.Context) (string, error)
 }
 
 // LocalCommand runs ccache commands in a local shell.
@@ -27,8 +30,8 @@ type LocalCommand struct {
 	path string
 }
 
-func (c *LocalCommand) exec(option string) (string, error) {
-	out, err := exec.Command(c.path, option).Output()
+func (c *LocalCommand) exec(ctx context.Context, option string) (string, error) {
+	out, err := exec.CommandContext(ctx, c.path, option).Output()
 
 	if err != nil {
 		return "", err
@@ -40,38 +43,38 @@ func (c *LocalCommand) exec(option string) (string, error) {
 // PrintConfig returns the result of `ccache --print-config`.
 //
 // Available for ccache < 3.7.
-func (c *LocalCommand) PrintConfig() (string, error) {
-	return c.exec("--print-config")
+func (c *LocalCommand) PrintConfig(ctx context.Context) (string, error) {
+	return c.exec(ctx, "--print-config")
 }
 
 // ShowConfig returns the result of `ccache --show-config`.
 //
 // Available since ccache 3.7.
-func (c *LocalCommand) ShowConfig() (string, error) {
-	return c.exec("--show-config")
+func (c *LocalCommand) ShowConfig(ctx context.Context) (string, error) {
+	return c.exec(ctx, "--show-config")
 }
 
 // PrintStats returns the result of `ccache --print-stats`.
 //
 // Available since ccache 3.7.
-func (c *LocalCommand) PrintStats() (string, error) {
-	return c.exec("--print-stats")
+func (c *LocalCommand) PrintStats(ctx context.Context) (string, error) {
+	return c.exec(ctx, "--print-stats")
 }
 
 // ShowStats returns the result of “ccache --show-stats”.
-func (c *LocalCommand) ShowStats() (string, error) {
-	return c.exec("--show-stats")
+func (c *LocalCommand) ShowStats(ctx context.Context) (string, error) {
+	return c.exec(ctx, "--show-stats")
 }
 
 // Version returns the result of “ccache --version”.
-func (c *LocalCommand) Version() (string, error) {
-	return c.exec("--version")
+func (c *LocalCommand) Version(ctx context.Context) (string, error) {
+	return c.exec(ctx, "--version")
 }
 
 // NewLocalCommand ensures the ccache executable exists and can be invoked, and
 // returns an initialized BinaryWrapper.
-func NewLocalCommand(path string) (*LocalCommand, error) {
-	err := exec.Command(path, "-s").Run()
+func NewLocalCommand(ctx context.Context, path string) (*LocalCommand, error) {
+	err := exec.CommandContext(ctx, path, "-s").Run()
 	if err != nil {
 		return &LocalCommand{}, err
 	}

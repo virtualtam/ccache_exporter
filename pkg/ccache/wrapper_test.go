@@ -4,6 +4,7 @@
 package ccache
 
 import (
+	"context"
 	"testing"
 
 	"github.com/Masterminds/semver/v3"
@@ -15,23 +16,23 @@ type fakeCommand struct {
 	version string
 }
 
-func (c *fakeCommand) PrintConfig() (string, error) {
+func (c *fakeCommand) PrintConfig(_ context.Context) (string, error) {
 	return "", nil
 }
 
-func (c *fakeCommand) ShowConfig() (string, error) {
+func (c *fakeCommand) ShowConfig(_ context.Context) (string, error) {
 	return "", nil
 }
 
-func (c *fakeCommand) PrintStats() (string, error) {
+func (c *fakeCommand) PrintStats(_ context.Context) (string, error) {
 	return "", nil
 }
 
-func (c *fakeCommand) ShowStats() (string, error) {
+func (c *fakeCommand) ShowStats(_ context.Context) (string, error) {
 	return "", nil
 }
 
-func (c *fakeCommand) Version() (string, error) {
+func (c *fakeCommand) Version(_ context.Context) (string, error) {
 	return c.version, nil
 }
 
@@ -77,12 +78,14 @@ version.
 
 	for _, tc := range cases {
 		t.Run(tc.tname, func(t *testing.T) {
+			ctx := t.Context()
+
 			cmd := &fakeCommand{
 				version: tc.cmdVersion,
 			}
-			wrapper := NewWrapper(cmd)
+			wrapper := NewWrapper(ctx, cmd)
 
-			got, err := wrapper.ParseVersion()
+			got, err := wrapper.ParseVersion(ctx)
 			if err != nil {
 				t.Fatalf("want no error, got %q", err)
 			}

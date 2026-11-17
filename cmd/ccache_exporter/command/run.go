@@ -4,6 +4,8 @@
 package command
 
 import (
+	"context"
+
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
@@ -24,7 +26,7 @@ func NewRunCommand() *cobra.Command {
 		Use:   "run",
 		Short: "Start the exporter's HTTP server",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			httpServer := metrics.NewServer(ccacheWrapper, listenAddr, versionDetails)
+			httpServer := metrics.NewServer(context.Background(), ccacheWrapper, listenAddr, versionDetails)
 
 			log.Info().Str("addr", listenAddr).Msg("starting HTTP server")
 			return httpServer.ListenAndServe()

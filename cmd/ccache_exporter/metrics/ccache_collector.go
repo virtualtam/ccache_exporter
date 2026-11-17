@@ -4,6 +4,8 @@
 package metrics
 
 import (
+	"context"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog/log"
 
@@ -30,6 +32,7 @@ func init() {
 }
 
 type collector struct {
+	ctx     context.Context
 	wrapper *ccache.Wrapper
 
 	// ccache metrics
@@ -58,8 +61,9 @@ type collector struct {
 
 // newCcacheCollector initializes and returns a Prometheus collector for ccache
 // metrics.
-func newCcacheCollector(ccacheWrapper *ccache.Wrapper) *collector {
+func newCcacheCollector(ctx context.Context, ccacheWrapper *ccache.Wrapper) *collector {
 	return &collector{
+		ctx:     ctx,
 		wrapper: ccacheWrapper,
 		call: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "call_total"),
@@ -218,14 +222,14 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect gathers metrics from ccache.
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
-	config, err := c.wrapper.Configuration()
+	config, err := c.wrapper.Configuration(c.ctx)
 	if err != nil {
 		log.Error().Err(err).Msg("ccache: failed to collect configuration")
 		parsingErrors.Inc()
 		return
 	}
 
-	stats, err := c.wrapper.Statistics()
+	stats, err := c.wrapper.Statistics(c.ctx)
 	if err != nil {
 		log.Error().Err(err).Msg("ccache: failed to collect statistics")
 		parsingErrors.Inc()

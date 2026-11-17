@@ -4,6 +4,7 @@
 package ccache
 
 import (
+	"context"
 	"errors"
 	"regexp"
 
@@ -11,7 +12,7 @@ import (
 )
 
 var (
-	ErrVersionMissing error = errors.New("command: missing version")
+	ErrVersionMissing = errors.New("command: missing version")
 )
 
 var (
@@ -27,12 +28,12 @@ type Wrapper struct {
 }
 
 // NewWrapper initializes and returns a new Wrapper.
-func NewWrapper(c Command) *Wrapper {
+func NewWrapper(ctx context.Context, c Command) *Wrapper {
 	w := &Wrapper{
 		command: c,
 	}
 
-	v, err := w.ParseVersion()
+	v, err := w.ParseVersion(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -44,14 +45,14 @@ func NewWrapper(c Command) *Wrapper {
 }
 
 // Configuration returns the current ccache configuration.
-func (w *Wrapper) Configuration() (*Configuration, error) {
+func (w *Wrapper) Configuration(ctx context.Context) (*Configuration, error) {
 	var out string
 	var err error
 
 	if w.version.LessThan(useLegacyParserForVersionsBelow) {
-		out, err = w.command.PrintConfig()
+		out, err = w.command.PrintConfig(ctx)
 	} else {
-		out, err = w.command.ShowConfig()
+		out, err = w.command.ShowConfig(ctx)
 	}
 
 	if err != nil {
@@ -62,16 +63,16 @@ func (w *Wrapper) Configuration() (*Configuration, error) {
 }
 
 // Statistics returns the current ccache statistics.
-func (w *Wrapper) Statistics() (*Statistics, error) {
+func (w *Wrapper) Statistics(ctx context.Context) (*Statistics, error) {
 	if w.version.LessThan(useLegacyParserForVersionsBelow) {
-		return w.legacyStatistics()
+		return w.legacyStatistics(ctx)
 	}
 
-	return w.tsvStatistics()
+	return w.tsvStatistics(ctx)
 }
 
-func (w *Wrapper) legacyStatistics() (*Statistics, error) {
-	out, err := w.command.ShowStats()
+func (w *Wrapper) legacyStatistics(ctx context.Context) (*Statistics, error) {
+	out, err := w.command.ShowStats(ctx)
 	if err != nil {
 		return &Statistics{}, err
 	}
@@ -81,8 +82,8 @@ func (w *Wrapper) legacyStatistics() (*Statistics, error) {
 	return stats, err
 }
 
-func (w *Wrapper) tsvStatistics() (*Statistics, error) {
-	out, err := w.command.PrintStats()
+func (w *Wrapper) tsvStatistics(ctx context.Context) (*Statistics, error) {
+	out, err := w.command.PrintStats(ctx)
 	if err != nil {
 		return &Statistics{}, err
 	}
@@ -91,8 +92,8 @@ func (w *Wrapper) tsvStatistics() (*Statistics, error) {
 }
 
 // ParseVersion parses the semantic version for ccache.
-func (w *Wrapper) ParseVersion() (*semver.Version, error) {
-	out, err := w.command.Version()
+func (w *Wrapper) ParseVersion(ctx context.Context) (*semver.Version, error) {
+	out, err := w.command.Version(ctx)
 	if err != nil {
 		return &semver.Version{}, err
 	}

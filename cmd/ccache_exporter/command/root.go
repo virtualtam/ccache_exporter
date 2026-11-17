@@ -4,6 +4,7 @@
 package command
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -59,13 +60,16 @@ func NewRootCommand() *cobra.Command {
 				return err
 			}
 
+			// Exporter context, used by all ccache commands.
+			ctx := context.Background()
+
 			// Setup ccache wrapper
-			ccacheCommand, err := ccache.NewLocalCommand(ccacheBinaryPath)
+			ccacheCommand, err := ccache.NewLocalCommand(ctx, ccacheBinaryPath)
 			if err != nil {
 				log.Fatal().Err(err).Msg("ccache: failed to instantiate command wrapper")
 			}
 
-			ccacheWrapper = ccache.NewWrapper(ccacheCommand)
+			ccacheWrapper = ccache.NewWrapper(ctx, ccacheCommand)
 
 			// Retrieve exporter and ccache versions
 			versionDetails = version.NewDetails(ccacheWrapper.Version())
