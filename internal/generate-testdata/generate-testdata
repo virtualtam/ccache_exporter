@@ -98,9 +98,9 @@ VERSION=$(docker exec $NAME bash -c 'ccache --version | grep "ccache version" | 
 
 if [[ -z ${REMOTE_STORAGE} ]]
 then
-    OUTPUT_DIR="../../testdata/${TAG}-ccache-${VERSION}"
+    OUTPUT_DIR="../../pkg/ccache/testdata/${TAG}-ccache-${VERSION}"
 else
-    OUTPUT_DIR="../../testdata/${TAG}-ccache-${VERSION}-redis-${REMOTE_STORAGE_REDIS_VERSION}"
+    OUTPUT_DIR="../../pkg/ccache/testdata/${TAG}-ccache-${VERSION}-redis-${REMOTE_STORAGE_REDIS_VERSION}"
 fi
 mkdir -p ${OUTPUT_DIR}
 
