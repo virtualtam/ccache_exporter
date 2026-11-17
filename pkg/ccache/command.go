@@ -39,21 +39,21 @@ func (c *LocalCommand) exec(option string) (string, error) {
 
 // PrintConfig returns the result of `ccache --print-config`.
 //
-// Available for ccache < 3.7
+// Available for ccache < 3.7.
 func (c *LocalCommand) PrintConfig() (string, error) {
 	return c.exec("--print-config")
 }
 
 // ShowConfig returns the result of `ccache --show-config`.
 //
-// Available since ccache 3.7
+// Available since ccache 3.7.
 func (c *LocalCommand) ShowConfig() (string, error) {
 	return c.exec("--show-config")
 }
 
 // PrintStats returns the result of `ccache --print-stats`.
 //
-// Available since ccache 3.7
+// Available since ccache 3.7.
 func (c *LocalCommand) PrintStats() (string, error) {
 	return c.exec("--print-stats")
 }
