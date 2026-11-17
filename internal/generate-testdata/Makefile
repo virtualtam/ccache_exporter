@@ -24,6 +24,7 @@ docker-debian-%: Dockerfile
 		.
 
 docker-ubuntu: \
+	docker-ubuntu-26.04 \
 	docker-ubuntu-24.04 \
 	docker-ubuntu-22.04 \
 	docker-ubuntu-20.04 \
@@ -54,6 +55,7 @@ ccache-testdata-debian-%:
 	./generate-testdata local/ccache debian-$* $@
 
 ccache-testdata-ubuntu: \
+	ccache-testdata-ubuntu-26.04 \
 	ccache-testdata-ubuntu-24.04 \
 	ccache-testdata-ubuntu-22.04 \
 	ccache-testdata-ubuntu-20.04 \
@@ -69,6 +71,7 @@ ccache-testdata-ubuntu-%:
 
 ccache-testdata-redis: \
 	ccache-testdata-redis-debian-13 \
+	ccache-testdata-redis-ubuntu-26.04 \
 	ccache-testdata-redis-ubuntu-24.04
 
 ccache-testdata-redis-debian-%:

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Add reference data for Debian 13 and Ubuntu 26.04
 - Setup Dependabot to bump:
   - Docker images used by the example Docker Compose observability stack
   - GitHub Actions
