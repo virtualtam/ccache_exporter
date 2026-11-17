@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Require Go 1.27
 - Bump direct and transitive dependencies
 - Bump golangci-lint to v2
+- Update GitHub Actions configuration:
+  - Bump GitHub Actions and pin their versions
+  - Update the Docker multi-platform build matrix
 
 ## [v4.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.1.0) - 2025-03-25
 
