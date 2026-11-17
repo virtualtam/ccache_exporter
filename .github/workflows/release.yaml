@@ -29,8 +29,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          draft: True
+          draft: true
           prerelease: ${{ contains(github.ref, 'rc') }}
-          fail_on_unmatched_files: True
+          fail_on_unmatched_files: true
           files: |
             .tarballs/*

@@ -9,9 +9,17 @@ clean:
 	rm -rf .build .tarballs ccache_exporter ccacheparser
 .PHONY: clean
 
-lint:
-	golangci-lint run ./...
+lint: lint-go lint-yaml
 .PHONY: lint
+
+lint-go:
+	golangci-lint run ./...
+.PHONY: lint-go
+
+lint-yaml:
+	yamllint .
+	yamllint -c .github/.yamllint.yml .github/workflows
+.PHONY: lint-yaml
 
 test:
 	go test -race ./...
