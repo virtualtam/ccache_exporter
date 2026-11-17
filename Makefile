@@ -29,6 +29,7 @@ release: clean
 
 # Tools
 install-tools: promu install-govulncheck
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.15.0
 	go install github.com/hashicorp/copywrite@latest
 .PHONY: install-tools
 

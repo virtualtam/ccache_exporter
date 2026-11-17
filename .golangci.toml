@@ -1,0 +1,59 @@
+version = '2'
+
+[run]
+tests = true
+
+[issues]
+max-issues-per-linter = 0
+max-same-issues = 0
+new = false
+
+[linters]
+enable = [
+    'contextcheck',
+    'copyloopvar',
+    'errname',
+    'errorlint',
+    'gocritic',
+    'godot',
+    'misspell',
+    'nakedret',
+    'nilerr',
+    'nilnil',
+    'noctx',
+    'predeclared',
+    'reassign',
+    #"revive", # Quite nitpicky, useful to run manually.
+    'staticcheck',
+    'tagliatelle',
+    'thelper',
+    'tparallel',
+    'unconvert',
+    'unparam',
+    'usestdlibvars',
+    'usetesting',
+    'wastedassign',
+]
+
+[linters.settings.errcheck]
+# Don't allow setting of error to the blank identifier. If there is a legitimate
+# reason, there should be a nolint with an explanation.
+check-blank = true
+check-type-assertions = true
+
+[linters.settings.tagliatelle]
+[linters.settings.tagliatelle.case]
+[linters.settings.tagliatelle.case.rules]
+json = 'snake'
+
+[linters.exclusions]
+generated = 'lax'
+presets = ['comments', 'common-false-positives', 'legacy', 'std-error-handling']
+paths = ['third_party$', 'builtin$', 'examples$']
+
+[formatters]
+enable = ['gofmt', 'goimports']
+
+[formatters.exclusions]
+generated = 'lax'
+paths = ['third_party$', 'builtin$', 'examples$']
