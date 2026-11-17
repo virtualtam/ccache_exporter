@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
+### Fixed
+- Update ldflags used by Promu
+- Remove .git from .dockerignore to allow to Go builder to read VCS information
+
 ### Added
 
 - Setup Dependabot to bump:
@@ -22,7 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Update GitHub Actions configuration:
   - Bump GitHub Actions and pin their versions
   - Update the Docker multi-platform build matrix
-- Update ldflags used by Promu
 
 ## [v4.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.1.0) - 2025-03-25
 

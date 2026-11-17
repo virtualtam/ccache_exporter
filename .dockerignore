@@ -1,10 +1,4 @@
-.git/
-.github/
-.gitignore
-
-*.jpg
-*.rst
-
+# Only exclude untracked files: excluding tracked files marks the embedded VCS info as modified.
 .build/
 .tarballs/
 
@@ -16,8 +10,3 @@ coverage.html
 
 .idea/
 .vscode/
-
-docker/
-.dockerignore
-docker-compose.yml
-Dockerfile
