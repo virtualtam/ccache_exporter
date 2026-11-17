@@ -1,10 +1,15 @@
-# A common Makefile that includes rules to be reused in different prometheus projects.
-# https://github.com/prometheus/prometheus/blob/master/Makefile.common
-PROMU_VERSION ?= 0.21.0
-include Makefile.common
+BUILD_DIR ?= build
+SRC_FILES := $(shell find . -name "*.go")
+PROMU_VERSION ?= v0.21.0
 
 all: lint cover build
 .PHONY: all
+
+build: $(BUILD_DIR)/ccache_exporter $(BUILD_DIR)/ccacheparser
+.PHONY: build
+
+$(BUILD_DIR)/%: $(SRC_FILES) go.mod go.sum
+	go build -trimpath -ldflags=-s -o $@ ./cmd/$*
 
 clean:
 	rm -rf .build .tarballs build
@@ -37,10 +42,15 @@ release: clean
 .PHONY: release
 
 # Tools
-install-tools: promu install-govulncheck
+install-tools: install-promu
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.15.0
 	go install github.com/hashicorp/copywrite@latest
+	go install golang.org/x/vuln/cmd/govulncheck@latest
 .PHONY: install-tools
+
+install-promu:
+	go install github.com/prometheus/promu@$(PROMU_VERSION)
+.PHONY: install-promu
 
 # Licence headers
 copywrite:

@@ -11,7 +11,7 @@ COPY go.mod go.sum ./
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod go mod download
 
 ADD . .
-RUN make common-build
+RUN make build
 
 # Step 2: build the actual image
 FROM debian:trixie-slim

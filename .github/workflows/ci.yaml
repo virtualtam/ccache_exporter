@@ -22,7 +22,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Build
-        run: make common-build
+        run: make build
 
   lint:
     runs-on: ubuntu-latest
