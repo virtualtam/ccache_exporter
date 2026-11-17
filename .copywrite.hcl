@@ -5,6 +5,12 @@ project {
   copyright_holder = "VirtualTam"
 
   header_ignore = [
+    # SCM
+    ".git/**",
+
+    # IDEs
+    ".idea/**",
+
     # Docker Compose
     "docker-compose*.yml",
 
@@ -13,6 +19,7 @@ project {
 
     # Yamllint
     ".yamllint.yml",
+    ".github/.yamllint.yml",
 
     # Docker Compose service configuration
     "docker/**"
