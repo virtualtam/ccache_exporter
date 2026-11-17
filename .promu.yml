@@ -14,14 +14,8 @@ build:
       path: ./cmd/ccache_exporter
     - name: build/ccacheparser
       path: ./cmd/ccacheparser
-  flags: -a -trimpath
-  ldflags: |
-    -s
-    -X {{repoPath}}/v4/version.Version={{.Version}}
-    -X {{repoPath}}/v4/version.Revision={{.Revision}}
-    -X {{repoPath}}/v4/version.Branch={{.Branch}}
-    -X {{repoPath}}/v4/version.BuildUser={{user}}@{{host}}
-    -X {{repoPath}}/v4/version.BuildDate={{date "20060102-15:04:05"}}
+  flags: -trimpath
+  ldflags: -s
 
 crossbuild:
   platforms:
