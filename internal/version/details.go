@@ -1,4 +1,4 @@
-// Copyright (c) VirtualTam
+// Copyright VirtualTam 2018, 2026
 // SPDX-License-Identifier: MIT
 
 package version
