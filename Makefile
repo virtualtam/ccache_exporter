@@ -2,7 +2,7 @@ BUILD_DIR ?= build
 SRC_FILES := $(shell find . -name "*.go")
 PROMU_VERSION ?= v0.21.0
 
-all: lint cover build
+all: lint race cover build
 .PHONY: all
 
 build: $(BUILD_DIR)/ccache_exporter $(BUILD_DIR)/ccacheparser
@@ -27,13 +27,21 @@ lint-yaml:
 	yamllint -c .github/.yamllint.yml .github/workflows
 .PHONY: lint-yaml
 
-test:
-	go test -race ./...
-.PHONY: test
-
 cover:
-	go test -cover -race ./...
+	go test -coverprofile=coverage.out ./...
 .PHONY: cover
+
+coverhtml: cover
+	go tool cover -html=coverage.out
+.PHONY: coverhtml
+
+race:
+	go test -race ./...
+.PHONY: race
+
+test:
+	go test ./...
+.PHONY: test
 
 release: clean
 	promu crossbuild
@@ -41,16 +49,28 @@ release: clean
 	cd .tarballs; sha256sum * > sha256sums
 .PHONY: release
 
-# Tools
-install-tools: install-promu
+# Install development tools
+dev-install-tools: install-promu
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.15.0
 	go install github.com/hashicorp/copywrite@latest
+	go install golang.org/x/tools/gopls@latest
 	go install golang.org/x/vuln/cmd/govulncheck@latest
-.PHONY: install-tools
+	uv tool install yamllint
+.PHONY: dev-install-tools
 
 install-promu:
 	go install github.com/prometheus/promu@$(PROMU_VERSION)
 .PHONY: install-promu
+
+# Modernize
+modernize:
+	go run golang.org/x/tools/go/analysis/passes/modernize/cmd/modernize@latest -fix -test ./...
+.PHONY: modernize
+
+# Vulnerability check
+vulncheck:
+	govulncheck -C . ./...
+.PHONY: vulncheck
 
 # Licence headers
 copywrite:
