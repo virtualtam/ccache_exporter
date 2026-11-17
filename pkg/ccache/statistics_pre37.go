@@ -133,7 +133,7 @@ func ParsePre37Statistics(text string) (*Statistics, error) {
 	matches = pre37StatisticsRules["cacheSize"].FindStringSubmatch(text)
 	if len(matches) == 2 {
 		stats.CacheSize = matches[1]
-		sanitizedCacheSize := strings.Replace(strings.ToUpper(stats.CacheSize), " ", "", -1)
+		sanitizedCacheSize := strings.ReplaceAll(strings.ToUpper(stats.CacheSize), " ", "")
 		stats.CacheSizeBytes, err = units.ParseMetricBytes(sanitizedCacheSize)
 		if err != nil {
 			return &Statistics{}, err

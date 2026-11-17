@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -32,13 +33,13 @@ func main() {
 		panic("No data piped to stdin")
 	}
 
-	var text string
+	var text strings.Builder
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		text += scanner.Text() + "\n"
+		text.WriteString(scanner.Text() + "\n")
 	}
 
-	stats, err := ccache.ParseTSVStatistics(text)
+	stats, err := ccache.ParseTSVStatistics(text.String())
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parse")
 	}

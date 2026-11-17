@@ -27,7 +27,7 @@ const (
 
 var (
 	logFormat            string
-	defaultLogLevelValue string = zerolog.LevelInfoValue
+	defaultLogLevelValue = zerolog.LevelInfoValue
 	logLevelValue        string
 
 	versionDetails *version.Details

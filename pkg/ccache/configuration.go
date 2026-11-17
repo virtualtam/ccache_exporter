@@ -58,7 +58,7 @@ func ParseConfiguration(text string) (*Configuration, error) {
 				sanitizedMaxCacheSize = fields[2]
 			}
 
-			sanitizedMaxCacheSize = strings.Replace(strings.ToUpper(sanitizedMaxCacheSize), " ", "", -1)
+			sanitizedMaxCacheSize = strings.ReplaceAll(strings.ToUpper(sanitizedMaxCacheSize), " ", "")
 
 			if !strings.HasSuffix(sanitizedMaxCacheSize, "B") {
 				sanitizedMaxCacheSize += "B"

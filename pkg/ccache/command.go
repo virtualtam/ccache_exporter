@@ -37,7 +37,7 @@ func (c *LocalCommand) exec(ctx context.Context, option string) (string, error) 
 		return "", err
 	}
 
-	return string(out[:]), nil
+	return string(out), nil
 }
 
 // PrintConfig returns the result of `ccache --print-config`.
