@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - Docker images used by the example Docker Compose observability stack
   - GitHub Actions
   - Go modules
+- Pin Promu version
 
 ### Changed
 

@@ -1,5 +1,6 @@
 # A common Makefile that includes rules to be reused in different prometheus projects.
 # https://github.com/prometheus/prometheus/blob/master/Makefile.common
+PROMU_VERSION ?= 0.21.0
 include Makefile.common
 
 all: lint cover build
