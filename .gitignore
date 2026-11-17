@@ -7,3 +7,13 @@
 
 # Binaries
 build/
+*.test
+__debug_bin*
+
+# Test coverage
+coverage.out
+coverage.html
+
+# IDEs
+.idea/
+.vscode/

@@ -6,7 +6,7 @@ all: lint cover build
 .PHONY: all
 
 clean:
-	rm -rf .build .tarballs ccache_exporter ccacheparser
+	rm -rf .build .tarballs build
 .PHONY: clean
 
 lint: lint-go lint-yaml

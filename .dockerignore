@@ -1,4 +1,5 @@
 .git/
+.github/
 .gitignore
 
 *.jpg
@@ -7,8 +8,14 @@
 .build/
 .tarballs/
 
-ccache_exporter
-ccacheparser
+build/
+*.test
+
+coverage.out
+coverage.html
+
+.idea/
+.vscode/
 
 docker/
 .dockerignore
