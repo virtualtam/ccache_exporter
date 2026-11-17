@@ -183,6 +183,59 @@ func TestParseTSVStatistics(t *testing.T) {
 			},
 		},
 		{
+			osAndVersion:     "Debian 13",
+			osAndVersionCode: "debian-13",
+			ccacheVersion:    "4.11.2",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:              137,
+						CacheMissDirect:        156,
+						CacheMissPreprocessed:  144,
+						CalledForLink:          36,
+						CalledForPreprocessing: 0,
+						CompilationFailed:      7,
+						NoInputFile:            5,
+						PreprocessingFailed:    12,
+						FilesInCache:           272,
+						CacheSize:              "33MB",
+						CacheSizeBytes:         units.MetricBytes(33853440),
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:         104,
+						CacheHitPreprocessed:   2,
+						CacheMiss:              168,
+						CacheMissDirect:        208,
+						CacheMissPreprocessed:  182,
+						CacheHitRate:           15.963855,
+						CacheHitRatio:          0.159639,
+						CalledForLink:          72,
+						CalledForPreprocessing: 0,
+						CompilationFailed:      14,
+						NoInputFile:            10,
+						PreprocessingFailed:    24,
+						FilesInCache:           334,
+						CacheSize:              "34MB",
+						CacheSizeBytes:         units.MetricBytes(34193408),
+					},
+				},
+			},
+		},
+		{
 			osAndVersion:     "Ubuntu 20.04",
 			osAndVersionCode: "ubuntu-20.04",
 			ccacheVersion:    "3.7.7",
@@ -375,6 +428,62 @@ func TestParseTSVStatistics(t *testing.T) {
 
 func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 	sessions := []tsvTestSession{
+		{
+			osAndVersion:     "Debian 13",
+			osAndVersionCode: "debian-13",
+			ccacheVersion:    "4.11.2",
+			redisVersion:     "8",
+
+			testCases: []tsvTestCase{
+				{
+					tname:         "empty cache",
+					inputFilename: "empty.tsv",
+					wantStats: Statistics{
+						CacheSize: "0B",
+					},
+				},
+				{
+					tname:         "first build",
+					inputFilename: "firstbuild.tsv",
+					wantStats: Statistics{
+						CacheMiss:             137,
+						CacheMissDirect:       156,
+						CacheMissPreprocessed: 144,
+						CacheSize:             "0B",
+						CalledForLink:         36,
+						CompilationFailed:     7,
+						NoInputFile:           5,
+						PreprocessingFailed:   12,
+						RemoteStorageMiss:     137,
+						RemoteStorageReadMiss: 298,
+						RemoteStorageWrite:    272,
+					},
+				},
+				{
+					tname:         "second build",
+					inputFilename: "secondbuild.tsv",
+					wantStats: Statistics{
+						CacheHitDirect:        104,
+						CacheHitPreprocessed:  2,
+						CacheMiss:             168,
+						CacheMissDirect:       208,
+						CacheMissPreprocessed: 182,
+						CacheHitRate:          15.963855,
+						CacheHitRatio:         0.159639,
+						CalledForLink:         72,
+						CacheSize:             "0B",
+						CompilationFailed:     14,
+						NoInputFile:           10,
+						PreprocessingFailed:   24,
+						RemoteStorageHit:      106,
+						RemoteStorageMiss:     168,
+						RemoteStorageReadHit:  210,
+						RemoteStorageReadMiss: 386,
+						RemoteStorageWrite:    334,
+					},
+				},
+			},
+		},
 		{
 			osAndVersion:     "Ubuntu 24.04",
 			osAndVersionCode: "ubuntu-24.04",

@@ -38,5 +38,5 @@ make docker-ubuntu-24.04
 Generate testdata:
 
 ```shell
-./generate-testdata local/ccache ubuntu-24.04 ccache-testdata-ubuntu-24.04 yes
+make ccache-testdata-redis-ubuntu-24.04
 ```

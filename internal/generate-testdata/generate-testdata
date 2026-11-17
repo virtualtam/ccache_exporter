@@ -32,7 +32,7 @@ REMOTE_STORAGE=$4
 
 REMOTE_STORAGE_NETWORK="${NAME}-remote-storage"
 REMOTE_STORAGE_REDIS_NAME="${NAME}-redis"
-REMOTE_STORAGE_REDIS_VERSION=7
+REMOTE_STORAGE_REDIS_VERSION=8
 
 function parse-version {
     # Convert a version code (up to 4 digits) to an integer for version

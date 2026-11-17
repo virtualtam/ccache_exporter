@@ -9,6 +9,7 @@
 docker-all: docker-debian docker-ubuntu
 
 docker-debian: \
+	docker-debian-13 \
 	docker-debian-12 \
 	docker-debian-11 \
 	docker-debian-10 \
@@ -40,9 +41,10 @@ docker-ubuntu-%: Dockerfile
 # Run software builds with ccache enabled to generate output testdata
 ##
 
-ccache-testdata-all: ccache-testdata-debian ccache-testdata-ubuntu
+ccache-testdata-all: ccache-testdata-debian ccache-testdata-ubuntu ccache-testdata-redis
 
 ccache-testdata-debian: \
+	ccache-testdata-debian-13 \
 	ccache-testdata-debian-12 \
 	ccache-testdata-debian-11 \
 	ccache-testdata-debian-10 \
@@ -59,3 +61,18 @@ ccache-testdata-ubuntu: \
 
 ccache-testdata-ubuntu-%:
 	./generate-testdata local/ccache ubuntu-$* $@
+
+##
+# Run software builds with ccache and a Redis remote storage enabled to generate
+# output testdata
+##
+
+ccache-testdata-redis: \
+	ccache-testdata-redis-debian-13 \
+	ccache-testdata-redis-ubuntu-24.04
+
+ccache-testdata-redis-debian-%:
+	./generate-testdata local/ccache debian-$* $@ yes
+
+ccache-testdata-redis-ubuntu-%:
+	./generate-testdata local/ccache ubuntu-$* $@ yes
