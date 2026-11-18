@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 ### Fixed
+- Fix cache size parsing in `ParseConfiguration` for ccache > 4.9
 - Update ldflags used by Promu
 - Remove .git from .dockerignore to allow to Go builder to read VCS information
 

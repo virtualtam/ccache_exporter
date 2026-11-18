@@ -51,6 +51,30 @@ func TestParseConfiguration(t *testing.T) {
 				MaxCacheSizeBytes: units.MetricBytes(17000000000),
 			},
 		},
+		{
+			tname: "default (binary size unit)",
+			input: `(environment) cache_dir = /home/cached/.ccache
+(default) max_size = 5.0 GiB
+`,
+			want: Configuration{
+				CacheDirectory:    "/home/cached/.ccache",
+				PrimaryConfig:     "/home/cached/.ccache/ccache.conf",
+				MaxCacheSize:      "5.0GiB",
+				MaxCacheSizeBytes: units.MetricBytes(5368709120),
+			},
+		},
+		{
+			tname: "configured via file (binary size unit)",
+			input: `(default) cache_dir = /home/cached/.ccache
+(/home/cached/.ccache/ccache.conf) max_size = 500.0 MiB
+`,
+			want: Configuration{
+				CacheDirectory:    "/home/cached/.ccache",
+				PrimaryConfig:     "/home/cached/.ccache/ccache.conf",
+				MaxCacheSize:      "500.0MiB",
+				MaxCacheSizeBytes: units.MetricBytes(524288000),
+			},
+		},
 	}
 
 	for _, tc := range cases {

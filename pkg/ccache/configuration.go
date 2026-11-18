@@ -64,11 +64,24 @@ func ParseConfiguration(text string) (*Configuration, error) {
 				sanitizedMaxCacheSize += "B"
 			}
 
-			configuration.MaxCacheSize = sanitizedMaxCacheSize
-			configuration.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSize)
-			if err != nil {
-				return &Configuration{}, err
+			if size, ok := strings.CutSuffix(sanitizedMaxCacheSize, "IB"); ok {
+				// Restore the lowercase 'i' for binary units (KiB, MiB, GiB), so we can parse the values
+				// using IEC binary prefixes.
+				sanitizedMaxCacheSize = size + "iB"
+
+				maxCacheSizeBytes, err := units.ParseBase2Bytes(sanitizedMaxCacheSize)
+				if err != nil {
+					return &Configuration{}, err
+				}
+				configuration.MaxCacheSizeBytes = units.MetricBytes(maxCacheSizeBytes)
+			} else {
+				configuration.MaxCacheSizeBytes, err = units.ParseMetricBytes(sanitizedMaxCacheSize)
+				if err != nil {
+					return &Configuration{}, err
+				}
 			}
+
+			configuration.MaxCacheSize = sanitizedMaxCacheSize
 		}
 	}
 
