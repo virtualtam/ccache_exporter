@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - Bump GitHub Actions and pin their versions
   - Update the Docker multi-platform build matrix
 - Remove Promu's `Makefile.common` and simplify Makefile targets
+- Update the example Docker Compose stack to allow running `node_exporter` on Docker Desktop
 
 ## [v4.1.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v4.1.0) - 2025-03-25
 

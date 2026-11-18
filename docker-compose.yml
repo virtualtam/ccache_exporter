@@ -40,9 +40,15 @@ services:
       - "19100:9100"
     cap_add:
       - SYS_TIME
+    # Note: We do not enable mount propagation for /proc and /sys; this allows running the example stack with
+    #       Docker Desktop, where mount propagation is not available.
+    #
+    # See:
+    # - https://docs.docker.com/engine/storage/bind-mounts/#configure-bind-propagation
+    # - https://github.com/prometheus/node_exporter/issues/1509
     volumes:
-      - "/proc:/host/proc:ro,rslave"
-      - "/sys:/host/sys:ro,rslave"
+      - "/proc:/host/proc:ro"
+      - "/sys:/host/sys:ro"
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
