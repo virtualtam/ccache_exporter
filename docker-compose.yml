@@ -25,6 +25,16 @@ services:
       prometheus:
     ports:
       - "13000:3000"
+    environment:
+      # Grant the Admin role to anonymous users.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+
+      # Use the Grafana image renderer to render the example ccache dashboard as a PNG.
+      GF_RENDERING_SERVER_URL: http://renderer:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+      GF_RENDERING_RENDERER_TOKEN: ccache-exporter-demo
     volumes:
       - ./docker/grafana-datasources.yml:/etc/grafana/provisioning/datasources/all.yml
       - ./docker/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/all.yml
@@ -62,3 +72,14 @@ services:
     volumes:
       - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
+
+  # Use the Grafana image renderer to render the example ccache dashboard as a PNG.
+  # The renderer is only started when needed.
+  renderer:
+    image: grafana/grafana-image-renderer:v5.12.0
+    profiles:
+      - screenshot
+    networks:
+      prometheus:
+    environment:
+      AUTH_TOKEN: ccache-exporter-demo

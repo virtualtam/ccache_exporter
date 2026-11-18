@@ -142,10 +142,25 @@ Once the stack is up, the following services will be exposed:
 - http://localhost:13000: `grafana`
 
 
-Then, login to Grafana with the default credentials (`admin/admin`) and load
+Then, open Grafana (authentication is disabled for this example stack) and load
 the `ccache` dashboard:
 
 <img src="./dashboard.png" alt="Grafana dashboard for ccache_exporter metrics">
+
+### Exporting a dashboard screenshot
+Start the stack with the `screenshot` profile, to run the
+[Grafana Image Renderer](https://grafana.com/docs/grafana/latest/setup-grafana/image-rendering/):
+
+```shell
+$ docker compose --profile screenshot up -d
+```
+
+Then, render the dashboard to `dashboard.png`, optionally setting the time range
+(defaults to the last hour):
+
+```shell
+$ make dashboard-screenshot DASHBOARD_FROM=2026-11-18T14:15:52Z DASHBOARD_TO=2026-11-18T14:33:27Z
+```
 
 ## Change Log
 See [CHANGELOG](./CHANGELOG.md)

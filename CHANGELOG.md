@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - GitHub Actions
   - Go modules
 - Pin Promu version
+- Automate the rendering of a PNG image of the example Grafana dashboard
 
 ### Changed
 

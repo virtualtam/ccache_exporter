@@ -77,6 +77,15 @@ copywrite:
 	copywrite headers
 .PHONY: copywrite
 
+# Render the example Grafana dashboard as a PNG image.
+DASHBOARD_FROM ?= now-1h
+DASHBOARD_TO ?= now
+
+render-example-dashboard:
+	curl -sSf -o dashboard.png \
+		"http://localhost:13000/render/d/YytQhHJiz/ccache?from=$(DASHBOARD_FROM)&to=$(DASHBOARD_TO)&timezone=browser&width=1600&height=-1&kiosk=true&theme=dark&timeout=60"
+.PHONY: render-example-dashboard
+
 # Live development server
 live:
 	@echo "== Watching for changes... (hit Ctrl+C when done)"
