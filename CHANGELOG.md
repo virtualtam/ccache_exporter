@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## [v5.0.0](https://github.com/virtualtam/ccache_exporter/releases/tag/v5.0.0) - 2026-11-18
+
 ### Breaking
 - Group statistics for uncacheable calls into a single metric, with a `reason` label
 - Group statistics for errored calls into a single metric, with a `reason` label
