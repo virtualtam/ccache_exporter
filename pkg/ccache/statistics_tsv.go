@@ -176,6 +176,36 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 				return &Statistics{}, err
 			}
 
+		case "local_storage_hit":
+			stats.LocalStorage.Hit, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "local_storage_miss":
+			stats.LocalStorage.Miss, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "local_storage_read_hit":
+			stats.LocalStorage.ReadHit, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "local_storage_read_miss":
+			stats.LocalStorage.ReadMiss, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "local_storage_write":
+			stats.LocalStorage.Write, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "missing_cache_file":
 			stats.ErrorCalls.MissingCacheFile, err = strconv.Atoi(row[1])
 			if err != nil {
@@ -231,43 +261,43 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 			}
 
 		case "remote_storage_error":
-			stats.RemoteStorageError, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.Error, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_hit":
-			stats.RemoteStorageHit, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.Hit, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_miss":
-			stats.RemoteStorageMiss, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.Miss, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_read_hit":
-			stats.RemoteStorageReadHit, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.ReadHit, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_read_miss":
-			stats.RemoteStorageReadMiss, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.ReadMiss, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_timeout":
-			stats.RemoteStorageTimeout, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.Timeout, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "remote_storage_write":
-			stats.RemoteStorageWrite, err = strconv.Atoi(row[1])
+			stats.RemoteStorage.Write, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}

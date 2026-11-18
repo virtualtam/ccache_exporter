@@ -72,7 +72,54 @@ ccache_uncacheable_calls_total{reason="unsupported_source_language"} 0
 	}
 }
 
-func TestCollectorRemovedUncacheableMetrics(t *testing.T) {
+func TestCollectorStorage(t *testing.T) {
+	ctx := t.Context()
+
+	command := &fakeCommand{
+		version: ccacheVersion,
+		config:  readTestdata(t, "config"),
+		stats:   readTestdata(t, "secondbuild.tsv"),
+	}
+	c := newCcacheCollector(ctx, ccache.NewWrapper(ctx, command))
+
+	want := `
+# HELP ccache_storage_hit_total Cacheable calls that hit the storage (total), by storage
+# TYPE ccache_storage_hit_total counter
+ccache_storage_hit_total{storage="local"} 110
+ccache_storage_hit_total{storage="remote"} 0
+# HELP ccache_storage_miss_total Cacheable calls that missed the storage (total), by storage
+# TYPE ccache_storage_miss_total counter
+ccache_storage_miss_total{storage="local"} 170
+ccache_storage_miss_total{storage="remote"} 0
+# HELP ccache_storage_read_hit_total Storage reads that found an entry (total), by storage
+# TYPE ccache_storage_read_hit_total counter
+ccache_storage_read_hit_total{storage="local"} 217
+ccache_storage_read_hit_total{storage="remote"} 0
+# HELP ccache_storage_read_miss_total Storage reads that found no entry (total), by storage
+# TYPE ccache_storage_read_miss_total counter
+ccache_storage_read_miss_total{storage="local"} 391
+ccache_storage_read_miss_total{storage="remote"} 0
+# HELP ccache_storage_write_total Storage writes (total), by storage
+# TYPE ccache_storage_write_total counter
+ccache_storage_write_total{storage="local"} 337
+ccache_storage_write_total{storage="remote"} 0
+`
+
+	err := testutil.CollectAndCompare(
+		c,
+		strings.NewReader(want),
+		"ccache_storage_hit_total",
+		"ccache_storage_miss_total",
+		"ccache_storage_read_hit_total",
+		"ccache_storage_read_miss_total",
+		"ccache_storage_write_total",
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCollectorRemovedMetrics(t *testing.T) {
 	ctx := t.Context()
 
 	command := &fakeCommand{
@@ -89,6 +136,11 @@ func TestCollectorRemovedUncacheableMetrics(t *testing.T) {
 		"ccache_no_input_file_total",
 		"ccache_preprocessing_failed_total",
 		"ccache_unsupported_code_directive_total",
+		"ccache_remote_storage_hit_total",
+		"ccache_remote_storage_miss_total",
+		"ccache_remote_storage_read_hit_total",
+		"ccache_remote_storage_read_miss_total",
+		"ccache_remote_storage_write_total",
 	}
 
 	for _, name := range removed {

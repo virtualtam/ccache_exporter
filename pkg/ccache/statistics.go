@@ -34,14 +34,9 @@ type Statistics struct {
 	UncacheableCalls UncacheableCalls `json:"uncacheable_calls"`
 	ErrorCalls       ErrorCalls       `json:"error_calls"`
 
-	// Remote storage
-	RemoteStorageError    int `json:"remote_storage_error"`
-	RemoteStorageHit      int `json:"remote_storage_hit"`
-	RemoteStorageMiss     int `json:"remote_storage_miss"`
-	RemoteStorageReadHit  int `json:"remote_storage_read_hit"`
-	RemoteStorageReadMiss int `json:"remote_storage_read_miss"`
-	RemoteStorageTimeout  int `json:"remote_storage_timeout"`
-	RemoteStorageWrite    int `json:"remote_storage_write"`
+	// Storage
+	LocalStorage  LocalStorage  `json:"local_storage"`
+	RemoteStorage RemoteStorage `json:"remote_storage"`
 }
 
 // UncacheableCalls counts the calls ccache could not cache, by reason.
@@ -79,4 +74,24 @@ type ErrorCalls struct {
 	InternalError         int `json:"internal_error"`
 	MissingCacheFile      int `json:"missing_cache_file"`
 	ModifiedInputFile     int `json:"modified_input_file"`
+}
+
+// LocalStorage counts local storage lookups, reads and writes.
+type LocalStorage struct {
+	Hit      int `json:"hit"`
+	Miss     int `json:"miss"`
+	ReadHit  int `json:"read_hit"`
+	ReadMiss int `json:"read_miss"`
+	Write    int `json:"write"`
+}
+
+// RemoteStorage counts remote storage lookups, reads, writes and failures.
+type RemoteStorage struct {
+	Error    int `json:"error"`
+	Hit      int `json:"hit"`
+	Miss     int `json:"miss"`
+	ReadHit  int `json:"read_hit"`
+	ReadMiss int `json:"read_miss"`
+	Timeout  int `json:"timeout"`
+	Write    int `json:"write"`
 }

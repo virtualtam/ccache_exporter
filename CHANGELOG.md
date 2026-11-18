@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Breaking
 - Group statistics for uncacheable calls into a single metric, with a `reason` label
 - Group statistics for errored calls into a single metric, with a `reason` label
+- Rework statistics for storage (local, remote) to identify the type with a `storage` label
 
 ### Fixed
 - Fix cache size parsing in `ParseConfiguration` for ccache > 4.9

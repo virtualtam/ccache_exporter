@@ -15,6 +15,10 @@ import (
 const (
 	namespace   = "ccache"
 	reasonLabel = "reason"
+
+	storageLabel  = "storage"
+	storageLocal  = "local"
+	storageRemote = "remote"
 )
 
 var (
@@ -37,23 +41,23 @@ type collector struct {
 	wrapper *ccache.Wrapper
 
 	// ccache metrics
-	call                  *prometheus.Desc
-	callHit               *prometheus.Desc
-	cacheHitRatio         *prometheus.Desc
-	uncacheableCalls      *prometheus.Desc
-	errorCalls            *prometheus.Desc
-	cleanupsPerformed     *prometheus.Desc
-	filesInCache          *prometheus.Desc
-	cacheSizeBytes        *prometheus.Desc
-	maxCacheSizeBytes     *prometheus.Desc
-	remoteStorageError    *prometheus.Desc
-	remoteStorageHit      *prometheus.Desc
-	remoteStorageMiss     *prometheus.Desc
-	remoteStorageReadHit  *prometheus.Desc
-	remoteStorageReadMiss *prometheus.Desc
-	remoteStorageTimeout  *prometheus.Desc
-	remoteStorageWrite    *prometheus.Desc
-	version               *prometheus.Desc
+	call                 *prometheus.Desc
+	callHit              *prometheus.Desc
+	cacheHitRatio        *prometheus.Desc
+	uncacheableCalls     *prometheus.Desc
+	errorCalls           *prometheus.Desc
+	cleanupsPerformed    *prometheus.Desc
+	filesInCache         *prometheus.Desc
+	cacheSizeBytes       *prometheus.Desc
+	maxCacheSizeBytes    *prometheus.Desc
+	storageHit           *prometheus.Desc
+	storageMiss          *prometheus.Desc
+	storageReadHit       *prometheus.Desc
+	storageReadMiss      *prometheus.Desc
+	storageWrite         *prometheus.Desc
+	remoteStorageError   *prometheus.Desc
+	remoteStorageTimeout *prometheus.Desc
+	version              *prometheus.Desc
 }
 
 // newCcacheCollector initializes and returns a Prometheus collector for ccache
@@ -116,45 +120,45 @@ func newCcacheCollector(ctx context.Context, ccacheWrapper *ccache.Wrapper) *col
 			nil,
 			nil,
 		),
+		storageHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "storage_hit_total"),
+			"Cacheable calls that hit the storage (total), by storage",
+			[]string{storageLabel},
+			nil,
+		),
+		storageMiss: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "storage_miss_total"),
+			"Cacheable calls that missed the storage (total), by storage",
+			[]string{storageLabel},
+			nil,
+		),
+		storageReadHit: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "storage_read_hit_total"),
+			"Storage reads that found an entry (total), by storage",
+			[]string{storageLabel},
+			nil,
+		),
+		storageReadMiss: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "storage_read_miss_total"),
+			"Storage reads that found no entry (total), by storage",
+			[]string{storageLabel},
+			nil,
+		),
+		storageWrite: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "storage_write_total"),
+			"Storage writes (total), by storage",
+			[]string{storageLabel},
+			nil,
+		),
 		remoteStorageError: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "remote_storage_errors_total"),
 			"Remote storage errors",
 			nil,
 			nil,
 		),
-		remoteStorageHit: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_hit_total"),
-			"Remote storage hits",
-			nil,
-			nil,
-		),
-		remoteStorageMiss: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_miss_total"),
-			"Remote storage misses",
-			nil,
-			nil,
-		),
-		remoteStorageReadHit: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_read_hit_total"),
-			"Remote storage read hits",
-			nil,
-			nil,
-		),
-		remoteStorageReadMiss: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_read_miss_total"),
-			"Remote storage read miss",
-			nil,
-			nil,
-		),
 		remoteStorageTimeout: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "remote_storage_timeout_total"),
 			"Remote storage timeouts",
-			nil,
-			nil,
-		),
-		remoteStorageWrite: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "remote_storage_write_total"),
-			"Remote storage writes",
 			nil,
 			nil,
 		),
@@ -179,13 +183,13 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.filesInCache
 	ch <- c.cacheSizeBytes
 	ch <- c.maxCacheSizeBytes
+	ch <- c.storageHit
+	ch <- c.storageMiss
+	ch <- c.storageReadHit
+	ch <- c.storageReadMiss
+	ch <- c.storageWrite
 	ch <- c.remoteStorageError
-	ch <- c.remoteStorageHit
-	ch <- c.remoteStorageMiss
-	ch <- c.remoteStorageReadHit
-	ch <- c.remoteStorageReadMiss
 	ch <- c.remoteStorageTimeout
-	ch <- c.remoteStorageWrite
 	ch <- c.version
 }
 
@@ -220,13 +224,18 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(c.errorCalls, prometheus.CounterValue, float64(value), reason)
 	}
 	ch <- prometheus.MustNewConstMetric(c.cleanupsPerformed, prometheus.CounterValue, float64(stats.CleanupsPerformed))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageError, prometheus.CounterValue, float64(stats.RemoteStorageError))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageHit, prometheus.CounterValue, float64(stats.RemoteStorageHit))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageMiss, prometheus.CounterValue, float64(stats.RemoteStorageMiss))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageReadHit, prometheus.CounterValue, float64(stats.RemoteStorageReadHit))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageReadMiss, prometheus.CounterValue, float64(stats.RemoteStorageReadMiss))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageTimeout, prometheus.CounterValue, float64(stats.RemoteStorageTimeout))
-	ch <- prometheus.MustNewConstMetric(c.remoteStorageWrite, prometheus.CounterValue, float64(stats.RemoteStorageWrite))
+	ch <- prometheus.MustNewConstMetric(c.storageHit, prometheus.CounterValue, float64(stats.LocalStorage.Hit), storageLocal)
+	ch <- prometheus.MustNewConstMetric(c.storageHit, prometheus.CounterValue, float64(stats.RemoteStorage.Hit), storageRemote)
+	ch <- prometheus.MustNewConstMetric(c.storageMiss, prometheus.CounterValue, float64(stats.LocalStorage.Miss), storageLocal)
+	ch <- prometheus.MustNewConstMetric(c.storageMiss, prometheus.CounterValue, float64(stats.RemoteStorage.Miss), storageRemote)
+	ch <- prometheus.MustNewConstMetric(c.storageReadHit, prometheus.CounterValue, float64(stats.LocalStorage.ReadHit), storageLocal)
+	ch <- prometheus.MustNewConstMetric(c.storageReadHit, prometheus.CounterValue, float64(stats.RemoteStorage.ReadHit), storageRemote)
+	ch <- prometheus.MustNewConstMetric(c.storageReadMiss, prometheus.CounterValue, float64(stats.LocalStorage.ReadMiss), storageLocal)
+	ch <- prometheus.MustNewConstMetric(c.storageReadMiss, prometheus.CounterValue, float64(stats.RemoteStorage.ReadMiss), storageRemote)
+	ch <- prometheus.MustNewConstMetric(c.storageWrite, prometheus.CounterValue, float64(stats.LocalStorage.Write), storageLocal)
+	ch <- prometheus.MustNewConstMetric(c.storageWrite, prometheus.CounterValue, float64(stats.RemoteStorage.Write), storageRemote)
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageError, prometheus.CounterValue, float64(stats.RemoteStorage.Error))
+	ch <- prometheus.MustNewConstMetric(c.remoteStorageTimeout, prometheus.CounterValue, float64(stats.RemoteStorage.Timeout))
 
 	// gauges
 	ch <- prometheus.MustNewConstMetric(c.cacheHitRatio, prometheus.GaugeValue, stats.CacheHitRatio)

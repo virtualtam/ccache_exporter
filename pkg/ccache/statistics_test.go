@@ -28,13 +28,8 @@ func assertStatisticsEqual(t *testing.T, got, want *Statistics) {
 	assertStringFieldEquals(t, "CacheSize", got.CacheSize, want.CacheSize)
 	assertMetricByteFieldEquals(t, "CacheSizeBytes", got.CacheSizeBytes, want.CacheSizeBytes)
 
-	assertIntFieldEquals(t, "RemoteStorageError", got.RemoteStorageError, want.RemoteStorageError)
-	assertIntFieldEquals(t, "RemoteStorageHit", got.RemoteStorageHit, want.RemoteStorageHit)
-	assertIntFieldEquals(t, "RemoteStorageMiss", got.RemoteStorageMiss, want.RemoteStorageMiss)
-	assertIntFieldEquals(t, "RemoteStorageReadHit", got.RemoteStorageReadHit, want.RemoteStorageReadHit)
-	assertIntFieldEquals(t, "RemoteStorageReadMiss", got.RemoteStorageReadMiss, want.RemoteStorageReadMiss)
-	assertIntFieldEquals(t, "RemoteStorageTimeout", got.RemoteStorageTimeout, want.RemoteStorageTimeout)
-	assertIntFieldEquals(t, "RemoteStorageWrite", got.RemoteStorageWrite, want.RemoteStorageWrite)
+	assertLocalStorageEqual(t, got.LocalStorage, want.LocalStorage)
+	assertRemoteStorageEqual(t, got.RemoteStorage, want.RemoteStorage)
 
 	assertUncacheableCallsEqual(t, got.UncacheableCalls, want.UncacheableCalls)
 	assertErrorCallsEqual(t, got.ErrorCalls, want.ErrorCalls)
@@ -77,6 +72,28 @@ func assertErrorCallsEqual(t *testing.T, got, want ErrorCalls) {
 	assertIntFieldEquals(t, "ErrorCalls.InternalError", got.InternalError, want.InternalError)
 	assertIntFieldEquals(t, "ErrorCalls.MissingCacheFile", got.MissingCacheFile, want.MissingCacheFile)
 	assertIntFieldEquals(t, "ErrorCalls.ModifiedInputFile", got.ModifiedInputFile, want.ModifiedInputFile)
+}
+
+func assertLocalStorageEqual(t *testing.T, got, want LocalStorage) {
+	t.Helper()
+
+	assertIntFieldEquals(t, "LocalStorage.Hit", got.Hit, want.Hit)
+	assertIntFieldEquals(t, "LocalStorage.Miss", got.Miss, want.Miss)
+	assertIntFieldEquals(t, "LocalStorage.ReadHit", got.ReadHit, want.ReadHit)
+	assertIntFieldEquals(t, "LocalStorage.ReadMiss", got.ReadMiss, want.ReadMiss)
+	assertIntFieldEquals(t, "LocalStorage.Write", got.Write, want.Write)
+}
+
+func assertRemoteStorageEqual(t *testing.T, got, want RemoteStorage) {
+	t.Helper()
+
+	assertIntFieldEquals(t, "RemoteStorage.Error", got.Error, want.Error)
+	assertIntFieldEquals(t, "RemoteStorage.Hit", got.Hit, want.Hit)
+	assertIntFieldEquals(t, "RemoteStorage.Miss", got.Miss, want.Miss)
+	assertIntFieldEquals(t, "RemoteStorage.ReadHit", got.ReadHit, want.ReadHit)
+	assertIntFieldEquals(t, "RemoteStorage.ReadMiss", got.ReadMiss, want.ReadMiss)
+	assertIntFieldEquals(t, "RemoteStorage.Timeout", got.Timeout, want.Timeout)
+	assertIntFieldEquals(t, "RemoteStorage.Write", got.Write, want.Write)
 }
 
 func assertFloatFieldAlmostEquals(t *testing.T, fieldName string, got, want float64) {

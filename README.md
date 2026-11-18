@@ -25,24 +25,30 @@ compiler cache statistics, and its companion Go parser.
 > See the [ccache release notes](https://ccache.dev/releasenotes.html) for more information.
 
 
-| Metric                                  | Type    | Labels |
-| --------------------------------------- | ------- | ------ |
-| `ccache_call_total`                     | Counter | -      |
-| `ccache_call_hit_total`                 | Counter | mode   |
-| `ccache_cleanups_performed_total`       | Counter | -      |
-| `ccache_error_calls_total`              | Counter | reason |
-| `ccache_remote_storage_errors_total`    | Counter | -      |
-| `ccache_remote_storage_hit_total`       | Counter | -      |
-| `ccache_remote_storage_miss_total`      | Counter | -      |
-| `ccache_remote_storage_read_hit_total`  | Counter | -      |
-| `ccache_remote_storage_read_miss_total` | Counter | -      |
-| `ccache_remote_storage_timeout_total`   | Counter | -      |
-| `ccache_remote_storage_write_total`     | Counter | -      |
-| `ccache_uncacheable_calls_total`        | Counter | reason |
-| `ccache_cache_hit_ratio`                | Gauge   | -      |
-| `ccache_cache_size_bytes`               | Gauge   | -      |
-| `ccache_cache_size_max_bytes`           | Gauge   | -      |
-| `ccache_cached_files`                   | Gauge   | -      |
+| Metric                                  | Type    | Labels  |
+| --------------------------------------- | ------- | ------- |
+| `ccache_call_total`                     | Counter | -       |
+| `ccache_call_hit_total`                 | Counter | mode    |
+| `ccache_cleanups_performed_total`       | Counter | -       |
+| `ccache_error_calls_total`              | Counter | reason  |
+| `ccache_remote_storage_errors_total`    | Counter | -       |
+| `ccache_remote_storage_timeout_total`   | Counter | -       |
+| `ccache_storage_hit_total`              | Counter | storage |
+| `ccache_storage_miss_total`             | Counter | storage |
+| `ccache_storage_read_hit_total`         | Counter | storage |
+| `ccache_storage_read_miss_total`        | Counter | storage |
+| `ccache_storage_write_total`            | Counter | storage |
+| `ccache_uncacheable_calls_total`        | Counter | reason  |
+| `ccache_cache_hit_ratio`                | Gauge   | -       |
+| `ccache_cache_size_bytes`               | Gauge   | -       |
+| `ccache_cache_size_max_bytes`           | Gauge   | -       |
+| `ccache_cached_files`                   | Gauge   | -       |
+
+The `storage` label holds the storage tier:
+
+- `storage` label values for `ccache_storage_*_total`:
+    - `local`
+    - `remote`
 
 The `reason` label holds the name of the ccache statistic, as printed by `ccache --print-stats`:
 
