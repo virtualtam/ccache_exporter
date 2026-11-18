@@ -79,7 +79,7 @@ func newCcacheCollector(ctx context.Context, ccacheWrapper *ccache.Wrapper) *col
 		),
 		cacheHitRatio: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "cache_hit_ratio"),
-			"Cache hit ratio (direct + preprocessed) / miss",
+			"Cache hit ratio: hits / (hits + misses), for cacheable calls",
 			nil,
 			nil,
 		),

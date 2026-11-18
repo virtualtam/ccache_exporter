@@ -61,6 +61,12 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 				return &Statistics{}, err
 			}
 
+		case "cleanups_performed":
+			stats.CleanupsPerformed, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "compile_failed":
 			stats.CompilationFailed, err = strconv.Atoi(row[1])
 			if err != nil {
@@ -173,15 +179,14 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 		}
 	}
 
-	// Compute fields for compatibility
-	//
-	// FIXME: "ccache --show-stats" returns seemingly incoherent values
-	//        regarding cache hits and misses, making it hard to tell how ratios
-	//        should be computed
 	cacheHitTotal := stats.CacheHitDirect + stats.CacheHitPreprocessed
-	cacheCallTotal := stats.CacheHitDirect + stats.CacheHitPreprocessed + stats.CacheMiss + stats.CacheMissDirect + stats.CacheMissPreprocessed
+	cacheCallTotal := cacheHitTotal + stats.CacheMiss
 
 	if cacheCallTotal > 0 {
+		// Compute the hit ratio like `ccache --show-stats`: hits / (hits + cache_miss)
+		//
+		// Direct and preprocessed misses count lookup attempts (not calls); a direct mode miss can
+		// still be a preprocessed hit.
 		stats.CacheHitRatio = float64(cacheHitTotal) / float64(cacheCallTotal)
 		stats.CacheHitRate = 100 * stats.CacheHitRatio
 	}

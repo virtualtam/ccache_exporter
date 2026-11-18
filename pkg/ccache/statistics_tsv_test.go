@@ -67,8 +67,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:             150,
 						CacheMissDirect:       164,
 						CacheMissPreprocessed: 152,
-						CacheHitRate:          24.350649,
-						CacheHitRatio:         0.2435049,
+						CacheHitRate:          50,
+						CacheHitRatio:         0.5,
 						CalledForLink:         88,
 						CompilationFailed:     2,
 						NoInputFile:           9,
@@ -168,8 +168,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:              181,
 						CacheMissDirect:        199,
 						CacheMissPreprocessed:  189,
-						CacheHitRate:           16.323529,
-						CacheHitRatio:          0.163235,
+						CacheHitRate:           38.013699,
+						CacheHitRatio:          0.380137,
 						CalledForLink:          82,
 						CalledForPreprocessing: 0,
 						CompilationFailed:      8,
@@ -221,8 +221,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:              168,
 						CacheMissDirect:        208,
 						CacheMissPreprocessed:  182,
-						CacheHitRate:           15.963855,
-						CacheHitRatio:          0.159639,
+						CacheHitRate:           38.686131,
+						CacheHitRatio:          0.386861,
 						CalledForLink:          72,
 						CalledForPreprocessing: 0,
 						CompilationFailed:      14,
@@ -323,8 +323,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:              255,
 						CacheMissDirect:        267,
 						CacheMissPreprocessed:  257,
-						CacheHitRate:           16.326531,
-						CacheHitRatio:          0.163265,
+						CacheHitRate:           37.346437,
+						CacheHitRatio:          0.373464,
 						CalledForLink:          90,
 						CalledForPreprocessing: 105,
 						CompilationFailed:      2,
@@ -375,8 +375,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:             176,
 						CacheMissDirect:       198,
 						CacheMissPreprocessed: 190,
-						CacheHitRate:          17.302053,
-						CacheHitRatio:         0.173020,
+						CacheHitRate:          40.136054,
+						CacheHitRatio:         0.401361,
 						CalledForLink:         70,
 						CompilationFailed:     14,
 						NoInputFile:           30,
@@ -427,8 +427,8 @@ func TestParseTSVStatistics(t *testing.T) {
 						CacheMiss:              170,
 						CacheMissDirect:        211,
 						CacheMissPreprocessed:  184,
-						CacheHitRate:           16.296296,
-						CacheHitRatio:          0.162963,
+						CacheHitRate:           39.285714,
+						CacheHitRatio:          0.392857,
 						CalledForLink:          70,
 						CalledForPreprocessing: 0,
 						CompilationFailed:      14,
@@ -521,8 +521,8 @@ func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 						CacheMiss:             168,
 						CacheMissDirect:       208,
 						CacheMissPreprocessed: 182,
-						CacheHitRate:          15.963855,
-						CacheHitRatio:         0.159639,
+						CacheHitRate:          38.686131,
+						CacheHitRatio:         0.386861,
 						CalledForLink:         72,
 						CacheSize:             "0B",
 						CompilationFailed:     14,
@@ -577,8 +577,8 @@ func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 						CacheMiss:             176,
 						CacheMissDirect:       198,
 						CacheMissPreprocessed: 190,
-						CacheHitRate:          17.302053,
-						CacheHitRatio:         0.173020,
+						CacheHitRate:          40.136054,
+						CacheHitRatio:         0.401361,
 						CalledForLink:         70,
 						CacheSize:             "0B",
 						CompilationFailed:     14,
@@ -633,8 +633,8 @@ func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 						CacheMiss:             170,
 						CacheMissDirect:       211,
 						CacheMissPreprocessed: 184,
-						CacheHitRate:          16.296296,
-						CacheHitRatio:         0.162963,
+						CacheHitRate:          39.285714,
+						CacheHitRatio:         0.392857,
 						CalledForLink:         70,
 						CacheSize:             "0B",
 						CompilationFailed:     14,
@@ -684,5 +684,46 @@ func TestParseTSVStatisticsWithRemoteStorage(t *testing.T) {
 				assertStatisticsEqual(t, s, &tc.wantStats)
 			})
 		}
+	}
+}
+
+func TestParseTSVStatisticsEdgeCases(t *testing.T) {
+	cases := []struct {
+		tname     string
+		input     string
+		wantStats Statistics
+		wantErr   error
+	}{
+		// cache eviction
+		{
+			tname: "cleanups performed",
+			input: "cleanups_performed\t3\n",
+			wantStats: Statistics{
+				CleanupsPerformed: 3,
+				CacheSize:         "0B",
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.tname, func(t *testing.T) {
+			s, err := ParseTSVStatistics(tc.input)
+
+			if tc.wantErr != nil {
+				if err == nil {
+					t.Fatal("expected an error, got none")
+				} else if err.Error() != tc.wantErr.Error() {
+					t.Fatalf("want error %q, got %q", tc.wantErr, err)
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("expected no error, got %q", err)
+			}
+
+			assertStatisticsEqual(t, s, &tc.wantStats)
+		})
 	}
 }
