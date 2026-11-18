@@ -76,7 +76,7 @@ services:
   # Use the Grafana image renderer to render the example ccache dashboard as a PNG.
   # The renderer is only started when needed.
   renderer:
-    image: grafana/grafana-image-renderer:v5.12.0
+    image: grafana/grafana-image-renderer:v5.12.11
     profiles:
       - screenshot
     networks:
