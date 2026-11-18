@@ -145,7 +145,7 @@ Once the stack is up, the following services will be exposed:
 Then, login to Grafana with the default credentials (`admin/admin`) and load
 the `ccache` dashboard:
 
-<img src="./dashboard.jpg" alt="Grafana dashboard for ccache_exporter metrics">
+<img src="./dashboard.png" alt="Grafana dashboard for ccache_exporter metrics">
 
 ## Change Log
 See [CHANGELOG](./CHANGELOG.md)

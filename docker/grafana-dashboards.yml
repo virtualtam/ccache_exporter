@@ -7,6 +7,7 @@ providers:
     folder: ''
     type: file
     disableDeletion: false
+    allowUiUpdates: true # Allows editing the provisioned example dashboard(s).
     updateIntervalSeconds: 30
     options:
       path: /opt/dashboards
