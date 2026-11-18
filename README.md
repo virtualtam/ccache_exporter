@@ -25,28 +25,58 @@ compiler cache statistics, and its companion Go parser.
 > See the [ccache release notes](https://ccache.dev/releasenotes.html) for more information.
 
 
-| Metric                                    | Type    | Labels |
-| ----------------------------------------- | ------- | ------ |
-| `ccache_call_total`                       | Counter | -      |
-| `ccache_call_hit_total`                   | Counter | mode   |
-| `ccache_called_for_link_total`            | Counter | -      |
-| `ccache_called_for_preprocessing_total`   | Counter | -      |
-| `ccache_cleanups_performed_total`         | Counter | -      |
-| `ccache_compilation_failed_total`         | Counter | -      |
-| `ccache_no_input_file_total`              | Counter | -      |
-| `ccache_preprocessing_failed_total`       | Counter | -      |
-| `ccache_remote_storage_errors_total`      | Counter | -      |
-| `ccache_remote_storage_hit_total`         | Counter | -      |
-| `ccache_remote_storage_miss_total`        | Counter | -      |
-| `ccache_remote_storage_read_hit_total`    | Counter | -      |
-| `ccache_remote_storage_read_miss_total`   | Counter | -      |
-| `ccache_remote_storage_timeout_total`     | Counter | -      |
-| `ccache_remote_storage_write_total`       | Counter | -      |
-| `ccache_unsupported_code_directive_total` | Counter | -      |
-| `ccache_cache_hit_ratio`                  | Gauge   | -      |
-| `ccache_cache_size_bytes`                 | Gauge   | -      |
-| `ccache_cache_size_max_bytes`             | Gauge   | -      |
-| `ccache_cached_files`                     | Gauge   | -      |
+| Metric                                  | Type    | Labels |
+| --------------------------------------- | ------- | ------ |
+| `ccache_call_total`                     | Counter | -      |
+| `ccache_call_hit_total`                 | Counter | mode   |
+| `ccache_cleanups_performed_total`       | Counter | -      |
+| `ccache_error_calls_total`              | Counter | reason |
+| `ccache_remote_storage_errors_total`    | Counter | -      |
+| `ccache_remote_storage_hit_total`       | Counter | -      |
+| `ccache_remote_storage_miss_total`      | Counter | -      |
+| `ccache_remote_storage_read_hit_total`  | Counter | -      |
+| `ccache_remote_storage_read_miss_total` | Counter | -      |
+| `ccache_remote_storage_timeout_total`   | Counter | -      |
+| `ccache_remote_storage_write_total`     | Counter | -      |
+| `ccache_uncacheable_calls_total`        | Counter | reason |
+| `ccache_cache_hit_ratio`                | Gauge   | -      |
+| `ccache_cache_size_bytes`               | Gauge   | -      |
+| `ccache_cache_size_max_bytes`           | Gauge   | -      |
+| `ccache_cached_files`                   | Gauge   | -      |
+
+The `reason` label holds the name of the ccache statistic, as printed by `ccache --print-stats`:
+
+- `reason` label values for `ccache_error_calls_total`:
+    - `bad_input_file`
+    - `bad_output_file`
+    - `compiler_check_failed`
+    - `could_not_find_compiler`
+    - `error_hashing_extra_file`
+    - `internal_error`
+    - `missing_cache_file`
+    - `modified_input_file`
+- `reason` label values for `ccache_uncacheable_calls_total`:
+    - `autoconf_test`
+    - `bad_compiler_arguments`
+    - `called_for_link`
+    - `called_for_preprocessing`
+    - `compile_failed`
+    - `compiler_produced_empty_output`
+    - `compiler_produced_no_output`
+    - `compiler_produced_stdout`
+    - `could_not_use_modules`
+    - `could_not_use_precompiled_header`
+    - `disabled`
+    - `multiple_source_files`
+    - `no_input_file`
+    - `output_to_stdout`
+    - `preprocessor_error`
+    - `recache`
+    - `unsupported_code_directive`
+    - `unsupported_compiler_option`
+    - `unsupported_environment_variable`
+    - `unsupported_source_encoding`
+    - `unsupported_source_language`
 
 
 ## Parser usage

@@ -37,11 +37,36 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 		}
 
 		switch row[0] {
+		case "autoconf_test":
+			stats.UncacheableCalls.AutoconfTest, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "bad_compiler_arguments":
+			stats.UncacheableCalls.BadCompilerArguments, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "bad_input_file":
+			stats.ErrorCalls.BadInputFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "bad_output_file":
+			stats.ErrorCalls.BadOutputFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "cache_miss":
 			stats.CacheMiss, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
+
 		case "cache_size_kibibyte":
 			cacheSizeBytes, err := units.ParseBase2Bytes(fmt.Sprintf("%sKiB", row[1]))
 			if err != nil {
@@ -50,13 +75,13 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 			stats.CacheSizeBytes = units.MetricBytes(cacheSizeBytes)
 
 		case "called_for_link":
-			stats.CalledForLink, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.CalledForLink, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
 		case "called_for_preprocessing":
-			stats.CalledForPreprocessing, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.CalledForPreprocessing, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
@@ -68,7 +93,49 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 			}
 
 		case "compile_failed":
-			stats.CompilationFailed, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.CompileFailed, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "compiler_check_failed":
+			stats.ErrorCalls.CompilerCheckFailed, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "compiler_produced_empty_output":
+			stats.UncacheableCalls.CompilerProducedEmptyOutput, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "compiler_produced_no_output":
+			stats.UncacheableCalls.CompilerProducedNoOutput, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "compiler_produced_stdout":
+			stats.UncacheableCalls.CompilerProducedStdout, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "could_not_find_compiler":
+			stats.ErrorCalls.CouldNotFindCompiler, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "could_not_use_modules":
+			stats.UncacheableCalls.CouldNotUseModules, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "could_not_use_precompiled_header":
+			stats.UncacheableCalls.CouldNotUsePrecompiledHeader, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
@@ -85,14 +152,56 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 				return &Statistics{}, err
 			}
 
+		case "disabled":
+			stats.UncacheableCalls.Disabled, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "error_hashing_extra_file":
+			stats.ErrorCalls.ErrorHashingExtraFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "files_in_cache":
 			stats.FilesInCache, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
 
+		case "internal_error":
+			stats.ErrorCalls.InternalError, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "missing_cache_file":
+			stats.ErrorCalls.MissingCacheFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "modified_input_file":
+			stats.ErrorCalls.ModifiedInputFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "multiple_source_files":
+			stats.UncacheableCalls.MultipleSourceFiles, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
 		case "no_input_file":
-			stats.NoInputFile, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.NoInputFile, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "output_to_stdout":
+			stats.UncacheableCalls.OutputToStdout, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
@@ -110,7 +219,13 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 			}
 
 		case "preprocessor_error":
-			stats.PreprocessingFailed, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.PreprocessorError, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "recache":
+			stats.UncacheableCalls.Recache, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}
@@ -172,7 +287,31 @@ func ParseTSVStatistics(text string) (*Statistics, error) {
 			stats.StatsZeroTime = time.Unix(unixTime, 0).UTC()
 
 		case "unsupported_code_directive":
-			stats.UnsupportedCodeDirective, err = strconv.Atoi(row[1])
+			stats.UncacheableCalls.UnsupportedCodeDirective, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "unsupported_compiler_option":
+			stats.UncacheableCalls.UnsupportedCompilerOption, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "unsupported_environment_variable":
+			stats.UncacheableCalls.UnsupportedEnvironmentVariable, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "unsupported_source_encoding":
+			stats.UncacheableCalls.UnsupportedSourceEncoding, err = strconv.Atoi(row[1])
+			if err != nil {
+				return &Statistics{}, err
+			}
+
+		case "unsupported_source_language":
+			stats.UncacheableCalls.UnsupportedSourceLanguage, err = strconv.Atoi(row[1])
 			if err != nil {
 				return &Statistics{}, err
 			}

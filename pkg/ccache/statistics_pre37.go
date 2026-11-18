@@ -84,7 +84,7 @@ func ParsePre37Statistics(text string) (*Statistics, error) {
 
 	matches = pre37StatisticsRules["calledForLink"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CalledForLink, err = strconv.Atoi(matches[1])
+		stats.UncacheableCalls.CalledForLink, err = strconv.Atoi(matches[1])
 		if err != nil {
 			return &Statistics{}, err
 		}
@@ -92,7 +92,7 @@ func ParsePre37Statistics(text string) (*Statistics, error) {
 
 	matches = pre37StatisticsRules["calledForPreprocessing"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.CalledForPreprocessing, err = strconv.Atoi(matches[1])
+		stats.UncacheableCalls.CalledForPreprocessing, err = strconv.Atoi(matches[1])
 		if err != nil {
 			return &Statistics{}, err
 		}
@@ -100,7 +100,7 @@ func ParsePre37Statistics(text string) (*Statistics, error) {
 
 	matches = pre37StatisticsRules["unsupportedCodeDirective"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.UnsupportedCodeDirective, err = strconv.Atoi(matches[1])
+		stats.UncacheableCalls.UnsupportedCodeDirective, err = strconv.Atoi(matches[1])
 		if err != nil {
 			return &Statistics{}, err
 		}
@@ -108,7 +108,7 @@ func ParsePre37Statistics(text string) (*Statistics, error) {
 
 	matches = pre37StatisticsRules["noInputFile"].FindStringSubmatch(text)
 	if len(matches) == 2 {
-		stats.NoInputFile, err = strconv.Atoi(matches[1])
+		stats.UncacheableCalls.NoInputFile, err = strconv.Atoi(matches[1])
 		if err != nil {
 			return &Statistics{}, err
 		}

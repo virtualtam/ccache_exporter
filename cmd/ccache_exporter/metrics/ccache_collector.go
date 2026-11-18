@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	namespace = "ccache"
+	namespace   = "ccache"
+	reasonLabel = "reason"
 )
 
 var (
@@ -36,27 +37,23 @@ type collector struct {
 	wrapper *ccache.Wrapper
 
 	// ccache metrics
-	call                     *prometheus.Desc
-	callHit                  *prometheus.Desc
-	cacheHitRatio            *prometheus.Desc
-	calledForLink            *prometheus.Desc
-	calledForPreprocessing   *prometheus.Desc
-	compilationFailed        *prometheus.Desc
-	preprocessingFailed      *prometheus.Desc
-	unsupportedCodeDirective *prometheus.Desc
-	noInputFile              *prometheus.Desc
-	cleanupsPerformed        *prometheus.Desc
-	filesInCache             *prometheus.Desc
-	cacheSizeBytes           *prometheus.Desc
-	maxCacheSizeBytes        *prometheus.Desc
-	remoteStorageError       *prometheus.Desc
-	remoteStorageHit         *prometheus.Desc
-	remoteStorageMiss        *prometheus.Desc
-	remoteStorageReadHit     *prometheus.Desc
-	remoteStorageReadMiss    *prometheus.Desc
-	remoteStorageTimeout     *prometheus.Desc
-	remoteStorageWrite       *prometheus.Desc
-	version                  *prometheus.Desc
+	call                  *prometheus.Desc
+	callHit               *prometheus.Desc
+	cacheHitRatio         *prometheus.Desc
+	uncacheableCalls      *prometheus.Desc
+	errorCalls            *prometheus.Desc
+	cleanupsPerformed     *prometheus.Desc
+	filesInCache          *prometheus.Desc
+	cacheSizeBytes        *prometheus.Desc
+	maxCacheSizeBytes     *prometheus.Desc
+	remoteStorageError    *prometheus.Desc
+	remoteStorageHit      *prometheus.Desc
+	remoteStorageMiss     *prometheus.Desc
+	remoteStorageReadHit  *prometheus.Desc
+	remoteStorageReadMiss *prometheus.Desc
+	remoteStorageTimeout  *prometheus.Desc
+	remoteStorageWrite    *prometheus.Desc
+	version               *prometheus.Desc
 }
 
 // newCcacheCollector initializes and returns a Prometheus collector for ccache
@@ -83,40 +80,16 @@ func newCcacheCollector(ctx context.Context, ccacheWrapper *ccache.Wrapper) *col
 			nil,
 			nil,
 		),
-		calledForLink: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "called_for_link_total"),
-			"Called for link",
-			nil,
-			nil,
-		),
-		calledForPreprocessing: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "called_for_preprocessing_total"),
-			"Called for preprocessing",
-			nil,
+		uncacheableCalls: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "uncacheable_calls_total"),
+			"Calls ccache could not cache (total), by reason",
+			[]string{reasonLabel},
 			nil,
 		),
-		compilationFailed: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "compilation_failed_total"),
-			"Compilation failed",
-			nil,
-			nil,
-		),
-		preprocessingFailed: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "preprocessing_failed_total"),
-			"Preprocessing failed",
-			nil,
-			nil,
-		),
-		unsupportedCodeDirective: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "unsupported_code_directive_total"),
-			"Unsupported code directive",
-			nil,
-			nil,
-		),
-		noInputFile: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "no_input_file_total"),
-			"No input file",
-			nil,
+		errorCalls: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "error_calls_total"),
+			"Calls ccache could not cache due to an error (total), by reason",
+			[]string{reasonLabel},
 			nil,
 		),
 		cleanupsPerformed: prometheus.NewDesc(
@@ -200,12 +173,8 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.call
 	ch <- c.callHit
 	ch <- c.cacheHitRatio
-	ch <- c.calledForLink
-	ch <- c.calledForPreprocessing
-	ch <- c.compilationFailed
-	ch <- c.preprocessingFailed
-	ch <- c.unsupportedCodeDirective
-	ch <- c.noInputFile
+	ch <- c.uncacheableCalls
+	ch <- c.errorCalls
 	ch <- c.cleanupsPerformed
 	ch <- c.filesInCache
 	ch <- c.cacheSizeBytes
@@ -244,12 +213,12 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	)
 	ch <- prometheus.MustNewConstMetric(c.callHit, prometheus.CounterValue, float64(stats.CacheHitDirect), "direct")
 	ch <- prometheus.MustNewConstMetric(c.callHit, prometheus.CounterValue, float64(stats.CacheHitPreprocessed), "preprocessed")
-	ch <- prometheus.MustNewConstMetric(c.calledForLink, prometheus.CounterValue, float64(stats.CalledForLink))
-	ch <- prometheus.MustNewConstMetric(c.calledForPreprocessing, prometheus.CounterValue, float64(stats.CalledForPreprocessing))
-	ch <- prometheus.MustNewConstMetric(c.compilationFailed, prometheus.CounterValue, float64(stats.CompilationFailed))
-	ch <- prometheus.MustNewConstMetric(c.preprocessingFailed, prometheus.CounterValue, float64(stats.PreprocessingFailed))
-	ch <- prometheus.MustNewConstMetric(c.unsupportedCodeDirective, prometheus.CounterValue, float64(stats.UnsupportedCodeDirective))
-	ch <- prometheus.MustNewConstMetric(c.noInputFile, prometheus.CounterValue, float64(stats.NoInputFile))
+	for reason, value := range uncacheableCallsByReason(stats.UncacheableCalls) {
+		ch <- prometheus.MustNewConstMetric(c.uncacheableCalls, prometheus.CounterValue, float64(value), reason)
+	}
+	for reason, value := range errorCallsByReason(stats.ErrorCalls) {
+		ch <- prometheus.MustNewConstMetric(c.errorCalls, prometheus.CounterValue, float64(value), reason)
+	}
 	ch <- prometheus.MustNewConstMetric(c.cleanupsPerformed, prometheus.CounterValue, float64(stats.CleanupsPerformed))
 	ch <- prometheus.MustNewConstMetric(c.remoteStorageError, prometheus.CounterValue, float64(stats.RemoteStorageError))
 	ch <- prometheus.MustNewConstMetric(c.remoteStorageHit, prometheus.CounterValue, float64(stats.RemoteStorageHit))
@@ -267,4 +236,45 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 	// version
 	ch <- prometheus.MustNewConstMetric(c.version, prometheus.UntypedValue, 1, c.wrapper.Version())
+}
+
+// uncacheableCallsByReason maps uncacheable call counters to ccache statistic names.
+func uncacheableCallsByReason(calls ccache.UncacheableCalls) map[string]int {
+	return map[string]int{
+		"autoconf_test":                    calls.AutoconfTest,
+		"bad_compiler_arguments":           calls.BadCompilerArguments,
+		"called_for_link":                  calls.CalledForLink,
+		"called_for_preprocessing":         calls.CalledForPreprocessing,
+		"compile_failed":                   calls.CompileFailed,
+		"compiler_produced_empty_output":   calls.CompilerProducedEmptyOutput,
+		"compiler_produced_no_output":      calls.CompilerProducedNoOutput,
+		"compiler_produced_stdout":         calls.CompilerProducedStdout,
+		"could_not_use_modules":            calls.CouldNotUseModules,
+		"could_not_use_precompiled_header": calls.CouldNotUsePrecompiledHeader,
+		"disabled":                         calls.Disabled,
+		"multiple_source_files":            calls.MultipleSourceFiles,
+		"no_input_file":                    calls.NoInputFile,
+		"output_to_stdout":                 calls.OutputToStdout,
+		"preprocessor_error":               calls.PreprocessorError,
+		"recache":                          calls.Recache,
+		"unsupported_code_directive":       calls.UnsupportedCodeDirective,
+		"unsupported_compiler_option":      calls.UnsupportedCompilerOption,
+		"unsupported_environment_variable": calls.UnsupportedEnvironmentVariable,
+		"unsupported_source_encoding":      calls.UnsupportedSourceEncoding,
+		"unsupported_source_language":      calls.UnsupportedSourceLanguage,
+	}
+}
+
+// errorCallsByReason maps error call counters to ccache statistic names.
+func errorCallsByReason(calls ccache.ErrorCalls) map[string]int {
+	return map[string]int{
+		"bad_input_file":           calls.BadInputFile,
+		"bad_output_file":          calls.BadOutputFile,
+		"compiler_check_failed":    calls.CompilerCheckFailed,
+		"could_not_find_compiler":  calls.CouldNotFindCompiler,
+		"error_hashing_extra_file": calls.ErrorHashingExtraFile,
+		"internal_error":           calls.InternalError,
+		"missing_cache_file":       calls.MissingCacheFile,
+		"modified_input_file":      calls.ModifiedInputFile,
+	}
 }

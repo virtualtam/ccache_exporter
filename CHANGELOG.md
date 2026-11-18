@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
+### Breaking
+- Group statistics for uncacheable calls into a single metric, with a `reason` label
+- Group statistics for errored calls into a single metric, with a `reason` label
+
 ### Fixed
 - Fix cache size parsing in `ParseConfiguration` for ccache > 4.9
 - Fix cache hit ratio computation (align with documented ccache behaviour)
